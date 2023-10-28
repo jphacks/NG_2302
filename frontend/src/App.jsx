@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
 import { Home } from "./routes/Home"
 import { ListEdit } from './routes/ListEdit';
 import { Search } from './routes/Search';
@@ -18,17 +19,20 @@ const App = () => {
   return (
     <Container component="main" maxWidth="xs">
       <AppBar
-        position="absolute"
+        position="static"
         elevation={0}
         sx={{
           position: 'relative',
         }}
       >
         <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
+          <IconButton color="common.white" onClick={() => { navigate("/home") }}>
+            <HomeIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit" sx={{ mr: "7em" }}>
             ふっきん牛乳
           </Typography>
-          <IconButton color="common.white" onClick={() => {navigate("/setting")}}>
+          <IconButton color="common.white" onClick={() => { navigate("/setting") }}>
             <SettingsIcon />
           </IconButton>
         </Toolbar>
