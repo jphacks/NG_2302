@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from core.constants import SpotifyOAuthConstant, ErrorCode
 from core.daos.spotify import SpotifyApiIdDao
-from core.dtos.music import EnqueueReturnValue, GetMusicInfoReturnValue
+from core.dtos.music import EnqueueReturnValue, GetMusicInfoReturnValue, AdjustVolumeReturnValue
 
 
 @dataclass(frozen=True)
@@ -76,3 +76,17 @@ class MusicService:
                 image_url=album_image_url
             )
         raise Exception("get_music_info failed")
+
+    def adjust_volume(
+        self,
+        volume_percent: int
+    ) -> AdjustVolumeReturnValue:
+        scope = ["user-read-playback-state"]
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return AdjustVolumeReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+
+        if volume_percent < 0 or volume_percent > 100:
+            return AdjustVolumeReturnValue(error_codes=(ErrorCode.VOLUME_PERCENT_OUT_OF_RANGE,))
+        sp.volume(volume_percent)
+        return AdjustVolumeReturnValue(error_codes=())
