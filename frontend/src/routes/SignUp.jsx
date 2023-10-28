@@ -33,7 +33,7 @@ export const SignUp = () => {
             }}
         >
             <Typography component="h1" variant="h5">
-                Sign Up
+                アカウントを作成
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
@@ -64,11 +64,11 @@ export const SignUp = () => {
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                 >
-                    Sign Up
+                    サインアップ
                 </Button>
                 {message && <p>{message}</p>}
-                <Link href="#" variant="body2">
-                    {"Already have an account? Sign In"}
+                <Link href="/" variant="body2">
+                    {"すでにアカウントを持っていますか？ サインイン"}
                 </Link>
             </Box>
         </Box>
