@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
@@ -40,8 +40,9 @@ declare module "@mui/material/Button" {
     tertiary: true;
   }
 }
-
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container as HTMLElement); // createRoot(container!) if you use TypeScript
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider theme={ theme } >
@@ -50,5 +51,4 @@ ReactDOM.render(
       </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
 )

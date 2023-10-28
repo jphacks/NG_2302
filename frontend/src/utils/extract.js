@@ -1,4 +1,3 @@
-
 function removeExtension(imgSrc) {
   const replace = imgSrc.replaceAll('_', ' ');
   let nonExtension = replace.split('.');
