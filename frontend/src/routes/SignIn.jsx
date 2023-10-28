@@ -1,14 +1,27 @@
+import { useState } from 'react';
+import axios from 'axios';
 import { Box, Typography, TextField, Button, FormControlLabel, Grid, Checkbox, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 
 export const SignIn = () => {
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('id'),
+    const loginData = {
+      username: data.get('id'),
       password: data.get('password'),
-    });
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8000/token', loginData);
+      const token = response.data.access_token;
+      console.log('Token:', token);
+      setMessage('Login successful!');
+    } catch (error) {
+      console.error('Login failed:', error);
+      setMessage('Login failed. Please check your credentials.');
+    }
   };
 
   return (
