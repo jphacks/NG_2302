@@ -15,7 +15,11 @@ export const SignUp = () => {
         };
 
         try {
-            await axios.post('http://localhost:8000/account', signupData);
+            await axios.post('http://127.0.0.1:8000/auth/account', signupData)
+                .then(res => {
+                    console.log(res);
+                    console.log(res.data);
+                });
             setMessage('Account created successfully!');
         } catch (error) {
             console.error('Account creation failed:', error);
