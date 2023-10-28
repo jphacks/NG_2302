@@ -68,11 +68,13 @@ class MusicService:
         current_playback = sp.current_playback()
         if current_playback is not None and 'item' in current_playback:
             music_title = current_playback['item']['name']
+            artist_name = current_playback['item']['album']['artists'][0]['name']
             album_image_url = current_playback['item']['album']['images'][0]['url']
 
             return GetMusicInfoReturnValue(
                 error_codes=(),
                 title=music_title,
+                artist_name=artist_name,
                 image_url=album_image_url
             )
         raise Exception("get_music_info failed")
