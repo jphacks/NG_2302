@@ -1,27 +1,39 @@
 from dataclasses import dataclass
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from sqlalchemy.orm import Session
 
 from core.constants import SpotifyOAuthConstant, ErrorCode
+from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import EnqueueReturnValue
-
-# Spotipyのセットアップ
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-    client_id=SpotifyOAuthConstant.SPOTIPY_CLIENT_ID,
-    client_secret=SpotifyOAuthConstant.SPOTIPY_CLIENT_SECRET,
-    redirect_uri=SpotifyOAuthConstant.SPOTIPY_REDIRECT_URI,
-    scope=["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
-))
 
 
 @dataclass(frozen=True)
 class MusicService:
+    db: Session
+    spotify_api_id_dao: SpotifyApiIdDao
     account_id: int
 
     def enqueue(
         self,
         music_title: str
     ) -> EnqueueReturnValue:
+        # Spotifyのインスタンスを取得
+        spotify_api_id = self.spotify_api_id_dao.read_record_by_account_id(
+            db=self.db,
+            account_id=self.account_id
+        )
+        if spotify_api_id is None:
+            return EnqueueReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+
+        # Spotipyのセットアップ
+        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+            client_id=spotify_api_id.spotify_client_id,
+            client_secret=spotify_api_id.spotify_client_secret,
+            redirect_uri=SpotifyOAuthConstant.SPOTIPY_REDIRECT_URI,
+            scope=["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        ))
+
         # Spotifyで曲を検索
         result = sp.search(q=music_title, limit=1)
         items = result['tracks']['items']
