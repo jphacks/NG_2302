@@ -1,30 +1,41 @@
 import { useState } from 'react';
-import axios from 'axios';
-import { Box, Typography, TextField, Button, FormControlLabel, Grid, Checkbox, Link } from '@mui/material';
+import { useCookies } from 'react-cookie';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { backendUrl } from '../config/backendUrl';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
+	const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type']);
 	const navigate = useNavigate();
+
+	const header = {
+		'Content-Type': 'application/x-www-form-urlencoded',
+	}
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		const loginData = {
+		const json = {
 			username: data.get('id'),
 			password: data.get('password'),
 		};
 
 		try {
-			const response = await axios.post('http://localhost:8000/auth/token', loginData);
-			const token = response.data.access_token;
-			console.log('Token:', token);
-			setMessage('Login successful!');
+			const result = await axios.post(backendUrl+'/auth/token', json, { headers: header });
+			if (result != null) {
+				setCookie('access_token', result.access_token);
+				setCookie('refresh_token', result.refresh_token);
+				setMessage('Login successful!');
+				navigate('/home');
+			}
 		} catch (error) {
 			console.error('Login failed:', error);
-			setMessage('Login failed. Please check your credentials.');
 		}
+		setMessage('Login failed. Please check your credentials.');
+
 	};
 
 	return (
@@ -62,16 +73,11 @@ export const SignIn = () => {
 					autoComplete="current-password"
 					sx={customTextField}
 				/>
-				<FormControlLabel
-					control={<Checkbox value="remember" color="primary" />}
-					label="Remember me"
-				/>
 				<Button
 					type="submit"
 					fullWidth
 					variant="contained"
 					sx={{ mt: 3, mb: 2 }}
-					onClick={() => navigate('/home')}
 				>
 					サインイン
 				</Button>
