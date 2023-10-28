@@ -36,8 +36,8 @@ export const SignUp = () => {
             setMessage('Account created successfully!');
 			const result = await axios.post(backendUrl+'/auth/token', signIn, { headers: header });
             if (result != null) {
-                setCookie('access_token', result.access_token);
-                setCookie('refresh_token', result.refresh_token);
+                setCookie('access_token', result.data.access_token);
+                setCookie('refresh_token', result.data.refresh_token);
                 setMessage('Login successful!');
                 navigate('/home');
             }
