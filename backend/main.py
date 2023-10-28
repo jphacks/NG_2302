@@ -4,6 +4,7 @@ import uvicorn
 
 from routers import (
     auth,
+    spotify,
     music
 )
 
@@ -26,6 +27,12 @@ app.include_router(
     auth.router,
     prefix="/auth",
     tags=["auth"]
+)
+
+app.include_router(
+    spotify.router,
+    prefix="/spotify",
+    tags=["spotify"]
 )
 
 app.include_router(

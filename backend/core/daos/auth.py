@@ -85,6 +85,6 @@ class AccountDao:
             prev = db.query(AccountOrm).filter_by(**self._get_pk_condition(account)).first()
         except NoResultFound:
             return False
-        prev.id = account.id
+        prev.refresh_token = account.refresh_token
         db.commit()
         return True
