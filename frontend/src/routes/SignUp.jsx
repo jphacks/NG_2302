@@ -4,10 +4,11 @@ import { useCookies } from 'react-cookie';
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import { useNavigate } from 'react-router-dom';
+import { backendUrl } from '../config/backendUrl';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type']);
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
     const navigate = useNavigate();
 
     const header = {
@@ -27,13 +28,13 @@ export const SignUp = () => {
 		};
 
         try {
-            await axios.post('http://127.0.0.1:8000/auth/account', signUp)
+            await axios.post(backendUrl+'/auth/account', signUp)
                 .then(res => {
                     console.log(res);
                     console.log(res.data);
                 });
             setMessage('Account created successfully!');
-			const result = await axios.post('http://127.0.0.1:8000/auth/token', signIn, { headers: header });
+			const result = await axios.post(backendUrl+'/auth/token', signIn, { headers: header });
             if (result != null) {
                 setCookie('access_token', result.access_token);
                 setCookie('refresh_token', result.refresh_token);
