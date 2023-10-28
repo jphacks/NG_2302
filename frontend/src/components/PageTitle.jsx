@@ -10,7 +10,7 @@ export const PageTitle = ({ title }) => {
         flexDirection: 'column',
       }}
     >
-      <Typography component="h2" variant="div" color="common.white">
+      <Typography component="h2" variant="div" >
         {title}
       </Typography>
       <CustomDivider />

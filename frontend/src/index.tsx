@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+
+import App from './App';
 
 export const theme = createTheme({
   palette: {
@@ -18,6 +19,9 @@ export const theme = createTheme({
     },
     tertiary: {
       main: '#121629',
+    },
+    text: {
+      primary: '#fffffe',
     },
     background: {
       default: '#232946',

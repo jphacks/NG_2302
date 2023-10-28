@@ -1,4 +1,4 @@
-import { Box, TextField, ImageList, ImageListItem, Button, Typography } from '@mui/material';
+import { Box, TextField, ImageList, ImageListItem, Button } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
@@ -50,9 +50,7 @@ export const Home = ({ images }) => {
       <CustomDivider />
 
       <Button variant="contained" color="tertiary" onClick={() => navigate('/edit')}>
-        <Typography color="common.white">
-          リストを編集する
-        </Typography>
+        リストを編集する
       </Button>
     </Box>
   );
