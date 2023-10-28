@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
+class UserContext:
+    account_id: int
+    user_id: int
+
+
+@dataclass(frozen=True)
 class Account:
     id: int | None
     login_id: str

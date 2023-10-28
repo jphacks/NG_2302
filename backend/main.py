@@ -3,7 +3,7 @@ import uvicorn
 
 from routers import (
     auth,
-    # music
+    music
 )
 
 # FastAPIの用意
@@ -15,11 +15,11 @@ app.include_router(
     tags=["auth"]
 )
 
-# app.include_router(
-#     music.router,
-#     prefix="/music",
-#     tags=["music"]
-# )
+app.include_router(
+    music.router,
+    prefix="/music",
+    tags=["music"]
+)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
