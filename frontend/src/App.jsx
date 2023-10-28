@@ -6,6 +6,7 @@ import { Home } from "./routes/Home"
 import { ListEdit } from './routes/ListEdit';
 import { Search } from './routes/Search';
 import { SignIn } from './routes/SignIn';
+import { Dictaphone } from './routes/Dictaphone';
 
 const App = () => {
   const [state, setState] = useState(['Alan_Walker-Sing_me_to_sleep.png', 'Alan_Walker-Darkside.png', 'BUMP_OF_CHICKEN-ray.png', 'Mrs._GREEN_APPLE-Magic.png']);
@@ -30,6 +31,9 @@ const App = () => {
           <Route path="/edit" element={<ListEdit images={state} />} />
           <Route path='/search' element={<Search />} />
         </Routes>
+
+        { /* 音声認識はバックグラウンドで動作 */}
+        <Dictaphone />
       </Box>
     </Container>
   );

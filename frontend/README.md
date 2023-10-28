@@ -36,6 +36,15 @@ npm install @mui/material @emotion/react @emotion/styled
 },
 ```
 
+### Speech Recognition APIのインストール
+
+音声認識のために、Speech Recognition APIを使用します。
+そのため、`./frontend`こちらの階層で、下記コマンドを実行
+
+```
+npm install react-speech-recognition
+```
+
 ### 開発サーバー起動
 
 下記コマンドを`.frontend/`で実行

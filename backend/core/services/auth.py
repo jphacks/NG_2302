@@ -2,7 +2,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import timedelta, datetime
 from typing import Literal
-from jose import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -110,3 +110,23 @@ class AuthService:
             raise Exception("save_account_record failed")
 
         return AuthenticateReturnValue(error_codes=(), auth_token=token)
+
+    def get_user_from_token(self, token: str) -> Account | None:
+        try:
+            payload = jwt.decode(token, self._SECRET_KEY, algorithms=[self._ALGORITHM])
+            login_id: str = payload.get("sub")
+            if login_id is None:
+                return None
+        except JWTError:
+            return None
+
+        account = self.account_dao.get_account_record_by_login_id(
+            db=self.db,
+            login_id=login_id
+        )
+        if account is None:
+            return None
+
+        return Account(
+            account_id=account.id
+        )

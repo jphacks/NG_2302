@@ -2,7 +2,7 @@ from enum import IntEnum
 
 
 class DBConstant:
-    DB_URL = "mysql+pymysql://root:Tasuku0914897@localhost:3306/CarDJ?charset=utf8"
+    DB_URL = "mysql+pymysql://root:@localhost:3306/CarDJ?charset=utf8"
 
 
 class SpotifyOAuthConstant:
@@ -15,3 +15,4 @@ class SpotifyOAuthConstant:
 class ErrorCode(IntEnum):
     LOGIN_ID_ALREADY_EXISTS = 0
     INVALID_LOGIN = 1
+    MUSIC_NOT_FOUND = 2
