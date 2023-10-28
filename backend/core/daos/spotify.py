@@ -91,3 +91,14 @@ class SpotifyApiIdDao:
         prev.spotify_client_secret = spotify_client_secret
         db.commit()
         return prev
+
+    def read_record_by_account_id(
+        self,
+        db: Session,
+        account_id: int
+    ) -> SpotifyApiId | None:
+        try:
+            record = db.query(SpotifyApiIdOrm).filter_by(account_id=account_id).first()
+        except NoResultFound:
+            return None
+        return record

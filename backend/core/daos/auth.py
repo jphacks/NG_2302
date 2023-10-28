@@ -59,9 +59,11 @@ class AccountDao:
             db.add(record)
             db.commit()
             db.refresh(record)
-        except IntegrityError:
+        except IntegrityError as e:
             db.rollback()
-            return None
+            if e.orig.args[0] == 1062:
+                return None
+            raise e
         return self._build_entity(record)
 
     def get_account_record_by_login_id(
