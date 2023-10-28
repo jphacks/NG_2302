@@ -1,10 +1,9 @@
-from fastapi import Depends, HTTPException, Header, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from db import get_db
 from core.dtos.auth import Account
-from core.features.auth import UserContext
 from core.services.auth import AuthService
 from core.daos.auth import AccountDao
 
@@ -35,20 +34,8 @@ def get_current_account(
 
     return user
 
-def get_current_active_account(
-    current_user: Account = Depends(get_current_account)
-) -> Account:
-    # if current_user.disabled:
-    #     raise HTTPException(
-    #         status_code=400,
-    #         detail="Inactive user"
-    #     )
-    return current_user
 
-def get_user_context(
-    account: Account = Depends(get_current_active_account)
-) -> UserContext:
-    return UserContext(
-        account_id=account.account_id,
-        user_id=account.user_id
-    )
+def get_account_id(
+    account: Account = Depends(get_current_account)
+) -> int:
+    return account.account_id
