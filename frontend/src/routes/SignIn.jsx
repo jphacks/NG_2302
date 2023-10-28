@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, TextField, Button, FormControlLabel, Grid, Checkbox, Link } from '@mui/material';
+import { useCookies } from 'react-cookie';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import { useNavigate } from 'react-router-dom';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
 	const navigate = useNavigate();
+	const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type']);
+
+	const header = {
+		'Content-Type': 'application/x-www-form-urlencoded',
+	}
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -17,9 +23,11 @@ export const SignIn = () => {
 		};
 
 		try {
-			const response = await axios.post('http://localhost:8000/auth/token', loginData);
-			const token = response.data.access_token;
-			console.log('Token:', token);
+			await axios.post('http://127.0.0.1:8000/auth/token', loginData, {headers: header})
+				.then(res => {
+					setCookie('access_token', res.data.access_token);
+					setCookie('refresh_token', res.data.refresh_token);
+				});
 			setMessage('Login successful!');
 		} catch (error) {
 			console.error('Login failed:', error);
@@ -61,10 +69,6 @@ export const SignIn = () => {
 					id="password"
 					autoComplete="current-password"
 					sx={customTextField}
-				/>
-				<FormControlLabel
-					control={<Checkbox value="remember" color="primary" />}
-					label="Remember me"
 				/>
 				<Button
 					type="submit"

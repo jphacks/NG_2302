@@ -6,8 +6,9 @@ import { Home } from "./routes/Home"
 import { ListEdit } from './routes/ListEdit';
 import { Search } from './routes/Search';
 import { SignIn } from './routes/SignIn';
-import { Dictaphone } from './routes/Dictaphone';
+import { Dictaphone } from './components/Dictaphone';
 import { SignUp } from './routes/SignUp';
+import { EnqueueTextField } from './components/EnqueueTextField';
 
 const App = () => {
   const [state, setState] = useState(['Alan_Walker-Sing_me_to_sleep.png', 'Alan_Walker-Darkside.png', 'BUMP_OF_CHICKEN-ray.png', 'Mrs._GREEN_APPLE-Magic.png']);
@@ -28,10 +29,11 @@ const App = () => {
         { /* React Router */}
         <Routes>
           <Route path="/" element={<SignIn />} />
-          <Route path='/signUp' element={<SignUp />} />
+          <Route path="/signUp" element={<SignUp />} />
           <Route path="/home" element={<Home images={state} />} />
           <Route path="/edit" element={<ListEdit images={state} />} />
-          <Route path='/search' element={<Search />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/enqueue" element={<EnqueueTextField />} />
         </Routes>
 
         { /* 音声認識はバックグラウンドで動作 */}
