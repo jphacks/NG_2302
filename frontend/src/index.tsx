@@ -1,8 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-
+import { CookiesProvider } from 'react-cookie';
 import App from './App';
 
 export const theme = createTheme({
@@ -40,15 +40,17 @@ declare module "@mui/material/Button" {
     tertiary: true;
   }
 }
-
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container as HTMLElement); // createRoot(container!) if you use TypeScript
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider theme={ theme } >
         <CssBaseline />
-        < App />
+        <CookiesProvider>
+          < App />
+        </CookiesProvider>
       </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
 )

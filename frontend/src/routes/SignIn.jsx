@@ -1,67 +1,90 @@
-import { Box, Typography, TextField, Button, FormControlLabel, Grid, Checkbox, Link } from '@mui/material';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const SignIn = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('id'),
-      password: data.get('password'),
-    });
-  };
+	const [message, setMessage] = useState('');
+	const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type']);
+	const navigate = useNavigate();
 
-  return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <Typography component="h1" variant="h5">
-        Sign in
-      </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="id"
-          label="ID"
-          name="id"
-          autoComplete="id"
-          autoFocus
-          sx={customTextField}
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          sx={customTextField}
-        />
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
-          Sign In
-        </Button>
-        <Link href="#" variant="body2">
-          {"Don't have an account? Sign Up"}
-        </Link>
-      </Box>
-    </Box>
-  );
+	const header = {
+		'Content-Type': 'application/x-www-form-urlencoded',
+	}
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		const json = {
+			username: data.get('id'),
+			password: data.get('password'),
+		};
+
+		try {
+			const result = await axios.post('http://127.0.0.1:8000/auth/token', json, { headers: header });
+			if (result != null) {
+				setCookie('access_token', result.access_token);
+				setCookie('refresh_token', result.refresh_token);
+				setMessage('Login successful!');
+				navigate('/home');
+			}
+		} catch (error) {
+			console.error('Login failed:', error);
+		}
+		setMessage('Login failed. Please check your credentials.');
+
+	};
+
+	return (
+		<Box
+			sx={{
+				marginTop: 8,
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+			}}
+		>
+			<Typography component="h1" variant="h5">
+				サインイン
+			</Typography>
+			<Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+				<TextField
+					margin="normal"
+					required
+					fullWidth
+					id="id"
+					label="ID"
+					name="id"
+					autoComplete="id"
+					autoFocus
+					sx={customTextField}
+				/>
+				<TextField
+					margin="normal"
+					required
+					fullWidth
+					name="password"
+					label="Password"
+					type="password"
+					id="password"
+					autoComplete="current-password"
+					sx={customTextField}
+				/>
+				<Button
+					type="submit"
+					fullWidth
+					variant="contained"
+					sx={{ mt: 3, mb: 2 }}
+				>
+					サインイン
+				</Button>
+				{message && <p>{message}</p>}
+				<Link href="/signUp" variant="body2">
+					{"アカウントを持っていませんか？ サインアップ"}
+				</Link>
+			</Box>
+		</Box>
+	);
 }

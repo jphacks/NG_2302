@@ -16,7 +16,7 @@ export const Search = () => {
     >
       <PageTitle title={'Search Result'} />
 
-      <Button variant="contained" color="tertiary" onClick={() => navigate('/')}>
+      <Button variant="contained" color="tertiary" onClick={() => navigate('/home')}>
         ホーム
       </Button>
     </Box>
