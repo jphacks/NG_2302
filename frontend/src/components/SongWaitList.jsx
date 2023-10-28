@@ -1,4 +1,4 @@
-import { Box, List, ListItemText, ListItemButton } from "@mui/material";
+import { Box, List, ListItemText, ListItemButton, Typography } from "@mui/material";
 import { extract } from "../utils/extract";
 
 export const SongWaitList = ({ images }) => {
@@ -18,7 +18,9 @@ export const SongWaitList = ({ images }) => {
             onClick={(event) => handleListItemClick(event)}
           >
             <Box sx={{ p: 2 }} >
-              {index}
+              <Typography variant="h6" component="div" color="common.white">
+                {index}
+              </Typography>
             </Box>
             <img
               src={"./images/" + image}
@@ -27,9 +29,18 @@ export const SongWaitList = ({ images }) => {
               style={{ paddingRight: '1em' }}
               height="40"
             />
-            <ListItemText 
-              primary={ extract.songTitle(image) } 
-              secondary={ extract.artist(image) } />
+            <ListItemText
+              primary={
+                <Typography color="common.white">
+                  {extract.songTitle(image)}
+                </Typography>
+              }
+              secondary={
+                <Typography color="common.white">
+                  {extract.artist(image)}
+                </Typography>
+              }
+            />
           </ListItemButton>
         )
       })}

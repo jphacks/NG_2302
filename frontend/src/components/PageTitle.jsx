@@ -1,12 +1,19 @@
-import { Typography } from "@mui/material"
+import { Typography, Box } from "@mui/material"
+import { CustomDivider } from "./CustomDivider"
 
 export const PageTitle = ({ title }) => {
   return (
-    <div>
-      <Typography component="h2" variant="div">
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Typography component="h2" variant="div" color="common.white">
         {title}
       </Typography>
-      <Box sx={{ width: "100%", height: 2, bgcolor: 'black' }} />
-    </div>
+      <CustomDivider />
+    </Box>
   )
 }
