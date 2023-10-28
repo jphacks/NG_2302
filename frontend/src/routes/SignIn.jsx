@@ -2,9 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Box, Typography, TextField, Button, FormControlLabel, Grid, Checkbox, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
+import { useNavigate } from 'react-router-dom';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
+	const navigate = useNavigate();
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -69,6 +71,7 @@ export const SignIn = () => {
 					fullWidth
 					variant="contained"
 					sx={{ mt: 3, mb: 2 }}
+					onClick={() => navigate('/home')}
 				>
 					サインイン
 				</Button>
