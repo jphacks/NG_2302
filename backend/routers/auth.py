@@ -26,8 +26,8 @@ def create_account(
     login_password = request.login_password
 
     service = AuthService(
-        account_dao=AccountDao(),
-        db=db
+        db=db,
+        account_dao=AccountDao()
     )
     return_value = service.create_account(
         login_id=login_id, login_password=login_password
