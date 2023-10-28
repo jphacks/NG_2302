@@ -11,11 +11,11 @@ export const PlayingSong = ({ imgPath }) => {
       }}
     >
       { /* 現在流れている曲の情報　*/}
-      <Typography component="subtitle1">
+      <Typography component="subtitle1" color="common.white">
         now
       </Typography>
       <img src={"./images/" + imgPath} className="Now-play-song" alt="jacket" width="340" />
-      <Typography component="body1">
+      <Typography component="body1" color="common.white">
         {extract.songTitle(imgPath) + " / " + extract.artist(imgPath)}
       </Typography>
     </Box>

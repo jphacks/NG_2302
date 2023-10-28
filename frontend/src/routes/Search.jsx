@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PageTitle } from "../components/PageTitle";
 
@@ -16,7 +16,9 @@ export const Search = () => {
     >
       <PageTitle title={'Search Result'} />
 
-      <Button variant="contained" onClick={() => navigate('/')}>ホーム</Button>
+      <Button variant="contained" color="tertiary" onClick={() => navigate('/')}>
+        <Typography color="common.white">ホーム</Typography>
+      </Button>
     </Box>
   );
 }

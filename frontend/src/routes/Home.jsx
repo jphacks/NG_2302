@@ -1,8 +1,9 @@
-import { Box, Typography, TextField, ImageList, ImageListItem, Button } from '@mui/material';
-import { Outlet, useNavigate } from "react-router-dom";
+import { Box, TextField, ImageList, ImageListItem, Button, Typography } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
+import { CustomDivider } from '../components/CustomDivider';
 
 export const Home = ({ images }) => {
   const navigate = useNavigate();
@@ -19,8 +20,8 @@ export const Home = ({ images }) => {
       <PageTitle title={'Reserve Songs'} />
 
       { /* 楽曲検索などのテキストフィールド */}
-      <TextField id="search-song" label="Search by song title" variant="outlined" />
-      <TextField id="search-artist" label="Search by artist" variant="outlined" />
+      <TextField id="search-song" label="Search by song title" />
+      <TextField id="search-artist" label="Search by artist" />
 
       { /* 横並べで曲の画像を配置 */}
       <ImageList sx={{ overflowX: 'auto' }} rowHeight={200}>
@@ -38,19 +39,21 @@ export const Home = ({ images }) => {
           })}
         </ImageListItem>
       </ImageList>
-      <Typography component="h2" variant="div">
-        Song List
-      </Typography>
 
-      <Box sx={{ width: "100%", height: 2, bgcolor: 'black' }} />
+      <PageTitle title={'Song List'} />
+
       <PlayingSong imgPath={images[0]} />
 
       { /* リストで待機している曲の情報 */}
-      <Box sx={{ width: "100%", height: 2, bgcolor: 'black' }} />
+      <CustomDivider />
       <SongWaitList images={images} />
-      <Box sx={{ width: "100%", height: 2, bgcolor: 'black' }} />
+      <CustomDivider />
 
-      <Button variant="contained" onClick={() => navigate('/edit')}>リストを編集する</Button>
+      <Button variant="contained" color="tertiary" onClick={() => navigate('/edit')}>
+        <Typography color="common.white">
+          リストを編集する
+        </Typography>
+      </Button>
     </Box>
   );
 }

@@ -1,8 +1,9 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
+import { CustomDivider } from '../components/CustomDivider';
 
 export const ListEdit = ({ images }) => {
 	const navigate = useNavigate();
@@ -21,11 +22,13 @@ export const ListEdit = ({ images }) => {
 				<PlayingSong imgPath={images[0]} />
 
 				{ /* リストで待機している曲の情報 */}
-				<Box sx={{ width: "100%", height: 2, bgcolor: 'black' }} />
+				<CustomDivider />
 				<SongWaitList images={images} />
-				<Box sx={{ width: "100%", height: 2, bgcolor: 'black' }} />
+				<CustomDivider />
 
-				<Button variant="contained" onClick={() => navigate('/')}>編集を終わる</Button>
+				<Button variant="contained" color="tertiary" onClick={() => navigate('/')}>
+					<Typography color="common.white">編集を終わる</Typography>
+				</Button>
 			</Box>
 		</div>
 	)
