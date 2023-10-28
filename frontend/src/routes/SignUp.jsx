@@ -17,7 +17,7 @@ export const SignUp = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const singUp = {
+        const signUp = {
             login_id: data.get('id'),
             login_password: data.get('password'),
         };
