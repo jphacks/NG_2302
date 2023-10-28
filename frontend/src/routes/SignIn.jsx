@@ -15,7 +15,7 @@ export const SignIn = () => {
 		};
 
 		try {
-			const response = await axios.post('http://localhost:8000/token', loginData);
+			const response = await axios.post('http://localhost:8000/auth/token', loginData);
 			const token = response.data.access_token;
 			console.log('Token:', token);
 			setMessage('Login successful!');
