@@ -26,7 +26,7 @@ export const ListEdit = ({ images }) => {
 				<SongWaitList images={images} />
 				<CustomDivider />
 
-				<Button variant="contained" color="tertiary" onClick={() => navigate('/')}>
+				<Button variant="contained" color="tertiary" onClick={() => navigate('/home')}>
 					編集を終わる
 				</Button>
 			</Box>
