@@ -8,8 +8,6 @@ import { Search } from './routes/Search';
 import { SignIn } from './routes/SignIn';
 import { Dictaphone } from './routes/Dictaphone';
 
-import "regenerator-runtime";
-
 const App = () => {
   const [state, setState] = useState(['Alan_Walker-Sing_me_to_sleep.png', 'Alan_Walker-Darkside.png', 'BUMP_OF_CHICKEN-ray.png', 'Mrs._GREEN_APPLE-Magic.png']);
 
