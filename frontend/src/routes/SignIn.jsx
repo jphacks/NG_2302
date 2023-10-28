@@ -4,6 +4,7 @@ import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { backendUrl } from '../config/backendUrl';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
@@ -23,7 +24,7 @@ export const SignIn = () => {
 		};
 
 		try {
-			const result = await axios.post('http://127.0.0.1:8000/auth/token', json, { headers: header });
+			const result = await axios.post(backendUrl+'/auth/token', json, { headers: header });
 			if (result != null) {
 				setCookie('access_token', result.access_token);
 				setCookie('refresh_token', result.refresh_token);
