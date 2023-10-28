@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
@@ -27,7 +27,7 @@ export const ListEdit = ({ images }) => {
 				<CustomDivider />
 
 				<Button variant="contained" color="tertiary" onClick={() => navigate('/')}>
-					<Typography color="common.white">編集を終わる</Typography>
+					編集を終わる
 				</Button>
 			</Box>
 		</div>

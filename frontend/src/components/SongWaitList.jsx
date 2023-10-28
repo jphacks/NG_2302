@@ -18,7 +18,7 @@ export const SongWaitList = ({ images }) => {
             onClick={(event) => handleListItemClick(event)}
           >
             <Box sx={{ p: 2 }} >
-              <Typography variant="h6" component="div" color="common.white">
+              <Typography variant="h6" component="div" >
                 {index}
               </Typography>
             </Box>
@@ -30,16 +30,8 @@ export const SongWaitList = ({ images }) => {
               height="40"
             />
             <ListItemText
-              primary={
-                <Typography color="common.white">
-                  {extract.songTitle(image)}
-                </Typography>
-              }
-              secondary={
-                <Typography color="common.white">
-                  {extract.artist(image)}
-                </Typography>
-              }
+              primary={extract.songTitle(image)}
+              secondary={extract.artist(image)}
             />
           </ListItemButton>
         )
