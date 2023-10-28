@@ -8,13 +8,31 @@ import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
 import { customTextField } from '../styles/CustomTextField';
 import { backendUrl } from '../config/backendUrl';
+import { useCookies } from 'react-cookie';
 
 export const Home = ({ images }) => {
   const navigate = useNavigate();
+  const [cookies] = useCookies(['access_token']);
 
   var playingData = {};
   const getSongInfo = async () => {
-    return await axios.get(backendUrl + '/music/get_music_info');
+    const header = {
+      headers: {
+        "Authorization": "Bearer " + cookies.access_token
+      }
+    }
+
+    try {
+      await axios.post(backendUrl + '/spotify/register', {
+        spotify_client_id: "65052712c7f74f378e2017737d21f9d5",
+        spotify_client_secret: "644fe09a07464d159010b7cc8387ec22"
+      }, header);
+    } catch (error) {
+      console.log(error);
+    }
+
+
+    return await axios.get(backendUrl + '/music/get_music_info', header);
   }
 
   useEffect(() => {
