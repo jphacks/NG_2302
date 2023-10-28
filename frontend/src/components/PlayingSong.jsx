@@ -1,7 +1,7 @@
 import { Typography, Box } from '@mui/material';
 import { extract } from '../utils/extract';
 
-export const PlayingSong = ({ imgPath }) => {
+export const PlayingSong = ({ imgUrl, title, artist }) => {
   return (
     <Box
       sx={{
@@ -14,9 +14,9 @@ export const PlayingSong = ({ imgPath }) => {
       <Typography component="subtitle1" color="common.white">
         now
       </Typography>
-      <img src={"./images/" + imgPath} className="Now-play-song" alt="jacket" width="340" />
+      <img src={imgUrl} className="Now-play-song" alt="jacket" width="340" />
       <Typography component="body1" >
-        {extract.songTitle(imgPath) + " / " + extract.artist(imgPath)}
+        {title + " / " + artist}
       </Typography>
     </Box>
   )
