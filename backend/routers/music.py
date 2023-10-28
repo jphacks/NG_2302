@@ -16,7 +16,7 @@ class PlayRequest(BaseModel):
 
 
 @router.post("/enqueue", name="キューに楽曲を追加", response_model=EnqueueReturnValue)
-def play(
+def enqueue(
     request: PlayRequest,
     db: Session = Depends(get_db),
     account_id: int = Depends(get_account_id)

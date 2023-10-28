@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from spotipy.exceptions import SpotifyException
 from sqlalchemy.orm import Session
 
 from core.constants import SpotifyOAuthConstant, ErrorCode
@@ -40,7 +41,12 @@ class MusicService:
 
         if items:
             track_id = items[0]['id']
-            sp.add_to_queue(f"spotify:track:{track_id}")
+            try:
+                sp.add_to_queue(f"spotify:track:{track_id}")
+            except SpotifyException as e:
+                if e.args[0] == 404 and e.args[1] == -1:
+                    return EnqueueReturnValue(error_codes=(ErrorCode.NO_ACTIVE_DEVICE,))
+                raise e
         else:
             print(f"Could not find music '{music_title}'")
             return EnqueueReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))

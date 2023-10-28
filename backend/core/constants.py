@@ -15,3 +15,4 @@ class ErrorCode(IntEnum):
     INVALID_LOGIN = 1
     MUSIC_NOT_FOUND = 2
     SPOTIFY_NOT_REGISTERED = 3
+    NO_ACTIVE_DEVICE = 4
