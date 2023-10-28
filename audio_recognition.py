@@ -20,7 +20,7 @@ def main():
         # 認識した音声と設定したboot_wordが一致するか判定。一致したときは「audio_2.py」を実行する。
         if boot_word in recognized_text:
             print("match")
-            subprocess.run(["python", "audio_2.py"])
+            subprocess.run(["python", "backend//audio_2.py"])
         else:
             print("not match")
     
