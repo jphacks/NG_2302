@@ -16,7 +16,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 
 @dataclass(frozen=True)
 class MusicService:
-    user_id: int
+    account_id: int
 
     def enqueue(
         self,

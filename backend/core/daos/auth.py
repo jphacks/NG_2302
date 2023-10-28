@@ -14,8 +14,7 @@ class AccountDao:
             id=record.id,
             login_id=record.login_id,
             login_password_hashed=record.login_password,
-            refresh_token=record.refresh_token,
-            user_id=record.user_id
+            refresh_token=record.refresh_token
         )
 
     def _get_pk_condition(
@@ -31,8 +30,7 @@ class AccountDao:
         return {
             "login_id": entity.login_id,
             "login_password": entity.login_password_hashed,
-            "refresh_token": entity.refresh_token,
-            "user_id": entity.user_id
+            "refresh_token": entity.refresh_token
         }
 
     def _build_update_args(
@@ -42,8 +40,7 @@ class AccountDao:
         return {
             "login_id": entity.login_id,
             "login_password": entity.login_password_hashed,
-            "refresh_token": entity.refresh_token,
-            "user_id": entity.user_id
+            "refresh_token": entity.refresh_token
         }
 
     def create_account_record(

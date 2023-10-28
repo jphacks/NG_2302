@@ -126,13 +126,7 @@ class AuthService:
         )
         if account is None:
             return None
-        if account.id is None:
-            raise ValueError("account.id is None")
-
-        user_id = account.user_id if account.user_id is not None else 0
 
         return Account(
-            account_id=account.id,
-            user_id=user_id,
-            disabled=account.user_id is None
+            account_id=account.id
         )
