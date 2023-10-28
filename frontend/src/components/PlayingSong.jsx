@@ -15,7 +15,7 @@ export const PlayingSong = ({ imgPath }) => {
         now
       </Typography>
       <img src={"./images/" + imgPath} className="Now-play-song" alt="jacket" width="340" />
-      <Typography component="body1" color="common.white">
+      <Typography component="body1" >
         {extract.songTitle(imgPath) + " / " + extract.artist(imgPath)}
       </Typography>
     </Box>
