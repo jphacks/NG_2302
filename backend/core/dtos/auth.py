@@ -3,8 +3,6 @@ from pydantic import BaseModel, Field
 
 class Account(BaseModel):
     account_id: int
-    user_id: int
-    disabled: bool | None = None
 
 
 class AuthToken(BaseModel):

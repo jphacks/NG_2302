@@ -7,7 +7,6 @@ class Account:
     login_id: str
     login_password_hashed: str
     refresh_token: str | None
-    user_id: int | None
 
     @staticmethod
     def default(login_id: str, login_password_hashed: str) -> "Account":
@@ -15,8 +14,7 @@ class Account:
             id=None,
             login_id=login_id,
             login_password_hashed=login_password_hashed,
-            refresh_token=None,
-            user_id=None
+            refresh_token=None
         )
 
     def set_refresh_token(self, refresh_token: str) -> "Account":
@@ -24,6 +22,5 @@ class Account:
             id=self.id,
             login_id=self.login_id,
             login_password_hashed=self.login_password_hashed,
-            refresh_token=refresh_token,
-            user_id=self.user_id
+            refresh_token=refresh_token
         )

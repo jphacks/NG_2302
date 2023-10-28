@@ -15,3 +15,4 @@ class SpotifyOAuthConstant:
 class ErrorCode(IntEnum):
     LOGIN_ID_ALREADY_EXISTS = 0
     INVALID_LOGIN = 1
+    MUSIC_NOT_FOUND = 2
