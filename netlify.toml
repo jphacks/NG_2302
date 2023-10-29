@@ -1,5 +1,7 @@
 [build]
-  base = "./frontend/"
+  base = "frontend/"
+
+  publish = "public/
 
   # SPA用の設定
 [[redirects]]

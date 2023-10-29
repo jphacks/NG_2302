@@ -8,34 +8,9 @@ import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
 import { customTextField } from '../styles/CustomTextField';
-import { backendUrl } from '../config/backendUrl';
-import { useCookies } from 'react-cookie';
 
-export const Home = ({ images }) => {
+export const Home = ({ musicInfo }) => {
   const navigate = useNavigate();
-  const [cookies] = useCookies(['access_token']);
-
-  var playingData = {};
-  const getSongInfo = async () => {
-    const header = {
-      headers: {
-        "Authorization": "Bearer " + cookies.access_token
-      }
-    }
-
-    var response = {};
-    try {
-      response = await axios.get(backendUrl + '/music/get_music_info', header);
-    } catch (error) {
-      console.log(error);
-    }
-
-    return response.data;
-  }
-
-  useEffect(() => {
-    playingData = getSongInfo();
-  }, [])
 
   return (
     <Box
@@ -51,14 +26,13 @@ export const Home = ({ images }) => {
 
       <EnqueueTextField />
 
-
       <PageTitle title={'Song List'} />
 
-      <PlayingSong imgUrl={playingData.image_url} title={playingData.title} artist={playingData.artist_name} />
+      <PlayingSong imgUrl={musicInfo.current_music_image_url} title={musicInfo.current_music_title} artist={musicInfo.current_music_artist_title} />
 
       { /* リストで待機している曲の情報 */}
       <CustomDivider />
-      <SongWaitList images={images} />
+      <SongWaitList musicInfo={musicInfo} />
       <CustomDivider />
 
       <Button variant="contained" color="tertiary" onClick={() => navigate('/edit')}>

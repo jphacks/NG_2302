@@ -6,7 +6,7 @@ import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
 import { customTextField } from '../styles/CustomTextField';
 
-export const ListEdit = ({ images }) => {
+export const ListEdit = ({ musicInfo }) => {
 	const navigate = useNavigate();
 
 	return (
@@ -17,15 +17,13 @@ export const ListEdit = ({ images }) => {
 			width: '100%',
 			alignItems: 'center',
 		}}>
-			<PageTitle title={'Reserve Songs'} />
-
 			<PageTitle title={'Song List'} />
 
-			<PlayingSong imgPath={images[0]} />
+			<PlayingSong imgUrl={musicInfo.current_music_image_url} title={musicInfo.current_music_title} artist={musicInfo.current_music_artist_title} />
 
 			{ /* リストで待機している曲の情報 */}
 			<CustomDivider />
-			<SongWaitList images={images} />
+			<SongWaitList musicInfo={musicInfo} />
 			<CustomDivider />
 
 			<Button variant="contained" color="tertiary" onClick={() => navigate('/home')}>
