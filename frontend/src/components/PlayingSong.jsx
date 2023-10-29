@@ -15,8 +15,11 @@ export const PlayingSong = ({ imgUrl, title, artist }) => {
         now
       </Typography>
       <img src={imgUrl} className="Now-play-song" alt="jacket" width="340" />
-      <Typography component="body1" >
-        {title + " / " + artist}
+      <Typography component="body1">
+        {title}
+      </Typography>
+      <Typography component="body1" style={{ color: "#fffffe" }}>
+        {"/ " + artist}
       </Typography>
     </Box>
   )

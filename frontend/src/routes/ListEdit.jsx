@@ -1,35 +1,51 @@
-import { Box, Button } from '@mui/material';
+import { Box, TextField, ImageList, ImageListItem, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
+import { customTextField } from '../styles/CustomTextField';
 
 export const ListEdit = ({ images }) => {
 	const navigate = useNavigate();
 
 	return (
-		<div>
-			<Box sx={{
-				marginTop: 8,
-				display: 'flex',
-				flexDirection: 'column',
-				alignItems: 'center',
-			}}
-			>
-				<PageTitle title={'Song List'} />
+		<Box sx={{
+			marginTop: 8,
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+		}}>
+			<PageTitle title={'Reserve Songs'} />
 
-				<PlayingSong imgPath={images[0]} />
 
-				{ /* リストで待機している曲の情報 */}
-				<CustomDivider />
-				<SongWaitList images={images} />
-				<CustomDivider />
 
-				<Button variant="contained" color="tertiary" onClick={() => navigate('/home')}>
-					編集を終わる
-				</Button>
-			</Box>
-		</div>
+			{ /* 横並べで曲の画像を配置 */}
+			<ImageList sx={{ overflowX: 'auto' }} rowHeight={200}>
+				<ImageListItem sx={{ display: 'flex', flexDirection: 'row' }}>
+					{images.map(image => (
+						<img
+							src={"./images/" + image}
+							alt="title"
+							loading='lazy'
+							style={{ paddingRight: '1em' }}
+						/>
+					))}
+				</ImageListItem>
+			</ImageList>
+
+			<PageTitle title={'Song List'} />
+
+			<PlayingSong imgPath={images[0]} />
+
+			{ /* リストで待機している曲の情報 */}
+			<CustomDivider />
+			<SongWaitList images={images} />
+			<CustomDivider />
+
+			<Button variant="contained" color="tertiary" onClick={() => navigate('/home')}>
+				編集を終わる
+			</Button>
+		</Box>
 	)
 }

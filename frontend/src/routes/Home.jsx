@@ -1,3 +1,4 @@
+import { EnqueueTextField } from '../components/EnqueueTextField';
 import { Box, TextField, ImageList, ImageListItem, Button } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
@@ -47,26 +48,8 @@ export const Home = ({ images }) => {
     >
       <PageTitle title={'Reserve Songs'} />
 
-      { /* 楽曲検索などのテキストフィールド */}
-      <TextField id="search-song" label="曲名を検索する" sx={customTextField} />
-      <TextField id="search-artist" label="アーティストを検索す" sx={customTextField} />
+      <EnqueueTextField />
 
-      { /* 横並べで曲の画像を配置 */}
-      <ImageList sx={{ overflowX: 'auto' }} rowHeight={200}>
-        <ImageListItem sx={{ display: 'flex', flexDirection: 'row' }}>
-          {images.map(image => {
-            console.log(image);
-            return (
-              <img
-                src={"./images/" + image}
-                alt="title"
-                loading='lazy'
-                style={{ paddingRight: '1em' }}
-              />
-            )
-          })}
-        </ImageListItem>
-      </ImageList>
 
       <PageTitle title={'Song List'} />
 

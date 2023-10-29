@@ -29,10 +29,11 @@ export const SongWaitList = ({ images }) => {
               style={{ paddingRight: '1em' }}
               height="40"
             />
-            <ListItemText
-              primary={extract.songTitle(image)}
-              secondary={extract.artist(image)}
-            />
+          <ListItemText
+            primary={extract.songTitle(image)}
+            secondary={extract.artist(image)}
+            secondaryTypographyProps={{ style: { color: '#fffffe' } }}
+          />
           </ListItemButton>
         )
       })}
