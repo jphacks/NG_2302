@@ -98,14 +98,6 @@ export const Dictaphone = () => {
 		return () => clearInterval(timer); // クリーンアップ
 	}, [wordCount]);
 
-	React.useEffect(() => {
-		const timer = setInterval(() => {
-			setElapsedTime(prevTime => prevTime + 10); // 10秒ごとに経過時間をインクリメント
-		}, 10000); // 10秒ごと
-
-		return () => clearInterval(timer);
-	}, []);
-
 	const {
 		transcript,
 		resetTranscript,
@@ -116,7 +108,7 @@ export const Dictaphone = () => {
 		return <span>ブラウザが音声認識未対応です</span>;
 	}
 
-	function onRestert() {
+	function onRestart() {
 		onEnd();
 		onStart();
 	}
@@ -142,7 +134,7 @@ export const Dictaphone = () => {
 			<p>{"現在の語数:" + wordCount}</p>  {/* ワードカウントの表示 */}
 			<p>{"経過時間: " + elapsedTime + "/60 秒"}</p>  {/* 経過時間の表示 */}
 			<p>{transcript}</p>
-			<Button variant="contained" color="tertiary" onClick={() => onRestert()}>
+			<Button variant="contained" color="tertiary" onClick={() => onRestart()}>
 				Reset
 			</Button>
 		</Box>
