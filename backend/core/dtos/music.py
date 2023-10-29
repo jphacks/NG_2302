@@ -7,6 +7,7 @@ class EnqueueReturnValue(BaseModel):
 
 class GetQueueInfoReturnValue(BaseModel):
     error_codes: tuple[int, ...] = Field(..., title="エラーコード")
+    current_music_duration: int = Field(..., title="現在の楽曲の残り時間")
     current_music_title: str = Field(..., title="現在の楽曲のタイトル")
     current_music_artist_name: str = Field(..., title="現在の楽曲アーティスト名")
     current_music_image_url: str = Field(..., title="現在の楽曲の画像のURL")
