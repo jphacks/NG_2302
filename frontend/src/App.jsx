@@ -75,10 +75,7 @@ const App = () => {
           <Route path="/" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/home" element={<Home musicInfo={musicInfo} />} />
-          <Route path="/edit" element={<ListEdit musicInfo={musicInfo} />} />
-          <Route path="/search" element={<Search />} />
           <Route path="/setting" element={<Setting />} />
-          <Route path="/enqueue" element={<EnqueueTextField />} />
         </Routes>
 
         { /* 音声認識はバックグラウンドで動作 */}
