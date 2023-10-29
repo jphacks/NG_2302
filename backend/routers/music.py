@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from db import get_db
 from dependencies import get_account_id
 from core.daos.spotify import SpotifyApiIdDao
-from core.dtos.music import EnqueueReturnValue, GetMusicInfoReturnValue, AdjustVolumeReturnValue
+from core.dtos.music import EnqueueReturnValue, GetQueueInfoReturnValue, AdjustVolumeReturnValue
 from core.services.music import MusicService
 
 router = APIRouter()
@@ -38,17 +38,17 @@ def enqueue(
     return return_value
 
 
-@router.get("/get_music_info", name="楽曲の情報を取得", response_model=GetMusicInfoReturnValue)
-def get_music_info(
+@router.get("/get_queue_info", name="キューの情報を取得", response_model=GetQueueInfoReturnValue)
+def get_queue_info(
     db: Session = Depends(get_db),
     account_id: int = Depends(get_account_id)
-) -> GetMusicInfoReturnValue:
+) -> GetQueueInfoReturnValue:
     service = MusicService(
         db=db,
         spotify_api_id_dao=SpotifyApiIdDao(),
         account_id=account_id
     )
-    return_value = service.get_music_info()
+    return_value = service.get_queue_info()
 
     return return_value
 

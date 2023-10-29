@@ -13,16 +13,8 @@ export const Dictaphone = () => {
 
 	const commands = [
 		{
-			command: '*',
-			callback: (value) => {
-				console.log(value);
-				const words = value.split(' ').length; // 語数をカウント
-				setWordCount(prevCount => prevCount + words);
-			},
-		},
-		{
 			// 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-			command: 'あいうえお*',
+			command: '腹筋*',
 			callback: async (value) => {
 				console.log(value);
 				const authorization = 'Bearer ' + cookies.access_token;
@@ -42,6 +34,14 @@ export const Dictaphone = () => {
 					console.error('Enqueue failed:', error);
 				}
 				setMessage(value);
+			},
+		},
+		{
+			command: '*',
+			callback: (value) => {
+				console.log(value);
+				const words = value.split(' ').length; // 語数をカウント
+				setWordCount(prevCount => prevCount + words);
 			},
 		},
 	];
@@ -76,7 +76,7 @@ export const Dictaphone = () => {
 					let volume;
 					if (wordCount <= 50) {
 						volume = "low";
-					} else if (wordCount <= 120) {
+					} else if (wordCount <= 100) {
 						volume = "medium";
 					} else {
 						volume = "high";
