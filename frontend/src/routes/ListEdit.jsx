@@ -16,11 +16,7 @@ export const ListEdit = ({ musicInfo }) => {
 			flexDirection: 'column',
 			width: '100%',
 			alignItems: 'center',
-		}}>
-<<<<<<< HEAD
-
-=======
->>>>>>> f4ebdc83efa8d9766e8bd016d9f69362b30170a4
+		}}
 			<PageTitle title={'Song List'} />
 
 			<PlayingSong imgUrl={musicInfo.current_music_image_url} title={musicInfo.current_music_title} artist={musicInfo.current_music_artist_title} />
