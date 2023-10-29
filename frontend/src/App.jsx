@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -10,11 +11,31 @@ import { SignIn } from './routes/SignIn';
 import { Dictaphone } from './components/Dictaphone';
 import { SignUp } from './routes/SignUp';
 import { EnqueueTextField } from './components/EnqueueTextField';
+import { backendUrl } from './config/backendUrl';
 import { Setting } from './routes/Setting';
+import { useCookies } from 'react-cookie';
 
 const App = () => {
   const navigate = useNavigate();
-  const [state, setState] = useState(['Alan_Walker-Sing_me_to_sleep.png', 'Alan_Walker-Darkside.png', 'BUMP_OF_CHICKEN-ray.png', 'Mrs._GREEN_APPLE-Magic.png']);
+  const [cookies] = useCookies(['access_token']);
+
+  var musicInfo = {};
+  useEffect(() => {
+    const header = {
+      headers: {
+        "Authorization": "Bearer " + cookies.access_token
+      }
+    }
+    // バックエンドから曲のリストを取得する
+    try {
+      musicInfo = async () => {
+        return (await axios.get(backendUrl + '/music/get_queue_info', header)).data;
+      }
+      console.log(musicInfo);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -52,8 +73,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
-          <Route path="/home" element={<Home images={state} />} />
-          <Route path="/edit" element={<ListEdit images={state} />} />
+          <Route path="/home" element={<Home musicInfo={musicInfo} />} />
+          <Route path="/edit" element={<ListEdit musicInfo={musicInfo} />} />
           <Route path="/search" element={<Search />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/enqueue" element={<EnqueueTextField />} />
