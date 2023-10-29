@@ -40,7 +40,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (musicInfo == {}) {
+    if (musicInfo != {}) {
       getMusicInfo();
     }
 
