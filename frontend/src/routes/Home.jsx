@@ -35,9 +35,7 @@ export const Home = ({ musicInfo }) => {
       <SongWaitList musicInfo={musicInfo} />
       <CustomDivider />
 
-      <Button variant="contained" color="tertiary" onClick={() => navigate('/edit')}>
-        リストを編集する
-      </Button>
+
     </Box>
   );
 }

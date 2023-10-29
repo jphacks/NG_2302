@@ -5,12 +5,9 @@ import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/ma
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
 import { Home } from "./routes/Home"
-import { ListEdit } from './routes/ListEdit';
-import { Search } from './routes/Search';
 import { SignIn } from './routes/SignIn';
 import { Dictaphone } from './components/Dictaphone';
 import { SignUp } from './routes/SignUp';
-import { EnqueueTextField } from './components/EnqueueTextField';
 import { backendUrl } from './config/backendUrl';
 import { Setting } from './routes/Setting';
 import { useCookies } from 'react-cookie';
