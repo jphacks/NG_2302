@@ -23,7 +23,7 @@ class AuthService:
     # openssl rand -hex 32
     _SECRET_KEY = "56b956a24f1d09fa50a8b606392a79edeac1418ce2e89c83bd4704a478b8fdc4"
     _ALGORITHM = "HS256"
-    _ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
+    _ACCESS_TOKEN_EXPIRES = timedelta(minutes=60)
     _REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
     _password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

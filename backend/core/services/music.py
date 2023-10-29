@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from core.constants import SpotifyOAuthConstant, ErrorCode
 from core.daos.spotify import SpotifyApiIdDao
-from core.dtos.music import EnqueueReturnValue, GetMusicInfoReturnValue, AdjustVolumeReturnValue
+from core.dtos.music import EnqueueReturnValue, GetQueueInfoReturnValue, AdjustVolumeReturnValue
 
 
 @dataclass(frozen=True)
@@ -59,25 +59,49 @@ class MusicService:
             return EnqueueReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
         return EnqueueReturnValue(error_codes=())
 
-    def get_music_info(self) -> GetMusicInfoReturnValue:
+    def get_queue_info(self) -> GetQueueInfoReturnValue:
         scope = ["user-read-playback-state", "user-read-currently-playing"]
         sp = self._get_spotify_instance(scope)
         if sp is None:
-            return GetMusicInfoReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+            return GetQueueInfoReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
 
         current_playback = sp.current_playback()
         if current_playback is not None and 'item' in current_playback:
-            music_title = current_playback['item']['name']
-            artist_name = current_playback['item']['album']['artists'][0]['name']
-            album_image_url = current_playback['item']['album']['images'][0]['url']
+            current_music_title = current_playback['item']['name']
+            current_music_artist_name = current_playback['item']['album']['artists'][0]['name']
+            current_music_image_url = current_playback['item']['album']['images'][0]['url']
 
-            return GetMusicInfoReturnValue(
+            queue = sp.queue()
+            queue_info = []
+
+            for i, track in enumerate(queue['queue']):
+                if i < 3:
+                    track_info = {
+                        "title": track['name'],
+                        "artist_name": track['artists'][0]['name'],
+                        "image_url": track['album']['images'][0]['url']
+                    }
+                    queue_info.append(track_info)
+
+            while len(queue_info) < 3:
+                queue_info.append({"title": None, "artist_name": None, "image_url": None})
+
+            return GetQueueInfoReturnValue(
                 error_codes=(),
-                title=music_title,
-                artist_name=artist_name,
-                image_url=album_image_url
+                current_music_title=current_music_title,
+                current_music_artist_name=current_music_artist_name,
+                current_music_image_url=current_music_image_url,
+                first_music_title=queue_info[0]['title'],
+                first_music_artist_name=queue_info[0]['artist_name'],
+                first_music_image_url=queue_info[0]['image_url'],
+                second_music_title=queue_info[1]['title'],
+                second_music_artist_name=queue_info[1]['artist_name'],
+                second_music_image_url=queue_info[1]['image_url'],
+                third_music_title=queue_info[2]['title'],
+                third_music_artist_name=queue_info[2]['artist_name'],
+                third_music_image_url=queue_info[2]['image_url']
             )
-        raise Exception("get_music_info failed")
+        raise Exception("get_queue_info failed")
 
     def adjust_volume(
         self,
