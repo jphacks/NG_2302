@@ -17,7 +17,6 @@ export const ListEdit = ({ images }) => {
 			width: '100%',
 			alignItems: 'center',
 		}}>
-			<PageTitle title={'Reserve Songs'} />
 
 			<PageTitle title={'Song List'} />
 

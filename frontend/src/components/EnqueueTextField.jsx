@@ -32,9 +32,9 @@ export const EnqueueTextField = () => {
     }
 
     return (
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
             <TextField id='title' name='title' label="曲名を入力" sx={customTextField} />
-            <Button type="submit" variant="contained" color="tertiary">
+            <Button type="submit" variant="contained" color="tertiary" sx={{ ml: 2}}>
                 追加
             </Button>
         </Box>
