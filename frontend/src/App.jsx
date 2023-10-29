@@ -18,9 +18,12 @@ import { useCookies } from 'react-cookie';
 const App = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(['access_token']);
+  const [musicInfo, setMusicInfo] = useState({});
 
-  var musicInfo = {};
   useEffect(() => {
+    if (musicInfo == {}) {
+      return;
+    }
     const header = {
       headers: {
         "Authorization": "Bearer " + cookies.access_token
@@ -28,9 +31,10 @@ const App = () => {
     }
     // バックエンドから曲のリストを取得する
     try {
-      musicInfo = async () => {
-        return (await axios.get(backendUrl + '/music/get_queue_info', header)).data;
-      }
+      axios.get(backendUrl + '/music/get_queue_info', header)
+      .then((res) => {
+        setMusicInfo(res.data);
+      });
       console.log(musicInfo);
     } catch (error) {
       console.log(error);

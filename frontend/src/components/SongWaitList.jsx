@@ -27,9 +27,6 @@ export const SongWaitList = ({ musicInfo }) => {
   return (
     <List component="nav" aria-label="next songs list">
       {musics.map((music, index) => {
-        if (index === 0) {
-          return null;
-        }
         return (
           <ListItemButton
             sx={{ display: 'flex', flexDirection: 'row' }}
@@ -37,7 +34,7 @@ export const SongWaitList = ({ musicInfo }) => {
           >
             <Box sx={{ p: 2 }} >
               <Typography variant="h6" component="div" >
-                {index}
+                {index + 1}
               </Typography>
             </Box>
             <img
