@@ -67,6 +67,12 @@ class MusicService:
 
         current_playback = sp.current_playback()
         if current_playback is not None and 'item' in current_playback:
+            # 楽曲の全体の時間と現在の再生位置を取得
+            duration_ms = current_playback['item']['duration_ms']
+            progress_ms = current_playback['progress_ms']
+
+            current_music_duration = (duration_ms - progress_ms) // 1000
+
             current_music_title = current_playback['item']['name']
             current_music_artist_name = current_playback['item']['album']['artists'][0]['name']
             current_music_image_url = current_playback['item']['album']['images'][0]['url']
@@ -88,6 +94,7 @@ class MusicService:
 
             return GetQueueInfoReturnValue(
                 error_codes=(),
+                current_music_duration=current_music_duration,
                 current_music_title=current_music_title,
                 current_music_artist_name=current_music_artist_name,
                 current_music_image_url=current_music_image_url,
