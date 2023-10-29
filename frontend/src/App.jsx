@@ -16,11 +16,11 @@ const App = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(['access_token']);
   const [musicInfo, setMusicInfo] = useState({});
+  const [elapsedTime, setElapsedTime] = React.useState(0); //経過時間を格納するためのState
+  const updateTime = 3;
+  var duration = -1;
 
-  useEffect(() => {
-    if (musicInfo == {}) {
-      return;
-    }
+  const getMusicInfo = async () => {
     const header = {
       headers: {
         "Authorization": "Bearer " + cookies.access_token
@@ -29,13 +29,33 @@ const App = () => {
     // バックエンドから曲のリストを取得する
     try {
       axios.get(backendUrl + '/music/get_queue_info', header)
-      .then((res) => {
-        setMusicInfo(res.data);
-      });
+        .then((res) => {
+          duration = res.data.current_music_duration;
+          setMusicInfo(res.data);
+        });
       console.log(musicInfo);
     } catch (error) {
       console.log(error);
     }
+  }
+
+  useEffect(() => {
+    if (musicInfo == {}) {
+      getMusicInfo();
+    }
+
+    const timer = setInterval(() => {
+      // 10秒間隔で更新する
+      setElapsedTime(prevTime => {
+        // durationを超えたら再実行
+        if (duration != -1 && prevTime >= duration) {
+          // musicInfoをリセットする
+          getMusicInfo();
+          return 0; //経過時間リセット
+        }
+        return prevTime + updateTime; // updateTime秒インクリメント
+      });
+    }, updateTime * 1000); // updateTime秒 * 1000 = msごと
   }, []);
 
   return (
