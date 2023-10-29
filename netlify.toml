@@ -1,3 +1,8 @@
 [build]
-  publish = "frontend/"
-  command = "npm run build"
+  base = "./frontend/"
+
+  # SPA用の設定
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
