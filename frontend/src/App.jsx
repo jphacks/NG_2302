@@ -29,7 +29,7 @@ const App = () => {
     // バックエンドから曲のリストを取得する
     try {
       musicInfo = async () => {
-        return await axios.get(backendUrl + '/music/get_queue_info', header);
+        return (await axios.get(backendUrl + '/music/get_queue_info', header)).data;
       }
       console.log(musicInfo);
     } catch (error) {
