@@ -28,7 +28,7 @@ export const Home = ({ musicInfo }) => {
 
       <PageTitle title={'Song List'} />
 
-      <PlayingSong imgUrl={musicInfo.current_music_image_url} title={musicInfo.current_music_title} artist={musicInfo.current_music_artist_title} />
+      <PlayingSong imgUrl={musicInfo.current_music_image_url} title={musicInfo.current_music_title} artist={musicInfo.current_music_artist_name} />
 
       { /* リストで待機している曲の情報 */}
       <CustomDivider />
