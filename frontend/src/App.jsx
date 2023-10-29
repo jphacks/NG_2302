@@ -56,6 +56,8 @@ const App = () => {
         return prevTime + updateTime; // updateTime秒インクリメント
       });
     }, updateTime * 1000); // updateTime秒 * 1000 = msごと
+
+    return () => clearInterval(timer);
   }, []);
 
   return (

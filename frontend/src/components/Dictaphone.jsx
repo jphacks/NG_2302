@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Grid, Typography, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { backendUrl } from '../config/backendUrl';
 
@@ -10,6 +10,8 @@ export const Dictaphone = () => {
 	const [wordCount, setWordCount] = React.useState(0);
 	const [elapsedTime, setElapsedTime] = React.useState(0);//経過時間を格納するためのState
 	const [cookies] = useCookies(['access_token']);
+	const [checked, setChecked] = React.useState(false);
+	var intervalRef = React.useRef(null);	
 
 	const commands = [
 		{
@@ -66,8 +68,10 @@ export const Dictaphone = () => {
 		}
 	}
 
-	React.useEffect(() => {
-		const timer = setInterval(() => {
+	function setTimer() {
+		if (intervalRef.current !== null) return;
+
+		intervalRef.current = setInterval(() => {
 			// 1分間隔で音量を調節
 			// wordCountに基づいて音量を決定する
 			setElapsedTime(prevTime => {
@@ -94,9 +98,29 @@ export const Dictaphone = () => {
 				return prevTime + 1; // 1秒インクリメント
 			});
 		}, 1000); // 1秒ごと
+	}
 
-		return () => clearInterval(timer); // クリーンアップ
+	React.useEffect(() => {
+		console.log('call useEffect: '+checked);
+		if (checked) {
+			setTimer();
+
+			return () => clearInterval(intervalRef.current); // クリーンアップ
+		}		
 	}, [wordCount]);
+
+	const handleChange = (event) => {
+		console.log(event.target.checked);
+		if (!event.target.checked) {
+			if (intervalRef.current !== null) {
+				clearInterval(intervalRef.current);
+				intervalRef.current = null;
+			}
+		} else {
+			setTimer();
+		}
+		setChecked(event.target.checked);
+	}
 
 	const {
 		transcript,
@@ -137,6 +161,16 @@ export const Dictaphone = () => {
 			<Button variant="contained" color="tertiary" onClick={() => onRestart()}>
 				Reset
 			</Button>
+			<Grid container >
+				<Switch
+					checked={checked}
+					onChange={handleChange}
+					inputProps={{ 'aria-label': 'controlled' }}
+				/>
+				<Typography component="h4" variant="div" sx={{ ml: 2, mt: 1 }}>
+					自動音量調整
+				</Typography>
+			</Grid>
 		</Box>
 	)
 }
