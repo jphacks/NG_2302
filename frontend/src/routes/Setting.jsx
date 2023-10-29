@@ -4,9 +4,10 @@ import { customTextField } from '../styles/CustomTextField';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { backendUrl } from '../config/backendUrl';
+import { QRCodeCanvas } from 'qrcode.react';
 
 export const Setting = () => {
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'id', 'password']);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -68,6 +69,8 @@ export const Setting = () => {
                     登録
                 </Button>
             </Box>
+
+            <QRCodeCanvas url={'http://localhost:3000/setting/id=' + cookies.id + '&password=' + cookies.password} />,
         </Box>
     );
 }

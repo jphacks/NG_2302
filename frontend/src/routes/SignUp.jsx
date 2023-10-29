@@ -8,7 +8,7 @@ import { backendUrl } from '../config/backendUrl';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'id', 'password']);
     const navigate = useNavigate();
 
     const header = {
@@ -26,6 +26,10 @@ export const SignUp = () => {
 			username: data.get('id'),
 			password: data.get('password'),
 		};
+
+        // QRコード用
+		setCookie('id', data.get('id'));
+		setCookie('password', data.get('password'));
 
         try {
             await axios.post(backendUrl+'/auth/account', signUp)
