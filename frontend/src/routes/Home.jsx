@@ -43,6 +43,7 @@ export const Home = ({ images }) => {
         marginTop: 8,
         display: 'flex',
         flexDirection: 'column',
+        width: '100%',
         alignItems: 'center',
       }}
     >

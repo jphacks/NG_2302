@@ -14,25 +14,10 @@ export const ListEdit = ({ images }) => {
 			marginTop: 8,
 			display: 'flex',
 			flexDirection: 'column',
+			width: '100%',
 			alignItems: 'center',
 		}}>
 			<PageTitle title={'Reserve Songs'} />
-
-
-
-			{ /* 横並べで曲の画像を配置 */}
-			<ImageList sx={{ overflowX: 'auto' }} rowHeight={200}>
-				<ImageListItem sx={{ display: 'flex', flexDirection: 'row' }}>
-					{images.map(image => (
-						<img
-							src={"./images/" + image}
-							alt="title"
-							loading='lazy'
-							style={{ paddingRight: '1em' }}
-						/>
-					))}
-				</ImageListItem>
-			</ImageList>
 
 			<PageTitle title={'Song List'} />
 
