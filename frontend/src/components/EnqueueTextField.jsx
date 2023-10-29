@@ -25,6 +25,7 @@ export const EnqueueTextField = () => {
                 { headers: header },
             ).then(res => {
                 console.log(res.data);
+                window.location.reload();
             });
         } catch (error) {
             console.error('Enqueue failed:', error);
