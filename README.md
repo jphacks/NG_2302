@@ -7,6 +7,9 @@
 車の乗員全員の聞きたい楽曲を流すために、車内のDJを担ってくれるサービス
 
 デモ/紹介動画: [https://youtu.be/oG7NVwTY7wE](https://youtu.be/HY0YngrH4DA)
+(画像をタップすると動画を見ることができます）
+[!['デモ/紹介動画'](http://img.youtube.com/vi/HY0YngrH4DA/maxresdefault.jpg)](https://youtu.be/HY0YngrH4DA?si=DOFRjqufPQz3K5PP)
+
 
 ### 背景(製品開発のきっかけ、課題等）
 
