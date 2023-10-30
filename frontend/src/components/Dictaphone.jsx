@@ -31,6 +31,8 @@ export const Dictaphone = () => {
 						{ headers: header },
 					).then(res => {
 						console.log(res.data);
+
+            window.location.reload();
 					});
 				} catch (error) {
 					console.error('Enqueue failed:', error);
@@ -78,19 +80,19 @@ export const Dictaphone = () => {
 				if (prevTime >= 60) {
 					//60秒経過時のロジック
 					let volume;
-					if (wordCount <= 50) {
-						volume = "low";
-					} else if (wordCount <= 100) {
-						volume = "medium";
+					if (wordCount <= 30) {
+						volume = 60;
+					} else if (wordCount <= 60) {
+						volume = 75;
 					} else {
-						volume = "high";
+						volume = 90;
 					}
 
 					// wordCountはint
 					// volumeはstring
 					// 求められているのはinteger
 					// -> Volumeだと422(サーバーが読み取れないよ)ってエラーになる
-					postAdjustVolume(wordCount);
+					postAdjustVolume(volume);
 
 					setWordCount(0); //語数リセット
 					return 0; //経過時間リセット
@@ -105,7 +107,7 @@ export const Dictaphone = () => {
 		if (checked) {
 			setTimer();
 
-			return () => clearInterval(intervalRef.current); // クリーンアップ
+			// return () => clearInterval(intervalRef.current); // クリーンアップ
 		}		
 	}, [wordCount]);
 
