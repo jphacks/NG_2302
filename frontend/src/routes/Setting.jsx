@@ -70,6 +70,7 @@ export const Setting = () => {
                 </Button>
             </Box>
 
+            <PageTitle title={'ゲストはこちら'} />
             <QRCodeCanvas url={'http://localhost:3000/setting/id=' + cookies.id + '&password=' + cookies.password} />,
         </Box>
     );

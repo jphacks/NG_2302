@@ -8,12 +8,8 @@ import { backendUrl } from '../config/backendUrl';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
-	const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
+	const [setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
 	const navigate = useNavigate();
-
-	const header = {
-		'Content-Type': 'application/x-www-form-urlencoded',
-	}
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -27,8 +23,12 @@ export const SignIn = () => {
 		setCookie('id', data.get('id'));
 		setCookie('password', data.get('password'));
 
+		const header = {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		}
+
 		try {
-			const result = await axios.post(backendUrl+'/auth/token', json, { headers: header });
+			const result = await axios.post(backendUrl + '/auth/token', json, { headers: header });
 			if (result != null) {
 				setCookie('access_token', result.data.access_token);
 				setCookie('refresh_token', result.data.refresh_token);
@@ -39,7 +39,6 @@ export const SignIn = () => {
 			console.error('Login failed:', error);
 		}
 		setMessage('Login failed. Please check your credentials.');
-
 	};
 
 	return (

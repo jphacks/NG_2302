@@ -1,5 +1,4 @@
 import { Typography, Box } from '@mui/material';
-import { extract } from '../utils/extract';
 
 export const PlayingSong = ({ imgUrl, title, artist }) => {
   return (
@@ -11,7 +10,7 @@ export const PlayingSong = ({ imgUrl, title, artist }) => {
       }}
     >
       { /* 現在流れている曲の情報　*/}
-      <Typography component="subtitle1" color="common.white">
+      <Typography component="subtitle1">
         now
       </Typography>
       <img src={imgUrl} className="Now-play-song" alt="jacket" width="340" />
