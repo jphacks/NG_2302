@@ -8,7 +8,7 @@ import { backendUrl } from '../config/backendUrl';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
-	const [setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
+	const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
 	const navigate = useNavigate();
 
 	const handleSubmit = async (event) => {

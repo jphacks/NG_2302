@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
 import { Home } from "./routes/Home"
 import { SignIn } from './routes/SignIn';
-import { Dictaphone } from './components/Dictaphone';
 import { SignUp } from './routes/SignUp';
 import { backendUrl } from './config/backendUrl';
 import { Setting } from './routes/Setting';
-import { useCookies } from 'react-cookie';
+import { QrAuth } from './routes/QrAuth';
 
 const App = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(['access_token']);
   const [musicInfo, setMusicInfo] = useState({});
-  const [setElapsedTime] = React.useState(0); //経過時間を格納するためのState
+  const [elapsedTime, setElapsedTime] = React.useState(0); //経過時間を格納するためのState
   // updateTimeを変更することで、Timerの更新頻度を変更できる
   const updateTime = 3;
   var duration = -1;
@@ -102,10 +102,8 @@ const App = () => {
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/home" element={<Home musicInfo={musicInfo} />} />
           <Route path="/setting" element={<Setting />} />
+          <Route path="/qrAuth" element={<QrAuth />} />
         </Routes>
-
-        { /* 音声認識はバックグラウンドで動作 */}
-        <Dictaphone />
       </Box>
     </Container>
   );
