@@ -4,6 +4,7 @@ import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
+import { Dictaphone } from '../components/Dictaphone';
 
 export const Home = ({ musicInfo }) => {
   return (
@@ -31,6 +32,9 @@ export const Home = ({ musicInfo }) => {
       <CustomDivider />
       <SongWaitList musicInfo={musicInfo} />
       <CustomDivider />
+
+      { /* 音声認識はバックグラウンドで動作 */}
+      <Dictaphone />
 
     </Box>
   );
