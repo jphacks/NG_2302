@@ -8,12 +8,8 @@ import { backendUrl } from '../config/backendUrl';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'id', 'password']);
+    const [setCookie] = useCookies(['access_token', 'refresh_token', 'id', 'password']);
     const navigate = useNavigate();
-
-    const header = {
-		'Content-Type': 'application/x-www-form-urlencoded',
-	}
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -23,22 +19,32 @@ export const SignUp = () => {
             login_password: data.get('password'),
         };
         const signIn = {
-			username: data.get('id'),
-			password: data.get('password'),
-		};
+            username: data.get('id'),
+            password: data.get('password'),
+        };
 
         // QRコード用
-		setCookie('id', data.get('id'));
-		setCookie('password', data.get('password'));
+        setCookie('id', data.get('id'));
+        setCookie('password', data.get('password'));
+
+        const header = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
 
         try {
-            await axios.post(backendUrl+'/auth/account', signUp)
+            await axios.post(backendUrl + '/auth/account', signUp)
                 .then(res => {
                     console.log(res);
                     console.log(res.data);
                 });
             setMessage('Account created successfully!');
-			const result = await axios.post(backendUrl+'/auth/token', signIn, { headers: header });
+        } catch (error) {
+            setMessage('Account creation failed. Please try again.');
+            console.error('Account creation failed:', error);
+        }
+
+        try {
+            const result = await axios.post(backendUrl + '/auth/token', signIn, { headers: header });
             if (result != null) {
                 setCookie('access_token', result.data.access_token);
                 setCookie('refresh_token', result.data.refresh_token);
@@ -46,9 +52,10 @@ export const SignUp = () => {
                 navigate('/home');
             }
         } catch (error) {
-            console.error('Account creation failed:', error);
+            setMessage('Login failed. Please try again.');
+            console.error('Login failed:', error);
         }
-        setMessage('Account creation failed. Please try again.');
+
 
     };
 

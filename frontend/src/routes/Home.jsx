@@ -1,17 +1,11 @@
 import { EnqueueTextField } from '../components/EnqueueTextField';
-import { Box, TextField, ImageList, ImageListItem, Button } from '@mui/material';
-import { useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import { Box } from '@mui/material';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
-import { customTextField } from '../styles/CustomTextField';
 
 export const Home = ({ musicInfo }) => {
-  const navigate = useNavigate();
-
   return (
     <Box
       sx={{
@@ -28,13 +22,15 @@ export const Home = ({ musicInfo }) => {
 
       <PageTitle title={'Song List'} />
 
-      <PlayingSong imgUrl={musicInfo.current_music_image_url} title={musicInfo.current_music_title} artist={musicInfo.current_music_artist_name} />
+      <PlayingSong
+        imgUrl={musicInfo.current_music_image_url}
+        title={musicInfo.current_music_title}
+        artist={musicInfo.current_music_artist_name} />
 
       { /* リストで待機している曲の情報 */}
       <CustomDivider />
       <SongWaitList musicInfo={musicInfo} />
       <CustomDivider />
-
 
     </Box>
   );

@@ -11,7 +11,7 @@ export const Dictaphone = () => {
 	const [elapsedTime, setElapsedTime] = React.useState(0);//経過時間を格納するためのState
 	const [cookies] = useCookies(['access_token']);
 	const [checked, setChecked] = React.useState(false);
-	var intervalRef = React.useRef(null);	
+	var intervalRef = React.useRef(null);
 
 	const commands = [
 		{
@@ -32,7 +32,7 @@ export const Dictaphone = () => {
 					).then(res => {
 						console.log(res.data);
 
-            window.location.reload();
+						window.location.reload();
 					});
 				} catch (error) {
 					console.error('Enqueue failed:', error);
@@ -103,12 +103,12 @@ export const Dictaphone = () => {
 	}
 
 	React.useEffect(() => {
-		console.log('call useEffect: '+checked);
+		console.log('call useEffect: ' + checked);
 		if (checked) {
 			setTimer();
 
 			// return () => clearInterval(intervalRef.current); // クリーンアップ
-		}		
+		}
 	}, [wordCount]);
 
 	const handleChange = (event) => {

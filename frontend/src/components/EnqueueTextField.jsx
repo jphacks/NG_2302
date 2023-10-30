@@ -25,6 +25,7 @@ export const EnqueueTextField = () => {
                 { headers: header },
             ).then(res => {
                 console.log(res.data);
+                // 楽曲追加の際にページをリロードする
                 window.location.reload();
             });
         } catch (error) {

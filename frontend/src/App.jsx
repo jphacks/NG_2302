@@ -16,17 +16,18 @@ const App = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(['access_token']);
   const [musicInfo, setMusicInfo] = useState({});
-  const [elapsedTime, setElapsedTime] = React.useState(0); //経過時間を格納するためのState
+  const [setElapsedTime] = React.useState(0); //経過時間を格納するためのState
+  // updateTimeを変更することで、Timerの更新頻度を変更できる
   const updateTime = 3;
   var duration = -1;
 
+  // バックエンドから曲のリストを取得する
   const getMusicInfo = async () => {
     const header = {
       headers: {
         "Authorization": "Bearer " + cookies.access_token
       }
     }
-    // バックエンドから曲のリストを取得する
     try {
       axios.get(backendUrl + '/music/get_queue_info', header)
         .then((res) => {
@@ -48,12 +49,15 @@ const App = () => {
       // 10秒間隔で更新する
       setElapsedTime(prevTime => {
         // durationを超えたら再実行
+        // 曲の残り時間を超えたところで、リロードする
         if (duration != -1 && prevTime >= duration) {
           // musicInfoをリセットする
           getMusicInfo();
-          return 0; //経過時間リセット
+          // 経過時間リセット
+          return 0; 
         }
-        return prevTime + updateTime; // updateTime秒インクリメント
+         // updateTime秒インクリメント
+        return prevTime + updateTime;
       });
     }, updateTime * 1000); // updateTime秒 * 1000 = msごと
 

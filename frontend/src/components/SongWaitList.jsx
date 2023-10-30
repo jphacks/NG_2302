@@ -1,5 +1,4 @@
 import { Box, List, ListItemText, ListItemButton, Typography } from "@mui/material";
-import { extract } from "../utils/extract";
 
 export const SongWaitList = ({ musicInfo }) => {
   // リストに入っている曲を選択した時

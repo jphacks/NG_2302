@@ -2,6 +2,7 @@ import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PageTitle } from "../components/PageTitle";
 
+// 現在は使っていないが残す
 export const Search = () => {
   const navigate = useNavigate();
 
