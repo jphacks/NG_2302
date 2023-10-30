@@ -6,7 +6,7 @@
 
 車の乗員全員の聞きたい楽曲を流すために、車内のDJを担ってくれるサービス
 
-デモ/紹介動画: https://youtu.be/oG7NVwTY7wE
+デモ/紹介動画: [https://youtu.be/oG7NVwTY7wE](https://youtu.be/HY0YngrH4DA)
 
 ### 背景(製品開発のきっかけ、課題等）
 
