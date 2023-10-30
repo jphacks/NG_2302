@@ -1,4 +1,5 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { PageTitle } from '../components/PageTitle';
 import { customTextField } from '../styles/CustomTextField';
 import { useCookies } from 'react-cookie';
@@ -8,6 +9,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 
 export const Setting = () => {
     const [cookies] = useCookies(['access_token', 'id', 'password']);
+    const [qrCode, setQrCode] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -27,6 +29,28 @@ export const Setting = () => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const createQrCode = () => {
+        console.log('createQrCode');
+        const jsonData = {
+            id: 'test',
+            password: 'test',
+        }
+        /*
+        const jsonData = {
+            id: cookies.id,
+            password: cookies.password,
+        }
+        */
+        const jsonDataString = JSON.stringify(jsonData);
+        var baseUrl = window.location.origin + '/qrAuth';
+        
+        // テスト用
+        baseUrl = 'https://deploy-preview-22--loquacious-marigold-435f89.netlify.app';
+        //return baseUrl + '/qrAuth?data=' + encodeURIComponent(jsonDataString);
+        console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
+        setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
 
     return (
@@ -71,7 +95,16 @@ export const Setting = () => {
             </Box>
 
             <PageTitle title={'ゲストはこちら'} />
-            <QRCodeCanvas url={'http://localhost:3000/setting/id=' + cookies.id + '&password=' + cookies.password} />,
+            <Button sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
+            {
+                qrCode !== '' &&
+                <Grid container justifyContent="center">
+                    <QRCodeCanvas
+                        value={qrCode}
+                        size={256}
+                    />
+                </Grid>
+            }
         </Box>
     );
 }

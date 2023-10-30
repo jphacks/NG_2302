@@ -23,8 +23,10 @@ const App = () => {
 
   // バックエンドから曲のリストを取得する
   const getMusicInfo = async () => {
+    console.log(cookies.access_token);
     const header = {
       headers: {
+        'Content-Type': 'application/json',
         "Authorization": "Bearer " + cookies.access_token
       }
     }
@@ -87,14 +89,14 @@ const App = () => {
       </AppBar>
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 4,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        { /* ふっきん牛乳のイラスト */}
-        <img src="./images/HukkinMilk.png" className="App-logo" alt="logo" />
+        { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
+        <img src={window.location.origin + "/images/HukkinMilk.png"} className="App-logo" alt="logo" />
 
         { /* React Router */}
         <Routes>
@@ -105,6 +107,7 @@ const App = () => {
           <Route path="/qrAuth" element={<QrAuth />} />
         </Routes>
       </Box>
+      <Box sx={{ height: 32 }} />
     </Container>
   );
 };
