@@ -25,7 +25,7 @@ const App = () => {
   // バックエンドから曲のリストを取得する
   const getMusicInfo = async () => {
     try {
-      axios.get(`${backendUrl}/music/get_queue_info`, withAuthHeader(cookies.access_token))
+      await axios.get(`${backendUrl}/music/get_queue_info`, withAuthHeader(cookies.access_token))
         .then((res) => {
           duration = res.data.current_music_duration;
           setMusicInfo(res.data);

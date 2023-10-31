@@ -6,10 +6,10 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { backendUrl } from '../config/backendUrl';
 import { QRCodeCanvas } from 'qrcode.react';
-import { urlEncodedHeader } from '../config/Headers';
+import { withAuthHeader } from '../config/Headers';
 
 export const Setting = () => {
-    const [cookies] = useCookies(['access_token', 'id', 'password']);
+    const [cookies] = useCookies(['access_token']);
     const [qrCode, setQrCode] = useState('');
 
     const handleSubmit = async (event) => {
@@ -19,9 +19,12 @@ export const Setting = () => {
             spotify_client_id: data.get('client_id'),
             spotify_client_secret: data.get('client_secret'),
         };
-
+        const headers = withAuthHeader(cookies.access_token);
         try {
-            await axios.post(`${backendUrl}/spotify/register`, json, urlEncodedHeader);
+            await axios.post(`${backendUrl}/spotify/register`, json, headers)
+            .then(res => {
+                console.log(res.data);
+            });
         } catch (error) {
             console.log(error);
         }

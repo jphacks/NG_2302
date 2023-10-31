@@ -95,7 +95,6 @@ export const Dictaphone = () => {
 	}
 
 	React.useEffect(() => {
-		console.log('call useEffect: ' + checked);
 		if (checked) {
 			setTimer();
 
