@@ -4,6 +4,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { Box, Button, Grid, Typography, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { backendUrl } from '../config/backendUrl';
+import { withAuthHeader } from '../config/Headers';
 
 export const Dictaphone = () => {
 	const [message, setMessage] = React.useState('');
@@ -19,16 +20,11 @@ export const Dictaphone = () => {
 			command: '腹筋*',
 			callback: async (value) => {
 				console.log(value);
-				const authorization = 'Bearer ' + cookies.access_token;
-				const header = {
-					'Content-Type': 'application/json',
-					'Authorization': authorization,
-				}
 				try {
 					await axios.post(
-						backendUrl + '/music/enqueue',
+						`${backendUrl}/music/enqueue`,
 						{ music_title: value },
-						{ headers: header },
+						withAuthHeader(cookies.access_token),
 					).then(res => {
 						console.log(res.data);
 
@@ -51,17 +47,13 @@ export const Dictaphone = () => {
 	];
 
 	const postAdjustVolume = async (volume) => {
-		const authorization = 'Bearer ' + cookies.access_token;
-		const header = {
-			'Content-Type': 'application/json',
-			'Authorization': authorization,
-		}
+		const token = cookies.access_token;
 		const json = {
 			volume_percent: volume,
 		}
 
 		try {
-			await axios.post(backendUrl + '/music/adjust_volume', json, { headers: header })
+			await axios.post(`${backendUrl}/music/adjust_volume`, json, withAuthHeader(cookies.access_token))
 				.then(res => {
 					console.log(res.data);
 				});

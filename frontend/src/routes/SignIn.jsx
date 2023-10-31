@@ -5,6 +5,7 @@ import { customTextField } from '../styles/CustomTextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { backendUrl } from '../config/backendUrl';
+import { urlEncodedHeader } from '../config/Headers';
 
 export const SignIn = () => {
 	const [message, setMessage] = useState('');
@@ -23,12 +24,8 @@ export const SignIn = () => {
 		setCookie('id', data.get('id'));
 		setCookie('password', data.get('password'));
 
-		const header = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		}
-
 		try {
-			const result = await axios.post(backendUrl + '/auth/token', json, { headers: header });
+			const result = await axios.post(`${backendUrl}/auth/token`, json, urlEncodedHeader);
 			if (result != null) {
 				setCookie('access_token', result.data.access_token);
 				setCookie('refresh_token', result.data.refresh_token);

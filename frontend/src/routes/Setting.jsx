@@ -6,6 +6,7 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { backendUrl } from '../config/backendUrl';
 import { QRCodeCanvas } from 'qrcode.react';
+import { urlEncodedHeader } from '../config/Headers';
 
 export const Setting = () => {
     const [cookies] = useCookies(['access_token', 'id', 'password']);
@@ -18,14 +19,9 @@ export const Setting = () => {
             spotify_client_id: data.get('client_id'),
             spotify_client_secret: data.get('client_secret'),
         };
-        const header = {
-            headers: {
-                "Authorization": "Bearer " + cookies.access_token
-            }
-        }
 
         try {
-            await axios.post(backendUrl + '/spotify/register', json, header);
+            await axios.post(`${backendUrl}/spotify/register`, json, urlEncodedHeader);
         } catch (error) {
             console.log(error);
         }

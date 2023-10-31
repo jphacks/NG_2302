@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { backendUrl } from '../config/backendUrl';
 import { Typography } from '@mui/material';
+import { urlEncodedHeader } from '../config/Headers';
 
 export const QrAuth = () => {
     const [message, setMessage] = useState('');
@@ -29,11 +30,8 @@ export const QrAuth = () => {
             username: jsonData.id,
             password: jsonData.password
         };
-        const header = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
         try {
-            axios.post(backendUrl + '/auth/token', json, { headers: header })
+            axios.post(`${backendUrl}/auth/token`, json, urlEncodedHeader)
                 .then((res) => {
                     setCookie('access_token', res.data.access_token);
                     setCookie('refresh_token', res.data.refresh_token);

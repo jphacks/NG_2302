@@ -11,6 +11,7 @@ import { SignUp } from './routes/SignUp';
 import { backendUrl } from './config/backendUrl';
 import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
+import { withAuthHeader } from './config/Headers';
 
 const App = () => {
   const navigate = useNavigate();
@@ -23,15 +24,8 @@ const App = () => {
 
   // バックエンドから曲のリストを取得する
   const getMusicInfo = async () => {
-    console.log(cookies.access_token);
-    const header = {
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": "Bearer " + cookies.access_token
-      }
-    }
     try {
-      axios.get(backendUrl + '/music/get_queue_info', header)
+      axios.get(`${backendUrl}/music/get_queue_info`, withAuthHeader(cookies.access_token))
         .then((res) => {
           duration = res.data.current_music_duration;
           setMusicInfo(res.data);

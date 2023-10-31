@@ -3,6 +3,7 @@ import { useCookies } from 'react-cookie';
 import { Box, Button, TextField } from "@mui/material";
 import { customTextField } from '../styles/CustomTextField';
 import { backendUrl } from '../config/backendUrl';
+import { withAuthHeader } from '../config/Headers';
 
 export const EnqueueTextField = () => {
     const [cookies] = useCookies(['access_token']);
@@ -12,17 +13,11 @@ export const EnqueueTextField = () => {
         const data = new FormData(event.currentTarget);
         const fieldData = { music_title: data.get('title') };
 
-        const authorization = 'Bearer ' + cookies.access_token;
-        const header = {
-            'Content-Type': 'application/json',
-            'Authorization': authorization,
-        }
-
         try {
             await axios.post(
-                backendUrl+'/music/enqueue',
+                `${backendUrl}/music/enqueue`,
                 fieldData, 
-                { headers: header },
+                withAuthHeader(cookies.access_token),
             ).then(res => {
                 console.log(res.data);
                 // 楽曲追加の際にページをリロードする
