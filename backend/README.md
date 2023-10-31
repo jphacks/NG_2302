@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ### 開発サーバー起動
 
 下記コマンドを`.backend/`で実行
-
+※環境によってはうまくいかないので、`.\backend\main.py`を開いて、Runボタンを押してください。むしろこちらがおすすめです。
 ```
 uvicorn main:app --reload
 ```
