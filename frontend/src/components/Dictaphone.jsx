@@ -1,169 +1,160 @@
 import React from 'react';
 import axios from 'axios';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { Box, Button, Grid, Typography, Switch } from '@mui/material';
-import { useCookies } from 'react-cookie';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
+import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
+import {Box, Button, Grid, Typography, Switch} from '@mui/material';
+import {useCookies} from 'react-cookie';
+import {backendUrl} from '../config/backendUrl';
+import {withAuthHeader} from '../config/Headers';
 
 export const Dictaphone = () => {
-	const [message, setMessage] = React.useState('');
-	const [wordCount, setWordCount] = React.useState(0);
-	const [elapsedTime, setElapsedTime] = React.useState(0);//経過時間を格納するためのState
-	const [cookies] = useCookies(['access_token']);
-	const [checked, setChecked] = React.useState(false);
-	var intervalRef = React.useRef(null);
+    const [message, setMessage] = React.useState('');
+    const [wordCount, setWordCount] = React.useState(0);
+    const [elapsedTime, setElapsedTime] = React.useState(0); //経過時間を格納するためのState
+    const [cookies] = useCookies(['access_token']);
+    const [checked, setChecked] = React.useState(false);
+    let intervalRef = React.useRef(null);
 
-	const commands = [
-		{
-			// 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-			command: '腹筋*',
-			callback: async (value) => {
-				console.log(value);
-				try {
-					await axios.post(
-						`${backendUrl}/music/enqueue`,
-						{ music_title: value },
-						withAuthHeader(cookies.access_token),
-					).then(res => {
-						console.log(res.data);
+    const commands = [
+        {
+            // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
+            command: '腹筋*',
+            callback: async (value) => {
+                console.log(value);
+                try {
+                    await axios.post(
+                        `${backendUrl}/music/enqueue`,
+                        {music_title: value},
+                        withAuthHeader(cookies.access_token),
+                    ).then(res => {
+                        console.log(res.data);
+                        window.location.reload();
+                    });
+                } catch (error) {
+                    console.error('Enqueue failed:', error);
+                }
+                setMessage(value);
+            },
+        },
+        {
+            command: '*',
+            callback: (value) => {
+                console.log(value);
+                const words = value.split(' ').length; // 語数をカウント
+                setWordCount(prevCount => prevCount + words);
+            },
+        },
+    ];
 
-						window.location.reload();
-					});
-				} catch (error) {
-					console.error('Enqueue failed:', error);
-				}
-				setMessage(value);
-			},
-		},
-		{
-			command: '*',
-			callback: (value) => {
-				console.log(value);
-				const words = value.split(' ').length; // 語数をカウント
-				setWordCount(prevCount => prevCount + words);
-			},
-		},
-	];
+    const postAdjustVolume = async (volume) => {
+        const json = {
+            volume_percent: volume,
+        }
 
-	const postAdjustVolume = async (volume) => {
-		const token = cookies.access_token;
-		const json = {
-			volume_percent: volume,
-		}
+        try {
+            await axios.post(`${backendUrl}/music/adjust_volume`, json, withAuthHeader(cookies.access_token))
+                .then(res => {
+                    console.log(res.data);
+                });
+        } catch (error) {
+            console.error('Adjust volume failed:', error);
+        }
+    }
 
-		try {
-			await axios.post(`${backendUrl}/music/adjust_volume`, json, withAuthHeader(cookies.access_token))
-				.then(res => {
-					console.log(res.data);
-				});
-		} catch (error) {
-			console.error('Adjust volume failed:', error);
-		}
-	}
+    function runTimerAction() {
+        if (intervalRef.current !== null) return;
 
-	function setTimer() {
-		if (intervalRef.current !== null) return;
+        intervalRef.current = setInterval(() => {
+            // 1分間隔で音量を調節
+            // wordCountに基づいて音量を決定する
+            setElapsedTime(prevTime => {
+                if (prevTime >= 60) {
+                    //60秒経過時のロジック
+                    let volume;
+                    if (wordCount <= 30) {
+                        volume = 60;
+                    } else if (wordCount <= 60) {
+                        volume = 75;
+                    } else {
+                        volume = 90;
+                    }
 
-		intervalRef.current = setInterval(() => {
-			// 1分間隔で音量を調節
-			// wordCountに基づいて音量を決定する
-			setElapsedTime(prevTime => {
-				if (prevTime >= 60) {
-					//60秒経過時のロジック
-					let volume;
-					if (wordCount <= 30) {
-						volume = 60;
-					} else if (wordCount <= 60) {
-						volume = 75;
-					} else {
-						volume = 90;
-					}
+                    postAdjustVolume(volume);
 
-					// wordCountはint
-					// volumeはstring
-					// 求められているのはinteger
-					// -> Volumeだと422(サーバーが読み取れないよ)ってエラーになる
-					postAdjustVolume(volume);
+                    setWordCount(0); //語数リセット
+                    return 0; //経過時間リセット
+                }
+                return prevTime + 1; // 1秒インクリメント
+            });
+        }, 1000); // 1秒ごと
+    }
 
-					setWordCount(0); //語数リセット
-					return 0; //経過時間リセット
-				}
-				return prevTime + 1; // 1秒インクリメント
-			});
-		}, 1000); // 1秒ごと
-	}
+    React.useEffect(() => {
+        if (checked) {
+            runTimerAction();
+        }
+    }, [wordCount]);
 
-	React.useEffect(() => {
-		if (checked) {
-			setTimer();
+    const handleToggle = (event) => {
+        console.log(event.target.checked);
+        if (!event.target.checked) {
+            if (intervalRef.current !== null) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        } else {
+            runTimerAction();
+        }
+        setChecked(event.target.checked);
+    }
 
-			// return () => clearInterval(intervalRef.current); // クリーンアップ
-		}
-	}, [wordCount]);
+    const {
+        transcript,
+        resetTranscript,
+        browserSupportsSpeechRecognition,
+    } = useSpeechRecognition({commands});
 
-	const handleChange = (event) => {
-		console.log(event.target.checked);
-		if (!event.target.checked) {
-			if (intervalRef.current !== null) {
-				clearInterval(intervalRef.current);
-				intervalRef.current = null;
-			}
-		} else {
-			setTimer();
-		}
-		setChecked(event.target.checked);
-	}
+    if (!browserSupportsSpeechRecognition) {
+        return <span>ブラウザが音声認識未対応です</span>;
+    }
 
-	const {
-		transcript,
-		resetTranscript,
-		browserSupportsSpeechRecognition,
-	} = useSpeechRecognition({ commands });
+    function onStart() {
+        SpeechRecognition.startListening({
+            continuous: true,
+            language: 'ja-JP'
+        });
+    }
 
-	if (!browserSupportsSpeechRecognition) {
-		return <span>ブラウザが音声認識未対応です</span>;
-	}
+    function onRestart() {
+        onEnd();
+        onStart();
+    }
 
-	function onRestart() {
-		onEnd();
-		onStart();
-	}
+    function onEnd() {
+        SpeechRecognition.stopListening();
+    }
 
-	function onStart() {
-		SpeechRecognition.startListening({
-			continuous: true,
-			language: 'ja-JP'
-		});
-	}
+    // 読み込まれた時点で起動する。
+    onStart();
 
-	// 使ってないが一応残す
-	function onEnd() {
-		SpeechRecognition.stopListening();
-	}
-
-	// 読み込まれた時点で起動する。
-	onStart();
-
-	return (
-		<Box width="100%">
-			<p>{"特定のワードの後:" + message}</p>
-			<p>{"現在の語数:" + wordCount}</p>  {/* ワードカウントの表示 */}
-			<p>{"経過時間: " + elapsedTime + "/60 秒"}</p>  {/* 経過時間の表示 */}
-			<p>{transcript}</p>
-			<Button variant="contained" color="tertiary" onClick={() => onRestart()}>
-				Reset
-			</Button>
-			<Grid container >
-				<Switch
-					checked={checked}
-					onChange={handleChange}
-					inputProps={{ 'aria-label': 'controlled' }}
-				/>
-				<Typography component="h4" variant="div" sx={{ ml: 2, mt: 1 }}>
-					自動音量調整
-				</Typography>
-			</Grid>
-		</Box>
-	)
+    return (
+        <Box width="100%">
+            <p>{"特定のワードの後:" + message}</p>
+            <p>{"現在の語数:" + wordCount}</p>  {/* ワードカウントの表示 */}
+            <p>{"経過時間: " + elapsedTime + "/60 秒"}</p>  {/* 経過時間の表示 */}
+            <p>{transcript}</p>
+            <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
+                Reset
+            </Button>
+            <Grid container>
+                <Switch
+                    checked={checked}
+                    onChange={handleToggle}
+                    inputProps={{'aria-label': 'controlled'}}
+                />
+                <Typography component="h4" variant="div" sx={{ml: 2, mt: 1}}>
+                    自動音量調整
+                </Typography>
+            </Grid>
+        </Box>
+    )
 }

@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { PageTitle } from '../components/PageTitle';
-import { customTextField } from '../styles/CustomTextField';
-import { useCookies } from 'react-cookie';
+import {useState} from 'react';
+import {Box, Button, Grid, TextField, Typography} from '@mui/material';
+import {PageTitle} from '../components/PageTitle';
+import {customTextField} from '../styles/CustomTextField';
+import {useCookies} from 'react-cookie';
 import axios from 'axios';
-import { backendUrl } from '../config/backendUrl';
-import { QRCodeCanvas } from 'qrcode.react';
-import { withAuthHeader } from '../config/Headers';
+import {backendUrl} from '../config/backendUrl';
+import {QRCodeCanvas} from 'qrcode.react';
+import {withAuthHeader} from '../config/Headers';
 
 export const Setting = () => {
     const [cookies] = useCookies(['access_token']);
@@ -22,9 +22,9 @@ export const Setting = () => {
         const headers = withAuthHeader(cookies.access_token);
         try {
             await axios.post(`${backendUrl}/spotify/register`, json, headers)
-            .then(res => {
-                console.log(res.data);
-            });
+                .then(res => {
+                    console.log(res.data);
+                });
         } catch (error) {
             console.log(error);
         }
@@ -43,11 +43,11 @@ export const Setting = () => {
         }
         */
         const jsonDataString = JSON.stringify(jsonData);
-        var baseUrl = window.location.origin + '/qrAuth';
-        
+        let baseUrl = window.location.origin + '/qrAuth';
+
         // テスト用
         baseUrl = 'https://deploy-preview-22--loquacious-marigold-435f89.netlify.app';
-        //return baseUrl + '/qrAuth?data=' + encodeURIComponent(jsonDataString);
+        // return baseUrl + '/qrAuth?data=' + encodeURIComponent(jsonDataString);
         console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
         setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
@@ -61,9 +61,9 @@ export const Setting = () => {
                 width: '100%', // これすると横がフルで表示される
             }}
         >
-            <PageTitle title={'Settings'} />
+            <PageTitle title={'Settings'}/>
 
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                 <Typography component="h3" variant="div">
                     Spotify Client ID
                 </Typography>
@@ -87,14 +87,14 @@ export const Setting = () => {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
+                    sx={{mt: 3, mb: 2}}
                 >
                     登録
                 </Button>
             </Box>
 
-            <PageTitle title={'ゲストはこちら'} />
-            <Button sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
+            <PageTitle title={'ゲストはこちら'}/>
+            <Button sx={{mt: 2, mb: 2}} onClick={createQrCode}>QRコード生成</Button>
             {
                 qrCode !== '' &&
                 <Grid container justifyContent="center">
