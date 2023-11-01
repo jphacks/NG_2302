@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import axios from 'axios';
-import { useCookies } from 'react-cookie';
-import { Box, Typography, TextField, Button, Link } from '@mui/material';
-import { customTextField } from '../styles/CustomTextField';
-import { useNavigate } from 'react-router-dom';
-import { backendUrl } from '../config/backendUrl';
-import { urlEncodedHeader } from '../config/Headers';
+import {useCookies} from 'react-cookie';
+import {Box, Typography, TextField, Button, Link} from '@mui/material';
+import {customTextField} from '../styles/CustomTextField';
+import {useNavigate} from 'react-router-dom';
+import {backendUrl} from '../config/backendUrl';
+import {urlEncodedHeader} from '../config/Headers';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
@@ -68,7 +68,7 @@ export const SignUp = () => {
             <Typography component="h1" variant="h5">
                 アカウントを作成
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                 <TextField
                     margin="normal"
                     required
@@ -95,7 +95,7 @@ export const SignUp = () => {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
+                    sx={{mt: 3, mb: 2}}
                 >
                     サインアップ
                 </Button>
