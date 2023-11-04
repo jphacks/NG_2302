@@ -12,6 +12,7 @@ import {backendUrl} from './config/backendUrl';
 import {Setting} from './routes/Setting';
 import {QrAuth} from './routes/QrAuth';
 import {withAuthHeader} from './config/Headers';
+import { ModeSelect } from './routes/ModeSelect';
 
 const App = () => {
     const navigate = useNavigate();
@@ -99,7 +100,8 @@ const App = () => {
 
                 { /* React Router */}
                 <Routes>
-                    <Route path="/" element={<SignIn/>}/>
+                    <Route path="/" element={<ModeSelect/>}/>
+                    <Route path="/signIn" element={<SignIn/>}/>
                     <Route path="/signUp" element={<SignUp/>}/>
                     <Route path="/home" element={<Home musicInfo={musicInfo}/>}/>
                     <Route path="/setting" element={<Setting/>}/>

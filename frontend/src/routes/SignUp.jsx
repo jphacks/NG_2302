@@ -100,7 +100,7 @@ export const SignUp = () => {
                     サインアップ
                 </Button>
                 {message && <p>{message}</p>}
-                <Link href="/" variant="body2">
+                <Link href="/signIn" variant="body2">
                     {"すでにアカウントを持っていますか？ サインイン"}
                 </Link>
             </Box>
