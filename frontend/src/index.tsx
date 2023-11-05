@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { CookiesProvider } from 'react-cookie';
 import App from './App';
-import { ModeProvider } from './contexts/ModeContexts';
 
 export const theme = createTheme({
     palette: {
@@ -49,9 +48,7 @@ root.render(
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <CookiesProvider>
-                    <ModeProvider>
-                        < App />
-                    </ModeProvider>
+                    <App />
                 </CookiesProvider>
             </ThemeProvider>
         </BrowserRouter>

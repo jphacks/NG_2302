@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
@@ -14,8 +14,10 @@ import { QrAuth } from './routes/QrAuth';
 import { withAuthHeader } from './config/Headers';
 import { ModeSelect } from './routes/ModeSelect';
 
-const App = () => {
-    const navigate = useNavigate();
+export const ModeContext = createContext();
+
+export default function App() {
+    const [mode, setMode] = useState('');
     const [cookies] = useCookies(['access_token']);
     const [musicInfo, setMusicInfo] = useState({});
     const [elapsedTime, setElapsedTime] = React.useState(0); //経過時間を格納するためのState
@@ -36,6 +38,7 @@ const App = () => {
         }
     }
 
+    // 初期化時に実行
     useEffect(() => {
         const timer = setInterval(() => {
             // 10秒間隔で更新する
@@ -56,11 +59,14 @@ const App = () => {
         return () => clearInterval(timer);
     }, []);
 
+    // トークンが登録されたら、曲のリストを取得する
     useEffect(() => {
         if (cookies.access_token !== undefined) {
             getMusicInfo();
         }
     }, [cookies.access_token]);
+
+
 
     return (
         <Container component="main" maxWidth="xs">
@@ -72,21 +78,18 @@ const App = () => {
                 }}
             >
                 <Toolbar>
-                    <IconButton color="common.white" onClick={() => {
-                        navigate("/home")
-                    }}>
+                    <IconButton color="common.white" href='/home' >
                         <HomeIcon />
                     </IconButton>
                     <Typography variant="h6" color="inherit" sx={{ mr: "7em" }}>
                         ふっきん牛乳
                     </Typography>
-                    <IconButton color="common.white" onClick={() => {
-                        navigate("/setting")
-                    }}>
+                    <IconButton color="common.white" href='/setting'>
                         <SettingsIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>
+
             <Box
                 sx={{
                     marginTop: 4,
@@ -98,19 +101,19 @@ const App = () => {
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
                 <img src={window.location.origin + "/images/HukkinMilk.png"} className="App-logo" alt="logo" />
 
-                { /* React Router */}
-                <Routes>
-                    <Route path="/" element={<ModeSelect />} />
-                    <Route path="/signIn" element={<SignIn />} />
-                    <Route path="/signUp" element={<SignUp />} />
-                    <Route path="/home" element={<Home musicInfo={musicInfo} />} />
-                    <Route path="/setting" element={<Setting />} />
-                    <Route path="/qrAuth" element={<QrAuth />} />
-                </Routes>
+                <ModeContext.Provider value={{mode, setMode}}>
+                    { /* React Router */}
+                    <Routes>
+                        <Route path="/" element={<ModeSelect />} />
+                        <Route path="/signIn" element={<SignIn />} />
+                        <Route path="/signUp" element={<SignUp />} />
+                        <Route path="/home" element={<Home musicInfo={musicInfo} />} />
+                        <Route path="/setting" element={<Setting />} />
+                        <Route path="/qrAuth" element={<QrAuth />} />
+                    </Routes>
+                </ModeContext.Provider>
             </Box>
             <Box sx={{ height: 32 }} />
         </Container>
     );
 };
-
-export default App;

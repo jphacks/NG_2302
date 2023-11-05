@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
-import { useContext } from 'react';
 import { ModeTypes } from '../config/ModeTypes';
-import { ModeContext } from '../contexts/ModeContexts';
+import { useContext } from 'react';
+import { ModeContext } from '../App';
 
 export const ModeSelect = () => {
     const navigate = useNavigate();
-    const { mode, setMode } = useContext(ModeContext);
+    const {mode, setMode} = useContext(ModeContext);
 
     function handleSubmit(mode) {
-        console.log(mode);
         setMode(mode);
+        console.log(mode);
         navigate('/signIn');
     }
 
