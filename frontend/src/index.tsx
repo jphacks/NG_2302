@@ -1,8 +1,8 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
-import {BrowserRouter} from 'react-router-dom';
-import {ThemeProvider, createTheme, CssBaseline} from '@mui/material';
-import {CookiesProvider} from 'react-cookie';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { CookiesProvider } from 'react-cookie';
 import App from './App';
 
 export const theme = createTheme({
@@ -46,9 +46,9 @@ root.render(
     <React.StrictMode>
         <BrowserRouter>
             <ThemeProvider theme={theme}>
-                <CssBaseline/>
+                <CssBaseline />
                 <CookiesProvider>
-                    < App/>
+                    <App />
                 </CookiesProvider>
             </ThemeProvider>
         </BrowserRouter>

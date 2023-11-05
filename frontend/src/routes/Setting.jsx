@@ -1,51 +1,24 @@
-import {useState} from 'react';
-import {Box, Button, Grid, TextField, Typography} from '@mui/material';
-import {PageTitle} from '../components/PageTitle';
-import {customTextField} from '../styles/CustomTextField';
-import {useCookies} from 'react-cookie';
-import axios from 'axios';
-import {backendUrl} from '../config/backendUrl';
-import {QRCodeCanvas} from 'qrcode.react';
-import {withAuthHeader} from '../config/Headers';
+import { useState } from 'react';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import { PageTitle } from '../components/PageTitle';
+import { useCookies } from 'react-cookie';
+import { QRCodeCanvas } from 'qrcode.react';
 
 export const Setting = () => {
     const [cookies] = useCookies(['access_token']);
     const [qrCode, setQrCode] = useState('');
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const json = {
-            spotify_client_id: data.get('client_id'),
-            spotify_client_secret: data.get('client_secret'),
-        };
-        const headers = withAuthHeader(cookies.access_token);
-        try {
-            await axios.post(`${backendUrl}/spotify/register`, json, headers)
-                .then(res => {
-                    console.log(res.data);
-                });
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     const createQrCode = () => {
         console.log('createQrCode');
-        const jsonData = {
-            id: 'test',
-            password: 'test',
-        }
-        /*
         const jsonData = {
             id: cookies.id,
             password: cookies.password,
         }
-        */
+
         const jsonDataString = JSON.stringify(jsonData);
         let baseUrl = window.location.origin + '/qrAuth';
 
-        // テスト用
+        // テスト用 これデプロイするたびにバージョン上がってくから何とかしないと
         baseUrl = 'https://deploy-preview-22--loquacious-marigold-435f89.netlify.app';
         // return baseUrl + '/qrAuth?data=' + encodeURIComponent(jsonDataString);
         console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
@@ -61,40 +34,27 @@ export const Setting = () => {
                 width: '100%', // これすると横がフルで表示される
             }}
         >
-            <PageTitle title={'Settings'}/>
+            <PageTitle title={'アカウント情報'} />
 
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-                <Typography component="h3" variant="div">
-                    Spotify Client ID
+            <Box sx={{ mt: 1 }} >
+                <Typography component="h4">
+                    ID
                 </Typography>
-                <TextField
-                    id="client_id"
-                    name='client_id'
-                    fullWidth
-                    sx={customTextField}
-                />
-
-                <Typography component="h3" variant="div">
-                    Spotify Client Secret
+                <Typography component="h2" variant="div">
+                    {cookies.id}
                 </Typography>
-                <TextField
-                    id='client_secret'
-                    name='client_secret'
-                    fullWidth
-                    sx={customTextField}
-                />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{mt: 3, mb: 2}}
-                >
-                    登録
-                </Button>
+            </Box>
+            <Box sx={{ mt: 1, mb: 3 }} >
+                <Typography component="h4">
+                    パスワード
+                </Typography>
+                <Typography component="h2" variant="div">
+                    {cookies.password}
+                </Typography>
             </Box>
 
-            <PageTitle title={'ゲストはこちら'}/>
-            <Button sx={{mt: 2, mb: 2}} onClick={createQrCode}>QRコード生成</Button>
+            <PageTitle title={'ユーザーはこちら'} />
+            <Button sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
             {
                 qrCode !== '' &&
                 <Grid container justifyContent="center">
