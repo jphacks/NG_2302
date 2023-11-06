@@ -8,6 +8,7 @@ import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
 import { CustomDivider } from '../components/CustomDivider';
+import { VolumeMeter } from '../components/VolumeMeter';
 import { Dictaphone } from '../components/Dictaphone';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
@@ -125,7 +126,8 @@ export const Home = ({ musicInfo }) => {
 
             { /* 音声認識はバックグラウンドで動作 */}
             <Dictaphone />
-
+            { /* 音量表示これも本来バックグラウンドで動作 */}
+            <VolumeMeter />
         </Box>
     );
 }
