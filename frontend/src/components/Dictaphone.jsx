@@ -148,7 +148,7 @@ export const Dictaphone = () => {
             <Grid container>
                 <Switch
                     checked={checked}
-                    onChange={handleToggle}
+                    onChange={() => handleToggle()}
                     inputProps={{'aria-label': 'controlled'}}
                 />
                 <Typography component="h4" variant="div" sx={{ml: 2, mt: 1}}>
