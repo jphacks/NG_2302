@@ -8,20 +8,6 @@ export const VolumeMeter = () => {
     const [checked, setChecked] = useState(false);
     const [volume, setVolume] = useState(0);
 
-    const onProcess = (peak) => {
-        /*
-        const data = event.inputBuffer.getChannelData(0);
-        const peak = data.reduce((max, sample) => {
-            const cur = Math.abs(sample);
-            return max > cur ? max : cur;
-        });
-        */
-        // 75 = -75dB (基本的にデジタルオーディオの世界ではデシベルの値はマイナスになります)
-        const percent = Math.round(100 / 75 * 10 * Math.log10(peak) + 100);
-        console.log(percent);
-        setVolume(percent);
-    }
-
     const onStart = async () => {
         if (inProgress) return;
         setInProgress(true);
@@ -31,9 +17,8 @@ export const VolumeMeter = () => {
         const micNode = audioContext.createMediaStreamSource(mediaStream);
         const volumeMeterNode = new AudioWorkletNode(audioContext, 'volume-meter');
         volumeMeterNode.port.onmessage = (event) => {
-            //console.log(event.data);
-            onProcess(event.data)
-            //setVolume(event.data);
+            console.log(event.data);
+            setVolume(Math.round(event.data * 100000)/100);
         }
         micNode.connect(volumeMeterNode).connect(audioContext.destination);
     }
@@ -56,7 +41,7 @@ export const VolumeMeter = () => {
                 onChange={() => handleToggle()}
                 inputProps={{ 'aria-label': 'controlled' }}
             />
-            <Typography>
+            <Typography sx={{ml: 2, mt: 1}}>
                 音量 : {volume}%
             </Typography>
         </Grid>

@@ -1,6 +1,6 @@
 /* global currentTime */
-const SMOOTHING_FACTOR = 0.8;
-const FRAME_PER_SECOND = 60;
+const SMOOTHING_FACTOR = 0.9;
+const FRAME_PER_SECOND = 30;
 const FRAME_INTERVAL = 1 / FRAME_PER_SECOND;
 
 /**
@@ -14,6 +14,7 @@ class VolumeMeter extends AudioWorkletProcessor {
         super();
         this._lastUpdate = currentTime;
         this._volume = 0;
+        this._count;
     }
 
     calculateRMS(inputChannelData) {
@@ -32,10 +33,16 @@ class VolumeMeter extends AudioWorkletProcessor {
         // This example only handles mono channel.
         const inputChannelData = inputs[0][0];
 
-        // Post a message to the node every 16ms.
+        // Post a message to the node every 32ms.
         if (currentTime - this._lastUpdate > FRAME_INTERVAL) {
             this.calculateRMS(inputChannelData);
-            this.port.postMessage(this._volume);
+            // 画面描画のため
+            if (this._count < FRAME_PER_SECOND/10) {
+                this._count++;
+            } else {
+                this._count = 0;
+                this.port.postMessage(this._volume);
+            }
             this._lastUpdate = currentTime;
         }
 
