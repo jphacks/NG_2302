@@ -17,6 +17,7 @@ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 npm install react-speech-recognition
 npm install axios
 npm install react-cookie
+npm install qrcode.react
 ```
 
 ### 開発サーバー起動
