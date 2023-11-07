@@ -17,8 +17,8 @@ import { ModeContext } from '../App';
 
 
 export const Home = ({ musicInfo }) => {
-    const [open, setOpen] = useState(true);
-    const {mode, setMode} = useContext(ModeContext);
+    const [open, setOpen] = useState(false);
+    const {mode} = useContext(ModeContext);
     const [cookies] = useCookies(['access_token']);
 
     const handleSubmit = async (event) => {
