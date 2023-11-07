@@ -5,13 +5,22 @@ from sqlalchemy.orm import Session
 from db import get_db
 from dependencies import get_account_id
 from core.daos.spotify import SpotifyApiIdDao
-from core.dtos.music import EnqueueReturnValue, GetQueueInfoReturnValue, AdjustVolumeReturnValue
+from core.dtos.music import (
+    EnqueueReturnValue,
+    SearchMusicByTitleReturnValue,
+    GetQueueInfoReturnValue,
+    AdjustVolumeReturnValue
+)
 from core.services.music import MusicService
 
 router = APIRouter()
 
 
 class EnqueueRequest(BaseModel):
+    music_title: str = Field(..., title="楽曲のタイトル")
+
+
+class SearchMusicByTitleRequest(BaseModel):
     music_title: str = Field(..., title="楽曲のタイトル")
 
 
@@ -34,6 +43,25 @@ def enqueue(
         account_id=account_id
     )
     return_value = service.enqueue(music_title)
+
+    return return_value
+
+
+@router.post("/search_music_by_title", name="楽曲のタイトルで検索", response_model=SearchMusicByTitleReturnValue)
+def search_music_by_title(
+    request: SearchMusicByTitleRequest,
+    db: Session = Depends(get_db),
+    account_id: int = Depends(get_account_id)
+) -> SearchMusicByTitleReturnValue:
+    # リクエスト情報取得
+    music_title = request.music_title
+
+    service = MusicService(
+        db=db,
+        spotify_api_id_dao=SpotifyApiIdDao(),
+        account_id=account_id
+    )
+    return_value = service.search_music_by_title(music_title)
 
     return return_value
 
