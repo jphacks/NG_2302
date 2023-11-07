@@ -1,43 +1,64 @@
 import { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Grid, Typography, Switch } from "@mui/material";
+
+const audioContext = new AudioContext();
 
 export const VolumeMeter = () => {
+    const [inProgress, setInProgress] = useState(false);
+    const [checked, setChecked] = useState(false);
     const [volume, setVolume] = useState(0);
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
 
-    const onProcess = (event) => {
+    const onProcess = (peak) => {
+        /*
         const data = event.inputBuffer.getChannelData(0);
         const peak = data.reduce((max, sample) => {
             const cur = Math.abs(sample);
             return max > cur ? max : cur;
         });
+        */
         // 75 = -75dB (基本的にデジタルオーディオの世界ではデシベルの値はマイナスになります)
-        setVolume(Math.round(100 / 75* 10 * Math.log10(peak) + 100));
+        const percent = Math.round(100 / 75 * 10 * Math.log10(peak) + 100);
+        console.log(percent);
+        setVolume(percent);
     }
 
     const onStart = async () => {
-        const media = await navigator.mediaDevices
-            .getUserMedia({ audio: true })
-            .catch(console.error);
-        const ctx = new AudioContext();
-        console.log('Sampling Rate:', ctx.sampleRate);
+        if (inProgress) return;
+        setInProgress(true);
 
-        const processor = ctx.createScriptProcessor(4096, 1, 1);
-        processor.onaudioprocess = onProcess;
-        processor.connect(ctx.destination);
-
-        const source = ctx.createMediaStreamSource(media);
-        source.connect(processor);
+        await audioContext.audioWorklet.addModule('VolumeProcessor.js');
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const micNode = audioContext.createMediaStreamSource(mediaStream);
+        const volumeMeterNode = new AudioWorkletNode(audioContext, 'volume-meter');
+        volumeMeterNode.port.onmessage = (event) => {
+            //console.log(event.data);
+            onProcess(event.data)
+            //setVolume(event.data);
+        }
+        micNode.connect(volumeMeterNode).connect(audioContext.destination);
     }
 
-    // 読み込まれた時点で起動する。
-    onStart();
+    const handleToggle = () => {
+        if (checked) {
+            audioContext.suspend();
+            setChecked(false);
+        } else {
+            onStart();
+            audioContext.resume();
+            setChecked(true);
+        }
+    }
 
     return (
-        <Box>
+        <Grid container>
+            <Switch
+                checked={checked}
+                onChange={() => handleToggle()}
+                inputProps={{ 'aria-label': 'controlled' }}
+            />
             <Typography>
-                音量 : { volume }%
+                音量 : {volume}%
             </Typography>
-        </Box>
+        </Grid>
     );
 }
