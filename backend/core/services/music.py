@@ -7,7 +7,12 @@ from sqlalchemy.orm import Session
 
 from core.constants import SpotifyOAuthConstant, ErrorCode
 from core.daos.spotify import SpotifyApiIdDao
-from core.dtos.music import EnqueueReturnValue, GetQueueInfoReturnValue, AdjustVolumeReturnValue
+from core.dtos.music import (
+    EnqueueReturnValue,
+    SearchMusicByTitleReturnValue,
+    GetQueueInfoReturnValue,
+    AdjustVolumeReturnValue
+)
 
 
 @dataclass(frozen=True)
@@ -58,6 +63,57 @@ class MusicService:
             print(f"Could not find music '{music_title}'")
             return EnqueueReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
         return EnqueueReturnValue(error_codes=())
+
+    def search_music_by_title(
+        self,
+        music_title: str
+    ) -> SearchMusicByTitleReturnValue:
+        scope = []
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return SearchMusicByTitleReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+
+        # Spotifyで曲を検索
+        result = sp.search(q=music_title, limit=5)
+        items = result['tracks']['items']
+
+        if len(items) < 5:
+            return SearchMusicByTitleReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
+
+        tracks = []
+
+        for i in range(5):
+            track_info = {
+                "track_id": items[i]['id'],
+                "title": items[i]['name'],
+                "artist_name": items[i]['album']['artists'][0]['name'],
+                "image_url": items[i]['album']['images'][0]['url']
+            }
+            tracks.append(track_info)
+
+        return SearchMusicByTitleReturnValue(
+            error_codes=(),
+            first_music_track_id=tracks[0]['track_id'],
+            first_music_title=tracks[0]['title'],
+            first_music_artist_name=tracks[0]['artist_name'],
+            first_music_image_url=tracks[0]['image_url'],
+            second_music_track_id=tracks[1]['track_id'],
+            second_music_title=tracks[1]['title'],
+            second_music_artist_name=tracks[1]['artist_name'],
+            second_music_image_url=tracks[1]['image_url'],
+            third_music_track_id=tracks[2]['track_id'],
+            third_music_title=tracks[2]['title'],
+            third_music_artist_name=tracks[2]['artist_name'],
+            third_music_image_url=tracks[2]['image_url'],
+            forth_music_track_id=tracks[3]['track_id'],
+            forth_music_title=tracks[3]['title'],
+            forth_music_artist_name=tracks[3]['artist_name'],
+            forth_music_image_url=tracks[3]['image_url'],
+            fifth_music_track_id=tracks[4]['track_id'],
+            fifth_music_title=tracks[4]['title'],
+            fifth_music_artist_name=tracks[4]['artist_name'],
+            fifth_music_image_url=tracks[4]['image_url']
+        )
 
     def get_queue_info(self) -> GetQueueInfoReturnValue:
         scope = ["user-read-playback-state", "user-read-currently-playing"]
