@@ -7,6 +7,7 @@ from dependencies import get_account_id
 from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (
     EnqueueReturnValue,
+    EnqueueByTrackIdReturnValue,
     SearchMusicByTitleReturnValue,
     GetQueueInfoReturnValue,
     AdjustVolumeReturnValue
@@ -18,6 +19,10 @@ router = APIRouter()
 
 class EnqueueRequest(BaseModel):
     music_title: str = Field(..., title="楽曲のタイトル")
+
+
+class EnqueueByTrackIdRequest(BaseModel):
+    track_id: str = Field(..., title="楽曲のトラックID")
 
 
 class SearchMusicByTitleRequest(BaseModel):
@@ -43,6 +48,25 @@ def enqueue(
         account_id=account_id
     )
     return_value = service.enqueue(music_title)
+
+    return return_value
+
+
+@router.post("/enqueue_by_track_id", name="TrackIDからキューに楽曲を追加", response_model=EnqueueByTrackIdReturnValue)
+def enqueue_by_track_id(
+    request: EnqueueByTrackIdRequest,
+    db: Session = Depends(get_db),
+    account_id: int = Depends(get_account_id)
+) -> EnqueueByTrackIdReturnValue:
+    # リクエスト情報取得
+    track_id = request.track_id
+
+    service = MusicService(
+        db=db,
+        spotify_api_id_dao=SpotifyApiIdDao(),
+        account_id=account_id
+    )
+    return_value = service.enqueue_by_track_id(track_id)
 
     return return_value
 
