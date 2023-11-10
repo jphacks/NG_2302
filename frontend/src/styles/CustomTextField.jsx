@@ -1,4 +1,6 @@
 export const customTextField = {
+    mt: 1,
+    mb: 1,
     '& .MuiInputBase-input': {
         color: '#b8c1ec',    // 入力文字の色
     },

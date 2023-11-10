@@ -11,11 +11,11 @@ import { Dictaphone } from '../components/Dictaphone';
 import { ModeTypes } from '../config/ModeTypes';
 import { ModeContext } from '../App';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
+import { TitleSearchTextField } from '../components/TitleSearchTextField';
 
-
-export const Home = ({ musicInfo }) => {
+export const Home = ({ musicInfo, setTrackList }) => {
     const [open, setOpen] = useState(false);
-    const {mode} = useContext(ModeContext);
+    const { mode } = useContext(ModeContext);
     const [cookies] = useCookies(['access_token']);
 
     useEffect(() => {
@@ -41,6 +41,7 @@ export const Home = ({ musicInfo }) => {
             <PageTitle title={'Reserve Songs'} />
 
             <EnqueueTextField />
+            <TitleSearchTextField setTrackList={setTrackList} />
 
             <PageTitle title={'Song List'} />
 

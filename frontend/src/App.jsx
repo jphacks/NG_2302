@@ -13,6 +13,7 @@ import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { withAuthHeader } from './config/Headers';
 import { ModeSelect } from './routes/ModeSelect';
+import { SearchMusic } from './routes/SearchMusic';
 
 export const ModeContext = createContext();
 
@@ -20,6 +21,7 @@ export default function App() {
     const [mode, setMode] = useState('');
     const [cookies] = useCookies(['access_token']);
     const [musicInfo, setMusicInfo] = useState({});
+    const [trackList, setTrackList] = useState([]);
     const [elapsedTime, setElapsedTime] = React.useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
     let duration = -1;
@@ -107,9 +109,10 @@ export default function App() {
                         <Route path="/" element={<ModeSelect />} />
                         <Route path="/signIn" element={<SignIn />} />
                         <Route path="/signUp" element={<SignUp />} />
-                        <Route path="/home" element={<Home musicInfo={musicInfo} />} />
+                        <Route path="/home" element={<Home musicInfo={musicInfo} setTrackList={setTrackList} />} />
                         <Route path="/setting" element={<Setting />} />
                         <Route path="/qrAuth" element={<QrAuth />} />
+                        <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
                     </Routes>
                 </ModeContext.Provider>
             </Box>
