@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
@@ -16,6 +16,22 @@ import { ModeSelect } from './routes/ModeSelect';
 import { SearchMusic } from './routes/SearchMusic';
 
 export const ModeContext = createContext();
+
+const Layout = ({ children }) => {
+    return (
+        <Box
+            sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                alignItems: 'center',
+            }}
+        >
+            <Outlet />
+        </Box>
+    );
+}
 
 export default function App() {
     const [mode, setMode] = useState('');
@@ -103,16 +119,18 @@ export default function App() {
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
                 <img src={window.location.origin + "/images/HukkinMilk.png"} className="App-logo" alt="logo" />
 
-                <ModeContext.Provider value={{mode, setMode}}>
+                <ModeContext.Provider value={{ mode, setMode }}>
                     { /* React Router */}
                     <Routes>
-                        <Route path="/" element={<ModeSelect />} />
-                        <Route path="/signIn" element={<SignIn />} />
-                        <Route path="/signUp" element={<SignUp />} />
-                        <Route path="/home" element={<Home musicInfo={musicInfo} setTrackList={setTrackList} />} />
-                        <Route path="/setting" element={<Setting />} />
-                        <Route path="/qrAuth" element={<QrAuth />} />
-                        <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                        <Route element={<Layout />}>
+                            <Route path="/" element={<ModeSelect />} />
+                            <Route path="/signIn" element={<SignIn />} />
+                            <Route path="/signUp" element={<SignUp />} />
+                            <Route path="/home" element={<Home musicInfo={musicInfo} setTrackList={setTrackList} />} />
+                            <Route path="/setting" element={<Setting />} />
+                            <Route path="/qrAuth" element={<QrAuth />} />
+                            <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                        </Route>
                     </Routes>
                 </ModeContext.Provider>
             </Box>

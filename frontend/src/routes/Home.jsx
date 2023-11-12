@@ -27,15 +27,7 @@ export const Home = ({ musicInfo, setTrackList }) => {
     }, []);
 
     return (
-        <Box
-            sx={{
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                alignItems: 'center',
-            }}
-        >
+        <>
             <RegisterModalDialog open={open} setOpen={setOpen} />
 
             <PageTitle title={'Reserve Songs'} />
@@ -59,6 +51,6 @@ export const Home = ({ musicInfo, setTrackList }) => {
             <Dictaphone />
             { /* 音量表示これも本来バックグラウンドで動作 */}
             <VolumeMeter />
-        </Box>
+        </>
     );
 }

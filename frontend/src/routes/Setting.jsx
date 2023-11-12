@@ -28,14 +28,7 @@ export const Setting = () => {
     }
 
     return (
-        <Box
-            sx={{
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%', // これすると横がフルで表示される
-            }}
-        >
+        <>
             <RegisterModalDialog open={open} setOpen={setOpen} />
 
             <PageTitle title={'アカウント情報'} />
@@ -79,6 +72,6 @@ export const Setting = () => {
                     />
                 </Grid>
             }
-        </Box>
+        </>
     );
 }

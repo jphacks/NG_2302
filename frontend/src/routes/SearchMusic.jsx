@@ -63,15 +63,7 @@ export const SearchMusic = ({ trackList }) => {
     }
 
     return (
-        <Box
-            sx={{
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                alignItems: 'center',
-            }}
-        >
+        <>
             {/* 曲追加確認のダイアログ */}
             <Modal
                 open={open}
@@ -117,6 +109,6 @@ export const SearchMusic = ({ trackList }) => {
 
             {/* 検索結果をリスト表示 */}
             {trackList.map(track => trackCard(track))}
-        </Box>
+        </>
     )
 }
