@@ -14,8 +14,9 @@ import { ModeTypes } from '../config/ModeTypes';
 import { ModeContext } from '../App';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
+import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 
-export const Home = ({ setTrackList }) => {
+export const Home = ({ setTrackList, setArtistList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
     const { mode } = useContext(ModeContext);
@@ -80,6 +81,7 @@ export const Home = ({ setTrackList }) => {
 
             <EnqueueTextField />
             <TitleSearchTextField setTrackList={setTrackList} />
+            <ArtistSearchTextField setArtistList={setArtistList} />
 
             <PageTitle title={'Song List'} />
 

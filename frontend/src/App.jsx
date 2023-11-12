@@ -32,6 +32,7 @@ const Layout = () => {
 export default function App() {
     const [mode, setMode] = useState('');
     const [trackList, setTrackList] = useState([]);
+    const [artistList, setArtistList] = useState([]);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -73,10 +74,11 @@ export default function App() {
                             <Route path="/" element={<ModeSelect />} />
                             <Route path="/signIn" element={<SignIn />} />
                             <Route path="/signUp" element={<SignUp />} />
-                            <Route path="/home" element={<Home setTrackList={setTrackList} />} />
+                            <Route path="/home" element={<Home setTrackList={setTrackList} setArtistList={setArtistList} />} />
                             <Route path="/setting" element={<Setting />} />
                             <Route path="/qrAuth" element={<QrAuth />} />
                             <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                            <Route path="/search_artist" element={<SearchArtist artistList={artistList} />} />
                         </Route>
                     </Routes>
                 </ModeContext.Provider>
