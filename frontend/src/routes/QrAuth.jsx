@@ -44,10 +44,10 @@ export const QrAuth = () => {
     }, [])
 
     return (
-        <div>
+        <>
             <Typography>
                 {message}
             </Typography>
-        </div>
+        </>
     )
 }
