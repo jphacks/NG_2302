@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
-import {Box, Button} from '@mui/material';
-import {useCookies} from 'react-cookie';
-import {backendUrl} from '../config/backendUrl';
-import {withAuthHeader} from '../config/Headers';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { Box, Button, Switch } from '@mui/material';
+import { useCookies } from 'react-cookie';
+import { backendUrl } from '../config/backendUrl';
+import { withAuthHeader } from '../config/Headers';
+import { useElapsedTime } from '../hooks/ElapsedTimeHook';
 
 export const Dictaphone = () => {
-    const [message, setMessage] = React.useState('');
+    const [titleName, setTitleName] = useState('');
+    const [sentence, setSentence] = useState('');
     const [cookies] = useCookies(['access_token']);
-    const [checked, setChecked] = React.useState(false);
+    const { runTimerAction, timerReset } = useElapsedTime(60);
+    const [checked, setChecked] = useState(false);
+
+    useEffect(() => {
+        // 読み込まれた時点で起動する。
+        onStart();
+        runTimerAction(onAction);
+    }, []);
 
     const commands = [
         {
@@ -18,27 +27,52 @@ export const Dictaphone = () => {
             callback: async (value) => {
                 console.log(value);
                 try {
+                    const body = {
+                        music_title: value
+                    }
                     await axios.post(
                         `${backendUrl}/music/enqueue`,
-                        {music_title: value},
+                        body,
                         withAuthHeader(cookies.access_token),
                     ).then(res => {
                         console.log(res.data);
+                        // ここ変更しなければならない
                         window.location.reload();
                     });
                 } catch (error) {
                     console.error('Enqueue failed:', error);
                 }
-                setMessage(value);
+                setTitleName(value);
             },
         },
+        {
+            // すべての会話をログに残し、ネガポジに使用する
+            command: '*',
+            callback: (value) => {
+                setSentence(sentence + value);
+            },
+        }
     ];
+
+    const onAction = async () => {
+        try {
+            const body = {
+                sentence: sentence,
+            }
+            await axios.post(
+                `${backendUrl}/music/negapoji`,
+                body,
+                withAuthHeader(cookies.access_token),
+            )
+        } catch (error) {
+            console.error('Negapoji failed:', error);
+        }
+    }
 
     const {
         transcript,
-        resetTranscript,
         browserSupportsSpeechRecognition,
-    } = useSpeechRecognition({commands});
+    } = useSpeechRecognition({ commands });
 
     if (!browserSupportsSpeechRecognition) {
         return <span>ブラウザが音声認識未対応です</span>;
@@ -52,24 +86,40 @@ export const Dictaphone = () => {
     }
 
     function onRestart() {
-        onEnd();
+        onStop();
         onStart();
     }
 
-    function onEnd() {
+    function onStop() {
         SpeechRecognition.stopListening();
     }
 
-    // 読み込まれた時点で起動する。
-    onStart();
+    const handleToggle = () => {
+        if (checked) {
+            // Timerリセット
+            timerReset();
+            onStop();
+        } else {
+            // Timer開始
+            runTimerAction(onAction);
+            onStart();
+        }
+        setChecked(!checked);
+    }
 
     return (
         <Box width="100%">
-            <p>{"特定のワードの後:" + message}</p>
+            <p>{`特定のワードの後:${titleName}`}</p>
             <p>{transcript}</p>
             <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
                 Reset
             </Button>
+            <p>ネガポジ判定機能の動作</p>
+            <Switch
+                checked={checked}
+                onChange={() => handleToggle()}
+                inputProps={{ 'aria-label': 'controlled' }}
+            />
         </Box>
     )
 }

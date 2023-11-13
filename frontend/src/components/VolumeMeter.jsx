@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { Typography, Switch, Box } from "@mui/material";
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
+import { useElapsedTime } from "../hooks/ElapsedTimeHook";
 
 const audioContext = new AudioContext();
 var count = 0;
@@ -15,8 +16,7 @@ export const VolumeMeter = () => {
     const [volume, setVolume] = useState(0);
     const [cookies] = useCookies(['access_token']);
     //経過時間を格納するためのState
-    const [elapsedTime, setElapsedTime] = useState(0);
-    let intervalRef = useRef(null);
+    const {elapsedTime, runTimerAction, timerReset} = useElapsedTime(20);
 
     /* 音量調整HTTP.POST and Timer */
     const postAdjustVolume = async (volume) => {
@@ -37,27 +37,14 @@ export const VolumeMeter = () => {
         }
     }
 
-    function runTimerAction() {
-        if (intervalRef.current !== null) return;
-
-        intervalRef.current = setInterval(() => {
-            // 1分間隔で音量を調節
-            // wordCountに基づいて音量を決定する
-            setElapsedTime(prevTime => {
-                if (prevTime >= 20) {
-                    //60秒経過時のロジック
-                    postAdjustVolume(volSum / 200);
-
-                    return 0; //経過時間リセット
-                }
-                return prevTime + 1; // 1秒インクリメント
-            });
-        }, 1000); // 1秒ごと
+    const onAction = () => {
+        //60秒経過時のロジック
+        postAdjustVolume(volSum / 200);
     }
 
     useEffect(() => {
         if (checked) {
-            runTimerAction();
+            runTimerAction(onAction);
         }
     }, []);
 
@@ -83,13 +70,12 @@ export const VolumeMeter = () => {
     const handleToggle = () => {
         if (checked) {
             // Timerリセット
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
+            timerReset();
             // ボリュームメーターリセット
             audioContext.suspend();
         } else {
             // Timer開始
-            runTimerAction();
+            runTimerAction(onAction);
             // ボリュームメーター開始
             onStart();
             audioContext.resume();
