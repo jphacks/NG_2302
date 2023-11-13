@@ -1,16 +1,18 @@
-import {useState} from 'react';
-import {useCookies} from 'react-cookie';
-import {Box, Typography, TextField, Button, Link} from '@mui/material';
-import {customTextField} from '../styles/CustomTextField';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
+import { customTextField } from '../styles/CustomTextField';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
-import {backendUrl} from '../config/backendUrl';
-import {urlEncodedHeader} from '../config/Headers';
+import { useNavigate } from 'react-router-dom';
+import { backendUrl } from '../config/backendUrl';
+import { urlEncodedHeader } from '../config/Headers';
+import { useModeContext } from '../hooks/ModeHook';
 
 export const SignIn = () => {
     const [message, setMessage] = useState('');
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
     const navigate = useNavigate();
+    const {isDjMode} = useModeContext();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -43,7 +45,7 @@ export const SignIn = () => {
             <Typography component="h1" variant="h5">
                 サインイン
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
                     margin="normal"
                     required
@@ -70,14 +72,16 @@ export const SignIn = () => {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{mt: 3, mb: 2}}
+                    sx={{ mt: 3, mb: 2 }}
                 >
                     サインイン
                 </Button>
                 {message && <p>{message}</p>}
-                <Link href="/signUp" variant="body2">
-                    {"アカウントを持っていませんか？ サインアップ"}
-                </Link>
+                {isDjMode()
+                    ? <Link href="/signUp" variant="body2">
+                        {"アカウントを持っていませんか？ サインアップ"}
+                    </Link>
+                    : null}
             </Box>
         </>
     );

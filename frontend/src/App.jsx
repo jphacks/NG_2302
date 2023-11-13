@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -10,8 +10,7 @@ import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchMusic } from './routes/SearchMusic';
-
-export const ModeContext = createContext();
+import { ModeContext } from './hooks/ModeHook';
 
 const Layout = () => {
     return (

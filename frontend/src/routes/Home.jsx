@@ -11,14 +11,14 @@ import { CustomDivider } from '../components/CustomDivider';
 import { VolumeMeter } from '../components/VolumeMeter';
 import { Dictaphone } from '../components/Dictaphone';
 import { ModeTypes } from '../config/ModeTypes';
-import { ModeContext } from '../App';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
+import { useModeContext } from '../hooks/ModeHook';
 
 export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
-    const { mode } = useContext(ModeContext);
+    const { mode, isDjMode } = useModeContext();
     const [cookies] = useCookies(['access_token']);
     const [elapsedTime, setElapsedTime] = useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
@@ -93,10 +93,14 @@ export const Home = ({ setTrackList }) => {
             <SongWaitList musicInfo={musicInfo} />
             <CustomDivider />
 
-            { /* 音声認識はバックグラウンドで動作 */}
-            <Dictaphone />
-            { /* 音量表示これも本来バックグラウンドで動作 */}
-            <VolumeMeter />
+            {isDjMode()
+                ? <>
+                    { /* 音声認識はバックグラウンドで動作 */}
+                    <Dictaphone />
+                    { /* 音量表示これも本来バックグラウンドで動作 */}
+                    <VolumeMeter />
+                </>
+                : null}
         </>
     );
 }
