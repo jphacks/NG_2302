@@ -9,6 +9,7 @@ from core.constants import SpotifyOAuthConstant, ErrorCode
 from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (
     EnqueueReturnValue,
+    EnqueueByTrackIdReturnValue,
     SearchMusicByTitleReturnValue,
     GetQueueInfoReturnValue,
     AdjustVolumeReturnValue
@@ -63,6 +64,23 @@ class MusicService:
             print(f"Could not find music '{music_title}'")
             return EnqueueReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
         return EnqueueReturnValue(error_codes=())
+
+    def enqueue_by_track_id(
+        self,
+        track_id: str
+    ) -> EnqueueByTrackIdReturnValue:
+        scope = ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+
+        try:
+            sp.add_to_queue(f"spotify:track:{track_id}")
+        except SpotifyException as e:
+            if e.args[0] == 404 and e.args[1] == -1:
+                return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.NO_ACTIVE_DEVICE,))
+            raise e
+        return EnqueueByTrackIdReturnValue(error_codes=())
 
     def search_music_by_title(
         self,

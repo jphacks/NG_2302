@@ -57,14 +57,7 @@ export const SignUp = () => {
     };
 
     return (
-        <Box
-            sx={{
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-            }}
-        >
+        <>
             <Typography component="h1" variant="h5">
                 アカウントを作成
             </Typography>
@@ -104,6 +97,6 @@ export const SignUp = () => {
                     {"すでにアカウントを持っていますか？ サインイン"}
                 </Link>
             </Box>
-        </Box>
+        </>
     );
 }

@@ -5,6 +5,10 @@ class EnqueueReturnValue(BaseModel):
     error_codes: tuple[int, ...] = Field(..., title="エラーコード")
 
 
+class EnqueueByTrackIdReturnValue(BaseModel):
+    error_codes: tuple[int, ...] = Field(..., title="エラーコード")
+
+
 class SearchMusicByTitleReturnValue(BaseModel):
     error_codes: tuple[int, ...] = Field(..., title="エラーコード")
     first_music_track_id: str = Field(..., title="一番目の楽曲のトラックID")
