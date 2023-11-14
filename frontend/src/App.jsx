@@ -10,6 +10,7 @@ import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchMusic } from './routes/SearchMusic';
+import { VolumeMeter } from './components/VolumeMeter';
 
 export const ModeContext = createContext();
 
@@ -77,6 +78,7 @@ export default function App() {
                             <Route path="/setting" element={<Setting />} />
                             <Route path="/qrAuth" element={<QrAuth />} />
                             <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                            <Route path="/test" element={<VolumeMeter />} />
                         </Route>
                     </Routes>
                 </ModeContext.Provider>
