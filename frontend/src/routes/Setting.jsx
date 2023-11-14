@@ -20,11 +20,8 @@ export const Setting = () => {
         }
 
         const jsonDataString = JSON.stringify(jsonData);
-        let baseUrl = window.location.origin + '/qrAuth';
+        let baseUrl = 'https://dj-hukkin.netlify.app';
 
-        // テスト用 これデプロイするたびにバージョン上がってくから何とかしないと
-        baseUrl = 'https://deploy-preview-22--loquacious-marigold-435f89.netlify.app';
-        // return baseUrl + '/qrAuth?data=' + encodeURIComponent(jsonDataString);
         console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
         setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
