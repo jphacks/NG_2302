@@ -12,8 +12,6 @@ import { ModeSelect } from './routes/ModeSelect';
 import { SearchMusic } from './routes/SearchMusic';
 import { VolumeMeter } from './components/VolumeMeter';
 
-export const ModeContext = createContext();
-
 const Layout = () => {
     return (
         <Box
