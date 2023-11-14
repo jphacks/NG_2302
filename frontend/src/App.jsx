@@ -1,5 +1,5 @@
-import React, { useState, createContext } from 'react';
-import { Routes, Route, Outlet } from "react-router-dom";
+import React, { useState } from 'react';
+import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
@@ -11,6 +11,7 @@ import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchMusic } from './routes/SearchMusic';
 import { VolumeMeter } from './components/VolumeMeter';
+import { ModeContext } from './hooks/ModeHook';
 
 const Layout = () => {
     return (
@@ -31,6 +32,7 @@ const Layout = () => {
 export default function App() {
     const [mode, setMode] = useState('');
     const [trackList, setTrackList] = useState([]);
+    const location = useLocation();
 
     return (
         <Container component="main" maxWidth="xs">
@@ -42,15 +44,19 @@ export default function App() {
                 }}
             >
                 <Toolbar>
-                    <IconButton color="common.white" href='/home' >
-                        <HomeIcon />
-                    </IconButton>
+                    {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
+                        ? null
+                        : <IconButton color="common.white" href='/home' >
+                            <HomeIcon />
+                        </IconButton>}
                     <Typography variant="h6" color="inherit" sx={{ mr: "7em" }}>
-                        ふっきん牛乳
+                        DJふっきん
                     </Typography>
-                    <IconButton color="common.white" href='/setting'>
-                        <SettingsIcon />
-                    </IconButton>
+                    {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
+                        ? null
+                        : <IconButton color="common.white" href='/setting'>
+                            <SettingsIcon />
+                        </IconButton>}
                 </Toolbar>
             </AppBar>
 
