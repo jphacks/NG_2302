@@ -10,8 +10,9 @@ import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchMusic } from './routes/SearchMusic';
-
-export const ModeContext = createContext();
+import { SearchMusic } from './routes/SearchMusic';
+import { ModeContext } from './hooks/ModeHook';
+import { Test } from './routes/Test';
 
 const Layout = () => {
     return (
@@ -34,34 +35,40 @@ export default function App() {
     const [trackList, setTrackList] = useState([]);
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="xs" >
             <AppBar
-                position="static"
+                position="absolute"
                 elevation={0}
                 sx={{
                     position: 'relative',
                 }}
             >
                 <Toolbar>
-                    <IconButton color="common.white" href='/home' >
-                        <HomeIcon />
-                    </IconButton>
+                    {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
+                        ? null
+                        : <IconButton color="common.white" href='/home' >
+                            <HomeIcon />
+                        </IconButton>}
                     <Typography variant="h6" color="inherit" sx={{ mr: "7em" }}>
                         ふっきん牛乳
                     </Typography>
-                    <IconButton color="common.white" href='/setting'>
-                        <SettingsIcon />
-                    </IconButton>
+                    {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
+                        ? null
+                        : <IconButton color="common.white" href='/setting'>
+                            <SettingsIcon />
+                        </IconButton>}
                 </Toolbar>
             </AppBar>
 
-            <Box
+            <Container
                 sx={{
                     marginTop: 4,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}
+                component="main" 
+                maxWidth="xs"
             >
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
                 <img src={window.location.origin + "/images/HukkinMilk.png"} className="App-logo" alt="logo" />
@@ -77,10 +84,11 @@ export default function App() {
                             <Route path="/setting" element={<Setting />} />
                             <Route path="/qrAuth" element={<QrAuth />} />
                             <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                            <Route path="/test" element={<Test />} />
                         </Route>
                     </Routes>
                 </ModeContext.Provider>
-            </Box>
+            </Container>
             <Box sx={{ height: 32 }} />
         </Container>
     );
