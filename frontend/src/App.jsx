@@ -34,7 +34,7 @@ export default function App() {
     const location = useLocation();
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="xs" >
             <AppBar
                 position="static"
                 elevation={0}
@@ -68,7 +68,7 @@ export default function App() {
                 }}
             >
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
-                <img src={window.location.origin + "/images/HukkinMilk.png"} className="App-logo" alt="logo" />
+                <img src={`${window.location.origin}/images/HukkinMilk.png`} className="App-logo" alt="logo" />
 
                 <ModeContext.Provider value={{ mode, setMode }}>
                     { /* React Router */}
