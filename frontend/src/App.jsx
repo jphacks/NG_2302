@@ -80,7 +80,7 @@ export default function App() {
                             <Route path="/home" element={<Home setTrackList={setTrackList} />} />
                             <Route path="/setting" element={<Setting />} />
                             <Route path="/qrAuth" element={<QrAuth />} />
-                            <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                            <Route path="/search_music" element={<SearchMusic trackList={trackList} setTrackList={setTrackList} />} />
                         </Route>
                     </Routes>
                 </ModeContext.Provider>
