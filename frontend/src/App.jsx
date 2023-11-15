@@ -43,13 +43,13 @@ export default function App() {
                     position: 'relative',
                 }}
             >
-                <Toolbar>
+                <Toolbar >
                     {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
                         ? null
-                        : <IconButton color="common.white" href='/home' >
+                        : <IconButton edge="start" color="common.white" href='/home' >
                             <HomeIcon />
                         </IconButton>}
-                    <Typography variant="h6" color="inherit" sx={{ mr: "7em" }}>
+                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
                         DJふっきん
                     </Typography>
                     {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
