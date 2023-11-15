@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
 import { useCookies } from 'react-cookie';
-import { EnqueueTextField } from '../components/EnqueueTextField';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
@@ -13,6 +12,7 @@ import { Dictaphone } from '../components/Dictaphone';
 import { ModeTypes } from '../config/ModeTypes';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
+import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 import { useModeContext } from '../hooks/ModeHook';
 
 export const Home = ({ setTrackList }) => {
@@ -78,8 +78,8 @@ export const Home = ({ setTrackList }) => {
 
             <PageTitle title={'Reserve Songs'} />
 
-            <EnqueueTextField />
             <TitleSearchTextField setTrackList={setTrackList} />
+            <ArtistSearchTextField setTrackList={setTrackList} />
 
             <PageTitle title={'Song List'} />
 

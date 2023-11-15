@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -7,17 +8,17 @@ import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
 import { convertTrackListJson } from '../utils/ConvertTrackListJson';
 
-export const TitleSearchTextField = ({setTrackList, label='タイトル検索', isNavigate=true}) => {
+export const ArtistSearchTextField = ({setTrackList, label='アーティスト検索', isNavigate=true}) => {
     const navigate = useNavigate();
     const [cookies] = useCookies(['access_token']);
 
-    const searchMusicTrack = (title) => {
+    const searchArtistTrack = (artist) => {
         const body = {
-            music_title: title
+            artist_name: artist
         }
         try {
             axios.post(
-                `${backendUrl}/music/search_music_by_title`,
+                `${backendUrl}/music/search_music_by_artist_name`,
                 body,
                 withAuthHeader(cookies.access_token),
             ).then(response => {
@@ -26,22 +27,22 @@ export const TitleSearchTextField = ({setTrackList, label='タイトル検索', 
                 const trackList = convertTrackListJson(data);
                 setTrackList(trackList);
                 if (isNavigate) {
-                    navigate('/search_music');
+                    navigate('/search_artist');
                 }
             });
         } catch (e) {
             console.log(e);
         }
     }
-
+    
     return (
         <TextField
-            id='search_title'
+            id='search_artist'
             sx={customTextField}
             label={label}
             onKeyDown={event => {
                 if (event.key === 'Enter') {
-                    searchMusicTrack(event.target.value);
+                    searchArtistTrack(event.target.value);
                 }
             }}
         />

@@ -9,7 +9,6 @@ import {withAuthHeader} from '../config/Headers';
 export const Dictaphone = () => {
     const [message, setMessage] = React.useState('');
     const [cookies] = useCookies(['access_token']);
-    const [checked, setChecked] = React.useState(false);
 
     const commands = [
         {
@@ -36,7 +35,6 @@ export const Dictaphone = () => {
 
     const {
         transcript,
-        resetTranscript,
         browserSupportsSpeechRecognition,
     } = useSpeechRecognition({commands});
 

@@ -9,7 +9,7 @@ import { SignUp } from './routes/SignUp';
 import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
-import { SearchMusic } from './routes/SearchMusic';
+import { SearchedMusicList } from './routes/SearchedMusicList';
 import { ModeContext } from './hooks/ModeHook';
 
 const Layout = () => {
@@ -80,7 +80,8 @@ export default function App() {
                             <Route path="/home" element={<Home setTrackList={setTrackList} />} />
                             <Route path="/setting" element={<Setting />} />
                             <Route path="/qrAuth" element={<QrAuth />} />
-                            <Route path="/search_music" element={<SearchMusic trackList={trackList} setTrackList={setTrackList} />} />
+                            <Route path="/search_music" element={<SearchedMusicList trackList={trackList} setTrackList={setTrackList} mode='title' />} />
+                            <Route path="/search_artist" element={<SearchedMusicList trackList={trackList} setTrackList={setTrackList} mode='artist' />} />
                         </Route>
                     </Routes>
                 </ModeContext.Provider>
