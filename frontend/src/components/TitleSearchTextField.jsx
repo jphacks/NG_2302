@@ -5,58 +5,29 @@ import { TextField } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
+import { convertTrackListJson } from '../utils/ConvertTrackListJson';
 
-export const TitleSearchTextField = ({ setTrackList }) => {
+export const TitleSearchTextField = ({setTrackList, label='タイトル検索', isNavigate=true}) => {
     const navigate = useNavigate();
     const [cookies] = useCookies(['access_token']);
 
     const searchMusicTrack = (title) => {
-        const json = {
+        const body = {
             music_title: title
         }
         try {
             axios.post(
                 `${backendUrl}/music/search_music_by_title`,
-                json,
+                body,
                 withAuthHeader(cookies.access_token),
             ).then(response => {
                 const data = response.data;
                 console.log(data);
-                const trackList = [
-                    {
-                        id: data.first_music_track_id,
-                        title: data.first_music_title,
-                        artist: data.first_music_artist_name,
-                        image_url: data.first_music_image_url
-                    },
-                    {
-                        id: data.second_music_track_id,
-                        title: data.second_music_title,
-                        artist: data.second_music_artist_name,
-                        image_url: data.second_music_image_url
-                    },
-                    {
-                        id: data.third_music_track_id,
-                        title: data.third_music_title,
-                        artist: data.third_music_artist_name,
-                        image_url: data.third_music_image_url
-                    },
-                    {
-                        id: data.forth_music_track_id,
-                        title: data.forth_music_title,
-                        artist: data.forth_music_artist_name,
-                        image_url: data.forth_music_image_url
-                    },
-                    {
-                        id: data.fifth_music_track_id,
-                        title: data.fifth_music_title,
-                        artist: data.fifth_music_artist_name,
-                        image_url: data.fifth_music_image_url
-                    }
-                ];
-                console.log(trackList);
+                const trackList = convertTrackListJson(data);
                 setTrackList(trackList);
-                navigate('/search_music');
+                if (isNavigate) {
+                    navigate('/search_music');
+                }
             });
         } catch (e) {
             console.log(e);
@@ -67,12 +38,10 @@ export const TitleSearchTextField = ({ setTrackList }) => {
         <TextField
             id='search_title'
             sx={customTextField}
-            label='タイトル検索'
+            label={label}
             onKeyDown={event => {
                 if (event.key === 'Enter') {
-                    const title = event.target.value;
-                    console.log(title);
-                    searchMusicTrack(title);
+                    searchMusicTrack(event.target.value);
                 }
             }}
         />

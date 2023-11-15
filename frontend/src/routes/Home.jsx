@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
 import { useCookies } from 'react-cookie';
-import { EnqueueTextField } from '../components/EnqueueTextField';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
 import { PageTitle } from '../components/PageTitle';
@@ -11,15 +10,15 @@ import { CustomDivider } from '../components/CustomDivider';
 import { VolumeMeter } from '../components/VolumeMeter';
 import { Dictaphone } from '../components/Dictaphone';
 import { ModeTypes } from '../config/ModeTypes';
-import { ModeContext } from '../App';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
 import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
+import { useModeContext } from '../hooks/ModeHook';
 
-export const Home = ({ setTrackList, setArtistList }) => {
+export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
-    const { mode } = useContext(ModeContext);
+    const { mode, isDjMode } = useModeContext();
     const [cookies] = useCookies(['access_token']);
     const [elapsedTime, setElapsedTime] = useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
@@ -79,9 +78,8 @@ export const Home = ({ setTrackList, setArtistList }) => {
 
             <PageTitle title={'Reserve Songs'} />
 
-            <EnqueueTextField />
             <TitleSearchTextField setTrackList={setTrackList} />
-            <ArtistSearchTextField setArtistList={setArtistList} />
+            <ArtistSearchTextField setTrackList={setTrackList} />
 
             <PageTitle title={'Song List'} />
 
@@ -95,10 +93,14 @@ export const Home = ({ setTrackList, setArtistList }) => {
             <SongWaitList musicInfo={musicInfo} />
             <CustomDivider />
 
-            { /* 音声認識はバックグラウンドで動作 */}
-            <Dictaphone />
-            { /* 音量表示これも本来バックグラウンドで動作 */}
-            <VolumeMeter />
+            {isDjMode()
+                ? <>
+                    { /* 音声認識はバックグラウンドで動作 */}
+                    <Dictaphone />
+                    { /* 音量表示これも本来バックグラウンドで動作 */}
+                    <VolumeMeter />
+                </>
+                : null}
         </>
     );
 }

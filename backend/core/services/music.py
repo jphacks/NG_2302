@@ -11,6 +11,7 @@ from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
     SearchMusicByTitleReturnValue,
+    SearchMusicByArtistNameReturnValue,
     GetQueueInfoReturnValue,
     AdjustVolumeReturnValue
 )
@@ -123,10 +124,64 @@ class MusicService:
             third_music_title=tracks[2]['title'],
             third_music_artist_name=tracks[2]['artist_name'],
             third_music_image_url=tracks[2]['image_url'],
-            forth_music_track_id=tracks[3]['track_id'],
-            forth_music_title=tracks[3]['title'],
-            forth_music_artist_name=tracks[3]['artist_name'],
-            forth_music_image_url=tracks[3]['image_url'],
+            fourth_music_track_id=tracks[3]['track_id'],
+            fourth_music_title=tracks[3]['title'],
+            fourth_music_artist_name=tracks[3]['artist_name'],
+            fourth_music_image_url=tracks[3]['image_url'],
+            fifth_music_track_id=tracks[4]['track_id'],
+            fifth_music_title=tracks[4]['title'],
+            fifth_music_artist_name=tracks[4]['artist_name'],
+            fifth_music_image_url=tracks[4]['image_url']
+        )
+
+    def search_music_by_artist_name(
+        self,
+        artist_name: str
+    ) -> SearchMusicByArtistNameReturnValue:
+        scope = []
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return SearchMusicByArtistNameReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+
+        # Spotifyでアーティストを検索
+        result = sp.search(q="artist:" + artist_name, type="artist")
+        artist_id = result['artists']['items'][0]['id']
+
+        # Spotifyで曲を検索
+        items = sp.artist_top_tracks(artist_id)["tracks"]
+
+        if len(items) < 5:
+            return SearchMusicByArtistNameReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
+
+        tracks = []
+
+        for i in range(5):
+            track_info = {
+                "track_id": items[i]['id'],
+                "title": items[i]['name'],
+                "artist_name": items[i]['album']['artists'][0]['name'],
+                "image_url": items[i]['album']['images'][0]['url']
+            }
+            tracks.append(track_info)
+
+        return SearchMusicByArtistNameReturnValue(
+            error_codes=(),
+            first_music_track_id=tracks[0]['track_id'],
+            first_music_title=tracks[0]['title'],
+            first_music_artist_name=tracks[0]['artist_name'],
+            first_music_image_url=tracks[0]['image_url'],
+            second_music_track_id=tracks[1]['track_id'],
+            second_music_title=tracks[1]['title'],
+            second_music_artist_name=tracks[1]['artist_name'],
+            second_music_image_url=tracks[1]['image_url'],
+            third_music_track_id=tracks[2]['track_id'],
+            third_music_title=tracks[2]['title'],
+            third_music_artist_name=tracks[2]['artist_name'],
+            third_music_image_url=tracks[2]['image_url'],
+            fourth_music_track_id=tracks[3]['track_id'],
+            fourth_music_title=tracks[3]['title'],
+            fourth_music_artist_name=tracks[3]['artist_name'],
+            fourth_music_image_url=tracks[3]['image_url'],
             fifth_music_track_id=tracks[4]['track_id'],
             fifth_music_title=tracks[4]['title'],
             fifth_music_artist_name=tracks[4]['artist_name'],

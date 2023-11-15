@@ -5,8 +5,10 @@ import { Box, Typography, Card, CardActionArea, CardMedia, CardContent, Modal, B
 import { PageTitle } from '../components/PageTitle';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
+import { TitleSearchTextField } from '../components/TitleSearchTextField';
+import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 
-export const SearchMusic = ({ trackList }) => {
+export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     const [open, setOpen] = useState(false);
     const [cookies] = useCookies(['access_token']);
     const [clickedTrack, setClickedTrack] = useState({});
@@ -21,13 +23,11 @@ export const SearchMusic = ({ trackList }) => {
                 `${backendUrl}/music/enqueue_by_track_id`,
                 json,
                 withAuthHeader(cookies.access_token),
-            ).then(res => {
-                setOpen(false);
-            });
+            );
+            setOpen(false);
         } catch (error) {
             console.error('Enqueue failed:', error);
         }
-
     }
 
     // 楽曲のカードを作成する
@@ -102,8 +102,12 @@ export const SearchMusic = ({ trackList }) => {
             </Modal>
 
             <PageTitle title={'タイトル検索'} />
+            {mode === 'title'
+                ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} />
+                : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} />
+            }            
 
-            <Typography variant="h6" component="div" >
+            <Typography variant="h6" component="div" sx={{mt: 2}} >
                 検索結果
             </Typography>
 
