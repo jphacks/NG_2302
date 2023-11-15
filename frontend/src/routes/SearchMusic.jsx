@@ -5,8 +5,9 @@ import { Box, Typography, Card, CardActionArea, CardMedia, CardContent, Modal, B
 import { PageTitle } from '../components/PageTitle';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
+import { TitleSearchTextField } from '../components/TitleSearchTextField';
 
-export const SearchMusic = ({ trackList }) => {
+export const SearchMusic = ({ trackList, setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [cookies] = useCookies(['access_token']);
     const [clickedTrack, setClickedTrack] = useState({});
@@ -102,8 +103,9 @@ export const SearchMusic = ({ trackList }) => {
             </Modal>
 
             <PageTitle title={'タイトル検索'} />
+            <TitleSearchTextField setTrackList={setTrackList} label='再検索' isNavigate={false} />
 
-            <Typography variant="h6" component="div" >
+            <Typography variant="h6" component="div" sx={{mt: 2}} >
                 検索結果
             </Typography>
 

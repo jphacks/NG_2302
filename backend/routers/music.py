@@ -9,6 +9,7 @@ from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
     SearchMusicByTitleReturnValue,
+    SearchMusicByArtistNameReturnValue,
     GetQueueInfoReturnValue,
     AdjustVolumeReturnValue
 )
@@ -27,6 +28,10 @@ class EnqueueByTrackIdRequest(BaseModel):
 
 class SearchMusicByTitleRequest(BaseModel):
     music_title: str = Field(..., title="楽曲のタイトル")
+
+
+class SearchMusicByArtistNameRequest(BaseModel):
+    artist_name: str = Field(..., title="アーティスト名")
 
 
 class AdjustVolumeRequest(BaseModel):
@@ -86,6 +91,25 @@ def search_music_by_title(
         account_id=account_id
     )
     return_value = service.search_music_by_title(music_title)
+
+    return return_value
+
+
+@router.post("/search_music_by_artist_name", name="アーティスト名で検索", response_model=SearchMusicByArtistNameReturnValue)
+def search_music_by_artist_name(
+    request: SearchMusicByArtistNameRequest,
+    db: Session = Depends(get_db),
+    account_id: int = Depends(get_account_id)
+) -> SearchMusicByArtistNameReturnValue:
+    # リクエスト情報取得
+    artist_name = request.artist_name
+
+    service = MusicService(
+        db=db,
+        spotify_api_id_dao=SpotifyApiIdDao(),
+        account_id=account_id
+    )
+    return_value = service.search_music_by_artist_name(artist_name)
 
     return return_value
 

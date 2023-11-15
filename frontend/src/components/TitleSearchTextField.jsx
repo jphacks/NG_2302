@@ -6,7 +6,7 @@ import { customTextField } from '../styles/CustomTextField';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
 
-export const TitleSearchTextField = ({ setTrackList }) => {
+export const TitleSearchTextField = ({ setTrackList, label='タイトル検索', isNavigate=true }) => {
     const navigate = useNavigate();
     const [cookies] = useCookies(['access_token']);
 
@@ -42,10 +42,10 @@ export const TitleSearchTextField = ({ setTrackList }) => {
                         image_url: data.third_music_image_url
                     },
                     {
-                        id: data.forth_music_track_id,
-                        title: data.forth_music_title,
-                        artist: data.forth_music_artist_name,
-                        image_url: data.forth_music_image_url
+                        id: data.fourth_music_track_id,
+                        title: data.fourth_music_title,
+                        artist: data.fourth_music_artist_name,
+                        image_url: data.fourth_music_image_url
                     },
                     {
                         id: data.fifth_music_track_id,
@@ -56,7 +56,9 @@ export const TitleSearchTextField = ({ setTrackList }) => {
                 ];
                 console.log(trackList);
                 setTrackList(trackList);
-                navigate('/search_music');
+                if (isNavigate) {
+                    navigate('/search_music');
+                }
             });
         } catch (e) {
             console.log(e);
@@ -67,7 +69,7 @@ export const TitleSearchTextField = ({ setTrackList }) => {
         <TextField
             id='search_title'
             sx={customTextField}
-            label='タイトル検索'
+            label={label}
             onKeyDown={event => {
                 if (event.key === 'Enter') {
                     const title = event.target.value;
