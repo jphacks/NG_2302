@@ -9,7 +9,7 @@ const audioContext = new AudioContext();
 var count = 0;
 var volSum = 0;
 
-export const VolumeMeter = () => {
+export const VolumeMeter = ({multiplier=3000}) => {
     const [inProgress, setInProgress] = useState(false);
     const [checked, setChecked] = useState(false);
     const [volume, setVolume] = useState(0);
@@ -73,7 +73,7 @@ export const VolumeMeter = () => {
         volumeMeterNode.port.onmessage = (event) => {
             console.log(event.data);
             // event.dataを300倍して整数表示している
-            const value = Math.round(event.data * 300000) / 100;
+            const value = Math.round(event.data * multiplier * 100) / 100;
             count++;
             const average = Math.round((volSum + value)/count * 100) / 100
             setVolume(average);
