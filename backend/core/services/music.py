@@ -1,3 +1,4 @@
+import random
 from typing import List
 from dataclasses import dataclass
 import spotipy
@@ -5,11 +6,17 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy.exceptions import SpotifyException
 from sqlalchemy.orm import Session
 
-from core.constants import SpotifyOAuthConstant, ErrorCode
+from core.constants import (
+    SpotifyOAuthConstant,
+    SentimentAnalysisConstant,
+    ErrorCode
+)
+from core.functions.sentiment_analysis import SentimentAnalysis
 from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
+    EnqueueBasedOnMoodReturnValue,
     SearchMusicByTitleReturnValue,
     SearchMusicByArtistNameReturnValue,
     GetQueueInfoReturnValue,
@@ -132,6 +139,53 @@ class MusicService:
                 return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.NO_ACTIVE_DEVICE,))
             raise e
         return EnqueueByTrackIdReturnValue(error_codes=())
+
+    def enqueue_based_on_mood(
+        self,
+        conversation: str
+    ) -> EnqueueBasedOnMoodReturnValue:
+        sentiment_analysis = SentimentAnalysis(
+            credentials_path=SentimentAnalysisConstant.CREDENTIALS_PATH
+        )
+        score, magnitude = sentiment_analysis.analyze(conversation)
+        score = score * SentimentAnalysisConstant.SCORE_COEFFICIENT
+        magnitude = magnitude * SentimentAnalysisConstant.MAGNITUDE_COEFFICIENT
+        mood = 1 + score * (1 / magnitude + 1)
+
+        scope = ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+        if not self._is_queue_size_below_threshold(sp):
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.QUEUE_SIZE_ABOVE_THRESHOLD,))
+
+        current_track_uri = sp.current_playback()['item']['uri']
+        audio_features = sp.audio_features(current_track_uri)[0]
+        current_valence = audio_features['valence']
+        current_energy = audio_features['energy']
+
+        recommendations = sp.recommendations(
+            seed_tracks=[current_track_uri],
+            target_valence=current_valence * mood,
+            target_energy=current_energy * mood
+        )
+
+        if not recommendations['tracks']:
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
+        filtered_tracks = [
+            track for track in recommendations['tracks']
+            if not self._is_duplicated_music_in_queue(sp, track['id'])
+        ]
+        if not filtered_tracks:
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.MUSIC_ALREADY_IN_QUEUE,))
+        # 検索結果からランダムに1曲選択
+        selected_track = random.choice(filtered_tracks)
+        track_uri = selected_track['uri']
+
+        # キューに曲を追加
+        sp.add_to_queue(track_uri)
+
+        return EnqueueBasedOnMoodReturnValue(error_codes=())
 
     def search_music_by_title(
         self,
