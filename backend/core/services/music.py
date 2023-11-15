@@ -40,6 +40,51 @@ class MusicService:
         ))
         return sp
 
+    def _get_queue_list(self, sp: spotipy.Spotify) -> list[dict[str, str]]:
+        queue = sp.queue()
+        queue_list = []
+
+        for i, track in enumerate(queue['queue']):
+            if i < 3:
+                track_info = {
+                    "title": track['name'],
+                    "artist_name": track['artists'][0]['name'],
+                    "image_url": track['album']['images'][0]['url']
+                }
+                queue_list.append(track_info)
+
+        while len(queue_list) < 3:
+            queue_list.append({"title": None, "artist_name": None, "image_url": None})
+
+        return queue_list
+
+    def _is_duplicated_music_in_queue(self, sp: spotipy.Spotify, track_id: str) -> bool:
+        current_playback = sp.current_playback()
+        if current_playback['item']['id'] == track_id:
+            return True
+
+        queue = sp.queue()
+        for i, track in enumerate(queue['queue']):
+            if i < 3:
+                if track['id'] == track_id:
+                    return True
+
+        return False
+
+    def _is_queue_size_below_threshold(self, sp: spotipy.Spotify) -> bool:
+        # サービスから入れた曲が重複することはないため、キュー内の楽曲が重複している場合はSpotifyが自動で補完した楽曲が存在する
+        queue_list = self._get_queue_list(sp)
+
+        seen_elements = set()
+
+        for element in queue_list:
+            element_tuple = tuple(element.items())
+            if element_tuple in seen_elements:
+                return True
+            seen_elements.add(element_tuple)
+
+        return False
+
     def enqueue(
         self,
         music_title: str
@@ -55,6 +100,9 @@ class MusicService:
 
         if items:
             track_id = items[0]['id']
+            if self._is_duplicated_music_in_queue(sp, track_id):
+                return EnqueueReturnValue(error_codes=(ErrorCode.MUSIC_ALREADY_IN_QUEUE,))
+
             try:
                 sp.add_to_queue(f"spotify:track:{track_id}")
             except SpotifyException as e:
@@ -74,6 +122,8 @@ class MusicService:
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+        if self._is_duplicated_music_in_queue(sp, track_id):
+            return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.MUSIC_ALREADY_IN_QUEUE,))
 
         try:
             sp.add_to_queue(f"spotify:track:{track_id}")
@@ -206,20 +256,7 @@ class MusicService:
             current_music_artist_name = current_playback['item']['album']['artists'][0]['name']
             current_music_image_url = current_playback['item']['album']['images'][0]['url']
 
-            queue = sp.queue()
-            queue_info = []
-
-            for i, track in enumerate(queue['queue']):
-                if i < 3:
-                    track_info = {
-                        "title": track['name'],
-                        "artist_name": track['artists'][0]['name'],
-                        "image_url": track['album']['images'][0]['url']
-                    }
-                    queue_info.append(track_info)
-
-            while len(queue_info) < 3:
-                queue_info.append({"title": None, "artist_name": None, "image_url": None})
+            queue_list = self._get_queue_list(sp)
 
             return GetQueueInfoReturnValue(
                 error_codes=(),
@@ -227,15 +264,15 @@ class MusicService:
                 current_music_title=current_music_title,
                 current_music_artist_name=current_music_artist_name,
                 current_music_image_url=current_music_image_url,
-                first_music_title=queue_info[0]['title'],
-                first_music_artist_name=queue_info[0]['artist_name'],
-                first_music_image_url=queue_info[0]['image_url'],
-                second_music_title=queue_info[1]['title'],
-                second_music_artist_name=queue_info[1]['artist_name'],
-                second_music_image_url=queue_info[1]['image_url'],
-                third_music_title=queue_info[2]['title'],
-                third_music_artist_name=queue_info[2]['artist_name'],
-                third_music_image_url=queue_info[2]['image_url']
+                first_music_title=queue_list[0]['title'],
+                first_music_artist_name=queue_list[0]['artist_name'],
+                first_music_image_url=queue_list[0]['image_url'],
+                second_music_title=queue_list[1]['title'],
+                second_music_artist_name=queue_list[1]['artist_name'],
+                second_music_image_url=queue_list[1]['image_url'],
+                third_music_title=queue_list[2]['title'],
+                third_music_artist_name=queue_list[2]['artist_name'],
+                third_music_image_url=queue_list[2]['image_url']
             )
         raise Exception("get_queue_info failed")
 
