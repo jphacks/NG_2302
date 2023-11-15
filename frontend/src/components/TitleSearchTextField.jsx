@@ -42,10 +42,10 @@ export const TitleSearchTextField = ({ setTrackList, label='タイトル検索',
                         image_url: data.third_music_image_url
                     },
                     {
-                        id: data.forth_music_track_id,
-                        title: data.forth_music_title,
-                        artist: data.forth_music_artist_name,
-                        image_url: data.forth_music_image_url
+                        id: data.fourth_music_track_id,
+                        title: data.fourth_music_title,
+                        artist: data.fourth_music_artist_name,
+                        image_url: data.fourth_music_image_url
                     },
                     {
                         id: data.fifth_music_track_id,
