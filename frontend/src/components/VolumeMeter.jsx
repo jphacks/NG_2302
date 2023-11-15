@@ -72,7 +72,8 @@ export const VolumeMeter = () => {
         const volumeMeterNode = new AudioWorkletNode(audioContext, 'volume-meter');
         volumeMeterNode.port.onmessage = (event) => {
             console.log(event.data);
-            const value = Math.round(event.data * 100000) / 100;
+            // event.dataを300倍して整数表示している
+            const value = Math.round(event.data * 300000) / 100;
             count++;
             const average = Math.round((volSum + value)/count * 100) / 100
             setVolume(average);
