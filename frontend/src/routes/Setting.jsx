@@ -53,6 +53,7 @@ export const Setting = () => {
                 ? <>
                     <PageTitle title={'スポティファイ再登録'} />
                     <Button
+                        className="Button_pink dark"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -65,7 +66,9 @@ export const Setting = () => {
                 : null}
 
             <PageTitle title={'ユーザーはこちら'} />
-            <Button sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
+            <Button
+                className="Button_pink dark"
+                sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
             {qrCode !== '' &&
                 <Grid container justifyContent="center">
                     <QRCodeCanvas
