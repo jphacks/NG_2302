@@ -9,8 +9,11 @@ class EnqueueByTrackIdReturnValue(BaseModel):
     error_codes: tuple[int, ...] = Field(..., title="エラーコード")
 
 
-class SearchMusicByTitleReturnValue(BaseModel):
+class EnqueueBasedOnMoodReturnValue(BaseModel):
     error_codes: tuple[int, ...] = Field(..., title="エラーコード")
+
+
+class SearchMusicBase(BaseModel):
     first_music_track_id: str = Field(..., title="一番目の楽曲のトラックID")
     first_music_title: str = Field(..., title="一番目の楽曲のタイトル")
     first_music_artist_name: str = Field(..., title="一番目の楽曲のアーティスト名")
@@ -23,14 +26,22 @@ class SearchMusicByTitleReturnValue(BaseModel):
     third_music_title: str = Field(..., title="三番目の楽曲のタイトル")
     third_music_artist_name: str = Field(..., title="三番目の楽曲のアーティスト名")
     third_music_image_url: str = Field(..., title="三番目の楽曲の画像のURL")
-    forth_music_track_id: str = Field(..., title="四番目の楽曲のトラックID")
-    forth_music_title: str = Field(..., title="四番目の楽曲のタイトル")
-    forth_music_artist_name: str = Field(..., title="四番目の楽曲のアーティスト名")
-    forth_music_image_url: str = Field(..., title="四番目の楽曲の画像のURL")
+    fourth_music_track_id: str = Field(..., title="四番目の楽曲のトラックID")
+    fourth_music_title: str = Field(..., title="四番目の楽曲のタイトル")
+    fourth_music_artist_name: str = Field(..., title="四番目の楽曲のアーティスト名")
+    fourth_music_image_url: str = Field(..., title="四番目の楽曲の画像のURL")
     fifth_music_track_id: str = Field(..., title="五番目の楽曲のトラックID")
     fifth_music_title: str = Field(..., title="五番目の楽曲のタイトル")
     fifth_music_artist_name: str = Field(..., title="五番目の楽曲のアーティスト名")
     fifth_music_image_url: str = Field(..., title="五番目の楽曲の画像のURL")
+
+
+class SearchMusicByTitleReturnValue(SearchMusicBase):
+    error_codes: tuple[int, ...] = Field(..., title="エラーコード")
+
+
+class SearchMusicByArtistNameReturnValue(SearchMusicBase):
+    error_codes: tuple[int, ...] = Field(..., title="エラーコード")
 
 
 class GetQueueInfoReturnValue(BaseModel):

@@ -4,13 +4,13 @@ import { PageTitle } from '../components/PageTitle';
 import { useCookies } from 'react-cookie';
 import { QRCodeCanvas } from 'qrcode.react';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
-import { useModeContext } from '../hooks/ModeHook';
+import { ModeStorage } from '../hooks/ModeHook';
 
 export const Setting = () => {
     const [open, setOpen] = useState(false);
     const [cookies] = useCookies(['access_token']);
     const [qrCode, setQrCode] = useState('');
-    const { isDjMode } = useModeContext();
+    const modeStorage = new ModeStorage();
 
     const createQrCode = () => {
         console.log('createQrCode');
@@ -20,11 +20,8 @@ export const Setting = () => {
         }
 
         const jsonDataString = JSON.stringify(jsonData);
-        let baseUrl = window.location.origin + '/qrAuth';
+        let baseUrl = 'https://dj-hukkin.netlify.app';
 
-        // テスト用 これデプロイするたびにバージョン上がってくから何とかしないと
-        baseUrl = 'https://deploy-preview-22--loquacious-marigold-435f89.netlify.app';
-        // return baseUrl + '/qrAuth?data=' + encodeURIComponent(jsonDataString);
         console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
         setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
@@ -52,10 +49,11 @@ export const Setting = () => {
                 </Typography>
             </Box>
 
-            {isDjMode()
+            {modeStorage.isDjMode()
                 ? <>
                     <PageTitle title={'スポティファイ再登録'} />
                     <Button
+                        className="Button_pink dark"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -68,16 +66,16 @@ export const Setting = () => {
                 : null}
 
             <PageTitle title={'ユーザーはこちら'} />
-            <Button sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
-            {
-                qrCode !== '' &&
+            <Button
+                className="Button_pink dark"
+                sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
+            {qrCode !== '' &&
                 <Grid container justifyContent="center">
                     <QRCodeCanvas
                         value={qrCode}
                         size={256}
                     />
-                </Grid>
-            }
+                </Grid>}
         </>
     );
 }

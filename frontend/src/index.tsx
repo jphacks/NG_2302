@@ -43,14 +43,12 @@ declare module "@mui/material/Button" {
 const container = document.getElementById('root');
 const root = createRoot(container as HTMLElement);
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <CookiesProvider>
-                    <App />
-                </CookiesProvider>
-            </ThemeProvider>
-        </BrowserRouter>
-    </React.StrictMode>,
+    <BrowserRouter>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <CookiesProvider>
+                <App />
+            </CookiesProvider>
+        </ThemeProvider>
+    </BrowserRouter>
 )

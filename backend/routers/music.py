@@ -8,7 +8,9 @@ from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
+    EnqueueBasedOnMoodReturnValue,
     SearchMusicByTitleReturnValue,
+    SearchMusicByArtistNameReturnValue,
     GetQueueInfoReturnValue,
     AdjustVolumeReturnValue
 )
@@ -25,8 +27,16 @@ class EnqueueByTrackIdRequest(BaseModel):
     track_id: str = Field(..., title="楽曲のトラックID")
 
 
+class EnqueueBasedOnMoodRequest(BaseModel):
+    conversation: str = Field(..., title="会話の内容")
+
+
 class SearchMusicByTitleRequest(BaseModel):
     music_title: str = Field(..., title="楽曲のタイトル")
+
+
+class SearchMusicByArtistNameRequest(BaseModel):
+    artist_name: str = Field(..., title="アーティスト名")
 
 
 class AdjustVolumeRequest(BaseModel):
@@ -71,6 +81,25 @@ def enqueue_by_track_id(
     return return_value
 
 
+@router.post("/enqueue_based_on_mood", name="会話の雰囲気に合わせてキューに楽曲を追加", response_model=EnqueueBasedOnMoodReturnValue)
+def enqueue_based_on_mood(
+    request: EnqueueBasedOnMoodRequest,
+    db: Session = Depends(get_db),
+    account_id: int = Depends(get_account_id)
+) -> EnqueueBasedOnMoodReturnValue:
+    # リクエスト情報取得
+    conversation = request.conversation
+
+    service = MusicService(
+        db=db,
+        spotify_api_id_dao=SpotifyApiIdDao(),
+        account_id=account_id
+    )
+    return_value = service.enqueue_based_on_mood(conversation)
+
+    return return_value
+
+
 @router.post("/search_music_by_title", name="楽曲のタイトルで検索", response_model=SearchMusicByTitleReturnValue)
 def search_music_by_title(
     request: SearchMusicByTitleRequest,
@@ -86,6 +115,25 @@ def search_music_by_title(
         account_id=account_id
     )
     return_value = service.search_music_by_title(music_title)
+
+    return return_value
+
+
+@router.post("/search_music_by_artist_name", name="アーティスト名で検索", response_model=SearchMusicByArtistNameReturnValue)
+def search_music_by_artist_name(
+    request: SearchMusicByArtistNameRequest,
+    db: Session = Depends(get_db),
+    account_id: int = Depends(get_account_id)
+) -> SearchMusicByArtistNameReturnValue:
+    # リクエスト情報取得
+    artist_name = request.artist_name
+
+    service = MusicService(
+        db=db,
+        spotify_api_id_dao=SpotifyApiIdDao(),
+        account_id=account_id
+    )
+    return_value = service.search_music_by_artist_name(artist_name)
 
     return return_value
 

@@ -57,6 +57,7 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
                         sx={customTextField}
                     />
                     <Button
+                        className='Button_white dark'
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -67,6 +68,7 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
 
                 </Box>
                 <Button
+                    className='Button_white dark'
                     type="submit"
                     fullWidth
                     variant="contained"

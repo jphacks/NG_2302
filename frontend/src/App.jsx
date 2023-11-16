@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import './styles/App.css'; //アプリ全体に適用するスタイル
 import { Routes, Route, Outlet, useLocation } from "react-router-dom";
-import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
 import { Home } from "./routes/Home";
@@ -9,8 +10,7 @@ import { SignUp } from './routes/SignUp';
 import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
-import { SearchMusic } from './routes/SearchMusic';
-import { ModeContext } from './hooks/ModeHook';
+import { SearchedMusicList } from './routes/SearchedMusicList';
 import { Test } from './routes/Test';
 
 const Layout = () => {
@@ -30,18 +30,13 @@ const Layout = () => {
 }
 
 export default function App() {
-    const [mode, setMode] = useState('');
     const [trackList, setTrackList] = useState([]);
     const location = useLocation();
 
     return (
-        <Container component="main" maxWidth="xs">
+        <>
             <AppBar
                 position="static"
-                elevation={0}
-                sx={{
-                    position: 'relative',
-                }}
             >
                 <Toolbar >
                     {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
@@ -62,6 +57,8 @@ export default function App() {
 
             <Box
                 sx={{
+                    mr: 4,
+                    ml: 4,
                     marginTop: 4,
                     display: 'flex',
                     flexDirection: 'column',
@@ -69,25 +66,24 @@ export default function App() {
                 }}
             >
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
-                <img src={window.location.origin + "/images/HukkinMilk.png"} className="App-logo" alt="logo" />
+                <img src={`${window.location.origin}/images/HukkinMilk.png`} className="App-logo" alt="logo" />
 
-                <ModeContext.Provider value={{ mode, setMode }}>
-                    { /* React Router */}
-                    <Routes>
-                        <Route element={<Layout />}>
-                            <Route path="/" element={<ModeSelect />} />
-                            <Route path="/signIn" element={<SignIn />} />
-                            <Route path="/signUp" element={<SignUp />} />
-                            <Route path="/home" element={<Home setTrackList={setTrackList} />} />
-                            <Route path="/setting" element={<Setting />} />
-                            <Route path="/qrAuth" element={<QrAuth />} />
-                            <Route path="/search_music" element={<SearchMusic trackList={trackList} />} />
+                { /* React Router */}
+                <Routes>
+                    <Route element={<Layout />}>
+                        <Route path="/" element={<ModeSelect />} />
+                        <Route path="/signIn" element={<SignIn />} />
+                        <Route path="/signUp" element={<SignUp />} />
+                        <Route path="/home" element={<Home setTrackList={setTrackList} />} />
+                        <Route path="/setting" element={<Setting />} />
+                        <Route path="/qrAuth" element={<QrAuth />} />
+                        <Route path="/search_music" element={<SearchedMusicList trackList={trackList} setTrackList={setTrackList} mode='title' />} />
+                        <Route path="/search_artist" element={<SearchedMusicList trackList={trackList} setTrackList={setTrackList} mode='artist' />} />
                             <Route path="/test" element={<Test />} />
-                        </Route>
-                    </Routes>
-                </ModeContext.Provider>
+                    </Route>
+                </Routes>
             </Box>
             <Box sx={{ height: 32 }} />
-        </Container>
+        </>
     );
 };

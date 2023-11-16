@@ -1,3 +1,4 @@
+import random
 from typing import List
 from dataclasses import dataclass
 import spotipy
@@ -5,12 +6,19 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy.exceptions import SpotifyException
 from sqlalchemy.orm import Session
 
-from core.constants import SpotifyOAuthConstant, ErrorCode
+from core.constants import (
+    SpotifyOAuthConstant,
+    SentimentAnalysisConstant,
+    ErrorCode
+)
+from core.functions.sentiment_analysis import SentimentAnalysis
 from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
+    EnqueueBasedOnMoodReturnValue,
     SearchMusicByTitleReturnValue,
+    SearchMusicByArtistNameReturnValue,
     GetQueueInfoReturnValue,
     AdjustVolumeReturnValue
 )
@@ -39,6 +47,51 @@ class MusicService:
         ))
         return sp
 
+    def _get_queue_list(self, sp: spotipy.Spotify) -> list[dict[str, str]]:
+        queue = sp.queue()
+        queue_list = []
+
+        for i, track in enumerate(queue['queue']):
+            if i < 3:
+                track_info = {
+                    "title": track['name'],
+                    "artist_name": track['artists'][0]['name'],
+                    "image_url": track['album']['images'][0]['url']
+                }
+                queue_list.append(track_info)
+
+        while len(queue_list) < 3:
+            queue_list.append({"title": None, "artist_name": None, "image_url": None})
+
+        return queue_list
+
+    def _is_duplicated_music_in_queue(self, sp: spotipy.Spotify, track_id: str) -> bool:
+        current_playback = sp.current_playback()
+        if current_playback['item']['id'] == track_id:
+            return True
+
+        queue = sp.queue()
+        for i, track in enumerate(queue['queue']):
+            if i < 3:
+                if track['id'] == track_id:
+                    return True
+
+        return False
+
+    def _is_queue_size_below_threshold(self, sp: spotipy.Spotify) -> bool:
+        # サービスから入れた曲が重複することはないため、キュー内の楽曲が重複している場合はSpotifyが自動で補完した楽曲が存在する
+        queue_list = self._get_queue_list(sp)
+
+        seen_elements = set()
+
+        for element in queue_list:
+            element_tuple = tuple(element.items())
+            if element_tuple in seen_elements:
+                return True
+            seen_elements.add(element_tuple)
+
+        return False
+
     def enqueue(
         self,
         music_title: str
@@ -54,6 +107,9 @@ class MusicService:
 
         if items:
             track_id = items[0]['id']
+            if self._is_duplicated_music_in_queue(sp, track_id):
+                return EnqueueReturnValue(error_codes=(ErrorCode.MUSIC_ALREADY_IN_QUEUE,))
+
             try:
                 sp.add_to_queue(f"spotify:track:{track_id}")
             except SpotifyException as e:
@@ -73,6 +129,8 @@ class MusicService:
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+        if self._is_duplicated_music_in_queue(sp, track_id):
+            return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.MUSIC_ALREADY_IN_QUEUE,))
 
         try:
             sp.add_to_queue(f"spotify:track:{track_id}")
@@ -81,6 +139,53 @@ class MusicService:
                 return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.NO_ACTIVE_DEVICE,))
             raise e
         return EnqueueByTrackIdReturnValue(error_codes=())
+
+    def enqueue_based_on_mood(
+        self,
+        conversation: str
+    ) -> EnqueueBasedOnMoodReturnValue:
+        sentiment_analysis = SentimentAnalysis(
+            credentials_path=SentimentAnalysisConstant.CREDENTIALS_PATH
+        )
+        score, magnitude = sentiment_analysis.analyze(conversation)
+        score = score * SentimentAnalysisConstant.SCORE_COEFFICIENT
+        magnitude = magnitude * SentimentAnalysisConstant.MAGNITUDE_COEFFICIENT
+        mood = 1 + score * (1 / magnitude + 1)
+
+        scope = ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+        if not self._is_queue_size_below_threshold(sp):
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.QUEUE_SIZE_ABOVE_THRESHOLD,))
+
+        current_track_uri = sp.current_playback()['item']['uri']
+        audio_features = sp.audio_features(current_track_uri)[0]
+        current_valence = audio_features['valence']
+        current_energy = audio_features['energy']
+
+        recommendations = sp.recommendations(
+            seed_tracks=[current_track_uri],
+            target_valence=current_valence * mood,
+            target_energy=current_energy * mood
+        )
+
+        if not recommendations['tracks']:
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
+        filtered_tracks = [
+            track for track in recommendations['tracks']
+            if not self._is_duplicated_music_in_queue(sp, track['id'])
+        ]
+        if not filtered_tracks:
+            return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.MUSIC_ALREADY_IN_QUEUE,))
+        # 検索結果からランダムに1曲選択
+        selected_track = random.choice(filtered_tracks)
+        track_uri = selected_track['uri']
+
+        # キューに曲を追加
+        sp.add_to_queue(track_uri)
+
+        return EnqueueBasedOnMoodReturnValue(error_codes=())
 
     def search_music_by_title(
         self,
@@ -123,10 +228,64 @@ class MusicService:
             third_music_title=tracks[2]['title'],
             third_music_artist_name=tracks[2]['artist_name'],
             third_music_image_url=tracks[2]['image_url'],
-            forth_music_track_id=tracks[3]['track_id'],
-            forth_music_title=tracks[3]['title'],
-            forth_music_artist_name=tracks[3]['artist_name'],
-            forth_music_image_url=tracks[3]['image_url'],
+            fourth_music_track_id=tracks[3]['track_id'],
+            fourth_music_title=tracks[3]['title'],
+            fourth_music_artist_name=tracks[3]['artist_name'],
+            fourth_music_image_url=tracks[3]['image_url'],
+            fifth_music_track_id=tracks[4]['track_id'],
+            fifth_music_title=tracks[4]['title'],
+            fifth_music_artist_name=tracks[4]['artist_name'],
+            fifth_music_image_url=tracks[4]['image_url']
+        )
+
+    def search_music_by_artist_name(
+        self,
+        artist_name: str
+    ) -> SearchMusicByArtistNameReturnValue:
+        scope = []
+        sp = self._get_spotify_instance(scope)
+        if sp is None:
+            return SearchMusicByArtistNameReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
+
+        # Spotifyでアーティストを検索
+        result = sp.search(q="artist:" + artist_name, type="artist")
+        artist_id = result['artists']['items'][0]['id']
+
+        # Spotifyで曲を検索
+        items = sp.artist_top_tracks(artist_id)["tracks"]
+
+        if len(items) < 5:
+            return SearchMusicByArtistNameReturnValue(error_codes=(ErrorCode.MUSIC_NOT_FOUND,))
+
+        tracks = []
+
+        for i in range(5):
+            track_info = {
+                "track_id": items[i]['id'],
+                "title": items[i]['name'],
+                "artist_name": items[i]['album']['artists'][0]['name'],
+                "image_url": items[i]['album']['images'][0]['url']
+            }
+            tracks.append(track_info)
+
+        return SearchMusicByArtistNameReturnValue(
+            error_codes=(),
+            first_music_track_id=tracks[0]['track_id'],
+            first_music_title=tracks[0]['title'],
+            first_music_artist_name=tracks[0]['artist_name'],
+            first_music_image_url=tracks[0]['image_url'],
+            second_music_track_id=tracks[1]['track_id'],
+            second_music_title=tracks[1]['title'],
+            second_music_artist_name=tracks[1]['artist_name'],
+            second_music_image_url=tracks[1]['image_url'],
+            third_music_track_id=tracks[2]['track_id'],
+            third_music_title=tracks[2]['title'],
+            third_music_artist_name=tracks[2]['artist_name'],
+            third_music_image_url=tracks[2]['image_url'],
+            fourth_music_track_id=tracks[3]['track_id'],
+            fourth_music_title=tracks[3]['title'],
+            fourth_music_artist_name=tracks[3]['artist_name'],
+            fourth_music_image_url=tracks[3]['image_url'],
             fifth_music_track_id=tracks[4]['track_id'],
             fifth_music_title=tracks[4]['title'],
             fifth_music_artist_name=tracks[4]['artist_name'],
@@ -151,20 +310,7 @@ class MusicService:
             current_music_artist_name = current_playback['item']['album']['artists'][0]['name']
             current_music_image_url = current_playback['item']['album']['images'][0]['url']
 
-            queue = sp.queue()
-            queue_info = []
-
-            for i, track in enumerate(queue['queue']):
-                if i < 3:
-                    track_info = {
-                        "title": track['name'],
-                        "artist_name": track['artists'][0]['name'],
-                        "image_url": track['album']['images'][0]['url']
-                    }
-                    queue_info.append(track_info)
-
-            while len(queue_info) < 3:
-                queue_info.append({"title": None, "artist_name": None, "image_url": None})
+            queue_list = self._get_queue_list(sp)
 
             return GetQueueInfoReturnValue(
                 error_codes=(),
@@ -172,15 +318,15 @@ class MusicService:
                 current_music_title=current_music_title,
                 current_music_artist_name=current_music_artist_name,
                 current_music_image_url=current_music_image_url,
-                first_music_title=queue_info[0]['title'],
-                first_music_artist_name=queue_info[0]['artist_name'],
-                first_music_image_url=queue_info[0]['image_url'],
-                second_music_title=queue_info[1]['title'],
-                second_music_artist_name=queue_info[1]['artist_name'],
-                second_music_image_url=queue_info[1]['image_url'],
-                third_music_title=queue_info[2]['title'],
-                third_music_artist_name=queue_info[2]['artist_name'],
-                third_music_image_url=queue_info[2]['image_url']
+                first_music_title=queue_list[0]['title'],
+                first_music_artist_name=queue_list[0]['artist_name'],
+                first_music_image_url=queue_list[0]['image_url'],
+                second_music_title=queue_list[1]['title'],
+                second_music_artist_name=queue_list[1]['artist_name'],
+                second_music_image_url=queue_list[1]['image_url'],
+                third_music_title=queue_list[2]['title'],
+                third_music_artist_name=queue_list[2]['artist_name'],
+                third_music_image_url=queue_list[2]['image_url']
             )
         raise Exception("get_queue_info failed")
 
