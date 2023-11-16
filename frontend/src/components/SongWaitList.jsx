@@ -1,6 +1,6 @@
-import {Box, List, ListItemText, ListItemButton, Typography} from "@mui/material";
+import { Box, List, ListItemText, ListItemButton, Typography } from "@mui/material";
 
-export const SongWaitList = ({musicInfo}) => {
+export const SongWaitList = ({ musicInfo }) => {
     // リストに入っている曲を選択した時
     function handleListItemClick(event) {
     }
@@ -24,33 +24,35 @@ export const SongWaitList = ({musicInfo}) => {
     ]
 
     return (
-        <List component="nav" aria-label="next songs list" widget="100%">
-            {musics.map((music, index) => {
-                return (
-                    <ListItemButton
-                        sx={{widget: "100%", display: 'flex', flexDirection: 'row'}}
-                        onClick={(event) => handleListItemClick(event)}
-                    >
-                        <Box sx={{p: 2}}>
-                            <Typography variant="h6" component="div">
-                                {index + 1}
-                            </Typography>
-                        </Box>
-                        <img
-                            src={music.img}
-                            alt="title"
-                            loading='lazy'
-                            style={{paddingRight: '1em'}}
-                            height="40"
-                        />
-                        <ListItemText
-                            primary={music.title}
-                            secondary={music.artist}
-                            secondaryTypographyProps={{style: {color: '#fffffe'}}}
-                        />
-                    </ListItemButton>
-                )
-            })}
-        </List>
+        <Box sx={{ width: '100%', mr: 2, ml: 2 }}>
+            <List component="nav" aria-label="next songs list">
+                {musics.map((music, index) => {
+                    return (
+                        <ListItemButton
+                            sx={{ flexDirection: 'row' }}
+                            onClick={(event) => handleListItemClick(event)}
+                        >
+                            <Box sx={{ p: 2 }}>
+                                <Typography variant="h6" component="div">
+                                    {index + 1}
+                                </Typography>
+                            </Box>
+                            <img
+                                src={music.img}
+                                alt="title"
+                                loading='lazy'
+                                style={{ paddingRight: '1em' }}
+                                height="40"
+                            />
+                            <ListItemText
+                                primary={music.title}
+                                secondary={music.artist}
+                                secondaryTypographyProps={{ style: { color: '#fffffe' } }}
+                            />
+                        </ListItemButton>
+                    )
+                })}
+            </List>
+        </Box>
     )
 }
