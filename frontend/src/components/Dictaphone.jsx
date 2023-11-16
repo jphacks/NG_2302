@@ -19,7 +19,9 @@ export const Dictaphone = () => {
     useEffect(() => {
         // 読み込まれた時点で起動する。
         onStart();
-        runTimerAction();
+        if (checked) {
+            runTimerAction(onAction);
+        }
     }, []);
 
     const commands = [
@@ -57,6 +59,7 @@ export const Dictaphone = () => {
     ];
 
     const onAction = async () => {
+        if (sentence === '') return;
         const body = {
                 conversation: sentence,
             }
@@ -67,6 +70,8 @@ export const Dictaphone = () => {
                 withAuthHeader(cookies.access_token),
             )
             console.log(`sentence: ${sentence}`);
+            // 成功したらリセット
+            setSentence('');
         } catch (error) {
             console.error('enqueue_based_on_mood failed:', error);
         }
@@ -98,7 +103,6 @@ export const Dictaphone = () => {
     }
 
     const {
-        transcript,
         browserSupportsSpeechRecognition,
     } = useSpeechRecognition({ commands });
 
@@ -136,7 +140,7 @@ export const Dictaphone = () => {
     return (
         <Box width="100%">
             <p>{`特定のワードの後:${titleName}`}</p>
-            <p>{transcript}</p>
+            <p>{sentence}</p>
             <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
                 Reset
             </Button>
