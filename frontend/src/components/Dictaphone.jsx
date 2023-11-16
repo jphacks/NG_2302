@@ -57,15 +57,16 @@ export const Dictaphone = () => {
     const onAction = async () => {
         try {
             const body = {
-                sentence: sentence,
+                conversation: sentence,
             }
             await axios.post(
-                `${backendUrl}/music/negapoji`,
+                `${backendUrl}/music/enqueue_based_on_mood`,
                 body,
                 withAuthHeader(cookies.access_token),
             )
+            console.log(sentence);
         } catch (error) {
-            console.error('Negapoji failed:', error);
+            console.error('enqueue_based_on_mood failed:', error);
         }
     }
 
