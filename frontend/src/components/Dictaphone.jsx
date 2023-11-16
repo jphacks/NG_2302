@@ -8,7 +8,10 @@ import { withAuthHeader } from '../config/Headers';
 
 export const Dictaphone = () => {
     const [titleName, setTitleName] = useState('');
+    // 画面に表示するための状態管理
     const [sentence, setSentence] = useState('');
+    // 静的に保存するためのuseRef
+    const conversationRef = useRef('');
     const [cookies] = useCookies(['access_token']);
     const [checked, setChecked] = useState(false);
     //経過時間を格納するためのState
@@ -20,7 +23,7 @@ export const Dictaphone = () => {
         // 読み込まれた時点で起動する。
         onStart();
         if (checked) {
-            runTimerAction(onAction);
+            runTimerAction();
         }
     }, []);
 
@@ -53,25 +56,27 @@ export const Dictaphone = () => {
             // すべての会話をログに残し、ネガポジに使用する
             command: '*',
             callback: (value) => {
-                setSentence(sentence + value);
+                conversationRef.current += value;
+                setSentence(conversationRef.current);
             },
         }
     ];
 
     const onAction = async () => {
-        if (sentence === '') return;
+        if (conversationRef.current === '') return;
+        const tmp = conversationRef.current;
+        conversationRef.current = '';
+        setSentence(conversationRef.current);
         const body = {
-                conversation: sentence,
-            }
+            conversation: tmp,
+        }
         try {
             await axios.post(
                 `${backendUrl}/music/enqueue_based_on_mood`,
                 body,
                 withAuthHeader(cookies.access_token),
-            )
-            console.log(`sentence: ${sentence}`);
-            // 成功したらリセット
-            setSentence('');
+            );
+            console.log(`sentence: ${tmp}`);
         } catch (error) {
             console.error('enqueue_based_on_mood failed:', error);
         }
