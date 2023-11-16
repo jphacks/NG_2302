@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import { ModeTypes } from '../config/ModeTypes';
-import { useModeContext } from '../hooks/ModeHook';
+import { ModeStorage } from '../hooks/ModeHook';
 
 export const ModeSelect = () => {
     const navigate = useNavigate();
-    const {mode, setMode} = useModeContext();
+    const modeStorage = new ModeStorage();
 
     function handleSubmit(mode) {
-        setMode(mode);
+        modeStorage.setMode(mode);
         console.log(mode);
         navigate('/signIn');
     }

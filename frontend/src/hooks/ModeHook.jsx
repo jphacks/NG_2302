@@ -1,18 +1,19 @@
-import { useContext, createContext } from 'react';
 import { ModeTypes } from '../config/ModeTypes';
 
-export const ModeContext = createContext();
-
-export const useModeContext = () => {
-    const { mode, setMode } = useContext(ModeContext);
-
-    const isDjMode = () => {
-        return mode === ModeTypes.DJ;
+export class ModeStorage {
+    constructor() {
+        this.mode = sessionStorage.getItem('mode');
     }
 
-    const isUserMode = () => {
-        return mode === ModeTypes.USER;
+    setMode = (mode) => {
+        sessionStorage.setItem('mode', mode);
     }
 
-    return { mode, setMode, isDjMode, isUserMode }
+    isDjMode = () => {
+        return this.mode === ModeTypes.DJ;
+    }
+
+    isUserMode = () => {
+        return this.mode === ModeTypes.USER;
+    }
 }

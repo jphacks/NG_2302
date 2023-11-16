@@ -13,12 +13,12 @@ import { ModeTypes } from '../config/ModeTypes';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
 import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
-import { useModeContext } from '../hooks/ModeHook';
+import { ModeStorage } from '../hooks/ModeHook';
 
 export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
-    const { mode, isDjMode } = useModeContext();
+    const modeStorage = new ModeStorage();
     const [cookies] = useCookies(['access_token']);
     const [elapsedTime, setElapsedTime] = useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
@@ -40,7 +40,7 @@ export const Home = ({ setTrackList }) => {
 
     // 初期化時に実行
     useEffect(() => {
-        if (mode === ModeTypes.DJ && cookies.access_token === undefined) {
+        if (modeStorage.mode === ModeTypes.DJ && cookies.access_token === undefined) {
             setOpen(true);
         } else {
             setOpen(false);
@@ -93,7 +93,7 @@ export const Home = ({ setTrackList }) => {
             <SongWaitList musicInfo={musicInfo} />
             <CustomDivider />
 
-            {isDjMode()
+            {modeStorage.isDjMode()
                 ? <>
                     { /* 音声認識はバックグラウンドで動作 */}
                     <Dictaphone />
