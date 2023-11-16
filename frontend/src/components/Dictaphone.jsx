@@ -60,6 +60,11 @@ export const Dictaphone = ({ setMusicInfo }) => {
             console.log(`conversation: ${conversationRef.current}`);
             // リセット
             conversationRef.current = '';
+            // 曲のリストを更新
+            try {
+                const data = await getQueueInfo(cookies.access_token);
+                setMusicInfo(data);
+            } catch (error) { }
         } catch (error) { }
     }
 
