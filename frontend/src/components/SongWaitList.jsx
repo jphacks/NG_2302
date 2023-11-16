@@ -24,11 +24,11 @@ export const SongWaitList = ({musicInfo}) => {
     ]
 
     return (
-        <List component="nav" aria-label="next songs list">
+        <List component="nav" aria-label="next songs list" widget="100%">
             {musics.map((music, index) => {
                 return (
                     <ListItemButton
-                        sx={{display: 'flex', flexDirection: 'row'}}
+                        sx={{widget: "100%", display: 'flex', flexDirection: 'row'}}
                         onClick={(event) => handleListItemClick(event)}
                     >
                         <Box sx={{p: 2}}>

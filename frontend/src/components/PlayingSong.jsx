@@ -4,22 +4,22 @@ export const PlayingSong = ({imgUrl, title, artist}) => {
     return (
         <Box
             sx={{
+                mt: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}
         >
             { /* 現在流れている曲の情報　*/}
-            <Typography component="subtitle1">
-                now
-            </Typography>
-            <img src={imgUrl} className="Now-play-song" alt="jacket" width="340"/>
+            <img src={imgUrl} className="Now-play-song" alt="jacket" width="300"/>
+            <Box flexDirection={'row'} >
             <Typography component="body1">
                 {title}
             </Typography>
             <Typography component="body1" style={{color: "#fffffe"}}>
-                {"/ " + artist}
+                {"  /  " + artist}
             </Typography>
+            </Box>
         </Box>
     )
 }
