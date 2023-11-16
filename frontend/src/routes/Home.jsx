@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
 import { useCookies } from 'react-cookie';
 import { PlayingSong } from '../components/PlayingSong';
 import { SongWaitList } from '../components/SongWaitList';
@@ -14,6 +11,8 @@ import { RegisterModalDialog } from '../components/RegisterModalDialog';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
 import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 import { ModeStorage } from '../hooks/ModeHook';
+import { Button } from '@mui/material';
+import { getQueueInfo } from '../utils/ApiService';
 
 export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
@@ -27,15 +26,11 @@ export const Home = ({ setTrackList }) => {
     // バックエンドから曲のリストを取得する
     const getMusicInfo = async () => {
         try {
-            await axios.get(`${backendUrl}/music/get_queue_info`, withAuthHeader(cookies.access_token))
-                .then((res) => {
-                    duration = res.data.current_music_duration;
-                    setMusicInfo(res.data);
-                });
+            const data = await getQueueInfo(cookies.access_token);
+            duration = data.current_music_duration;
+            setMusicInfo(data);
             console.log(musicInfo);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     // 初期化時に実行
@@ -47,7 +42,6 @@ export const Home = ({ setTrackList }) => {
         }
 
         const timer = setInterval(() => {
-            // 10秒間隔で更新する
             setElapsedTime(prevTime => {
                 // durationを超えたら再実行
                 // 曲の残り時間を超えたところで、リロードする
@@ -93,10 +87,20 @@ export const Home = ({ setTrackList }) => {
             <SongWaitList musicInfo={musicInfo} />
             <CustomDivider />
 
+            <Button
+                className='Button_white dark'
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3 }}
+                onClick={() => getMusicInfo()}
+            >
+                更新
+            </Button>
+
             {modeStorage.isDjMode()
                 ? <>
                     { /* 音声認識はバックグラウンドで動作 */}
-                    <Dictaphone />
+                    <Dictaphone setMusicInfo={setMusicInfo} />
                     { /* 音量表示これも本来バックグラウンドで動作 */}
                     <VolumeMeter />
                 </>

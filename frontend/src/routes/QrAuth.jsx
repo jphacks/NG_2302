@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { backendUrl } from '../config/backendUrl';
 import { Typography } from '@mui/material';
-import { urlEncodedHeader } from '../config/Headers';
 import { ModeStorage } from '../hooks/ModeHook';
 import { ModeTypes } from '../config/ModeTypes';
+import { postToken } from '../utils/ApiService';
 
 export const QrAuth = () => {
     const [message, setMessage] = useState('');
@@ -15,7 +13,7 @@ export const QrAuth = () => {
     const modeStorage = new ModeStorage();
 
     // ページが呼ばれた時に初期化処理
-    useEffect(() => {
+    useEffect(async () => {
         // URLからクエリパラメータを取得
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -26,24 +24,14 @@ export const QrAuth = () => {
         // JSONデータをパース
         const jsonData = JSON.parse(decodeURIComponent(jsonDataString));
 
-        console.log(jsonData); // JSONデータがコンソールに表示されます
-
-        // トークンを発行する
-        const json = {
-            username: jsonData.id,
-            password: jsonData.password
-        };
         try {
-            axios.post(`${backendUrl}/auth/token`, json, urlEncodedHeader)
-                .then((res) => {
-                    setCookie('access_token', res.data.access_token);
-                    setCookie('refresh_token', res.data.refresh_token);
-                    // QR認証の時は確定でユーザーとなる
-                    modeStorage.setMode(ModeTypes.USER);
-                    navigate('/home');
-                });
+            const data = await postToken(jsonData.id, jsonData.password);
+            setCookie('access_token', data.access_token);
+            setCookie('refresh_token', data.refresh_token);
+            // QR認証の時は確定でユーザーとなる
+            modeStorage.setMode(ModeTypes.USER);
+            navigate('/home');
         } catch (error) {
-            console.error('Login failed:', error);
             setMessage('Login failed. Please check your credentials.');
         }
     }, [])

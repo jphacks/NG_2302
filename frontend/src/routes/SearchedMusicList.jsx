@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { Box, Typography, Card, CardActionArea, CardMedia, CardContent, Modal, Button } from '@mui/material';
 import { PageTitle } from '../components/PageTitle';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
 import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
+import { postEnqueueTrackId } from '../utils/ApiService';
 
 export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     const [open, setOpen] = useState(false);
@@ -15,19 +13,10 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
 
     // trackIdで楽曲をキューに追加する
     const addQueue = async (trackId) => {
-        const json = {
-            "track_id": trackId
-        }
         try {
-            await axios.post(
-                `${backendUrl}/music/enqueue_by_track_id`,
-                json,
-                withAuthHeader(cookies.access_token),
-            );
+            await postEnqueueTrackId(trackId, cookies.access_token);
             setOpen(false);
-        } catch (error) {
-            console.error('Enqueue failed:', error);
-        }
+        } catch (error) { }
     }
 
     // 楽曲のカードを作成する
@@ -105,9 +94,9 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
             {mode === 'title'
                 ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} />
                 : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} />
-            }            
+            }
 
-            <Typography variant="h6" component="div" sx={{mt: 2}} >
+            <Typography variant="h6" component="div" sx={{ mt: 2 }} >
                 検索結果
             </Typography>
 
