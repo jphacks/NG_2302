@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './styles/App.css'; //アプリ全体に適用するスタイル
 import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
