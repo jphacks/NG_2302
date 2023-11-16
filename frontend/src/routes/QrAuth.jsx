@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { backendUrl } from '../config/backendUrl';
 import { Typography } from '@mui/material';
 import { urlEncodedHeader } from '../config/Headers';
-import { useModeContext } from '../hooks/ModeHook';
+import { ModeStorage } from '../hooks/ModeHook';
 import { ModeTypes } from '../config/ModeTypes';
 
 export const QrAuth = () => {
     const [message, setMessage] = useState('');
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
     const navigate = useNavigate();
-    const {setModeContext} = useModeContext();
+    const modeStorage = new ModeStorage();
 
     // ページが呼ばれた時に初期化処理
     useEffect(() => {
@@ -39,7 +39,7 @@ export const QrAuth = () => {
                     setCookie('access_token', res.data.access_token);
                     setCookie('refresh_token', res.data.refresh_token);
                     // QR認証の時は確定でユーザーとなる
-                    setModeContext(ModeTypes.USER);
+                    modeStorage.setMode(ModeTypes.USER);
                     navigate('/home');
                 });
         } catch (error) {

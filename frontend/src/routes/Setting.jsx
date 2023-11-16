@@ -4,13 +4,13 @@ import { PageTitle } from '../components/PageTitle';
 import { useCookies } from 'react-cookie';
 import { QRCodeCanvas } from 'qrcode.react';
 import { RegisterModalDialog } from '../components/RegisterModalDialog';
-import { useModeContext } from '../hooks/ModeHook';
+import { ModeStorage } from '../hooks/ModeHook';
 
 export const Setting = () => {
     const [open, setOpen] = useState(false);
     const [cookies] = useCookies(['access_token']);
     const [qrCode, setQrCode] = useState('');
-    const { isDjMode } = useModeContext();
+    const modeStorage = new ModeStorage();
 
     const createQrCode = () => {
         console.log('createQrCode');
@@ -49,7 +49,7 @@ export const Setting = () => {
                 </Typography>
             </Box>
 
-            {isDjMode()
+            {modeStorage.isDjMode()
                 ? <>
                     <PageTitle title={'スポティファイ再登録'} />
                     <Button
@@ -66,15 +66,13 @@ export const Setting = () => {
 
             <PageTitle title={'ユーザーはこちら'} />
             <Button sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
-            {
-                qrCode !== '' &&
+            {qrCode !== '' &&
                 <Grid container justifyContent="center">
                     <QRCodeCanvas
                         value={qrCode}
                         size={256}
                     />
-                </Grid>
-            }
+                </Grid>}
         </>
     );
 }

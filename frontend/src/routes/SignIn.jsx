@@ -6,13 +6,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { backendUrl } from '../config/backendUrl';
 import { urlEncodedHeader } from '../config/Headers';
-import { useModeContext } from '../hooks/ModeHook';
+import { ModeStorage } from '../hooks/ModeHook';
 
 export const SignIn = () => {
     const [message, setMessage] = useState('');
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
     const navigate = useNavigate();
-    const {isDjMode} = useModeContext();
+    const modeStorage = new ModeStorage();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -77,7 +77,7 @@ export const SignIn = () => {
                     サインイン
                 </Button>
                 {message && <p>{message}</p>}
-                {isDjMode()
+                {modeStorage.isDjMode()
                     ? <Link href="/signUp" variant="body2">
                         {"アカウントを持っていませんか？ サインアップ"}
                     </Link>
