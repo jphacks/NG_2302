@@ -28,7 +28,6 @@ const Layout = () => {
 }
 
 export default function App() {
-    const [mode, setMode] = useState('');
     const [trackList, setTrackList] = useState([]);
     const location = useLocation();
 

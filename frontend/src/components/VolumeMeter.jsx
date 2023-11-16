@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { Typography, Switch, Box } from "@mui/material";
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
-import { useElapsedTime } from "../hooks/ElapsedTimeHook";
 
 const audioContext = new AudioContext();
 var count = 0;
@@ -16,14 +15,15 @@ export const VolumeMeter = () => {
     const [volume, setVolume] = useState(0);
     const [cookies] = useCookies(['access_token']);
     //経過時間を格納するためのState
-    const {elapsedTime, runTimerAction, timerReset} = useElapsedTime(20);
+    const intervalRef = useRef(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    let maxTime = 20;
 
     /* 音量調整HTTP.POST and Timer */
     const postAdjustVolume = async (volume) => {
         const json = {
             volume_percent: volume,
         }
-
         try {
             await axios.post(
                 `${backendUrl}/music/adjust_volume`,
@@ -38,8 +38,33 @@ export const VolumeMeter = () => {
     }
 
     const onAction = () => {
-        //60秒経過時のロジック
+        //20秒経過時のロジック
         postAdjustVolume(volSum / 200);
+    }
+
+    function runTimerAction() {
+        if (intervalRef.current !== null) return;
+
+        intervalRef.current = setInterval(() => {
+            setElapsedTime(prevTime => {
+                if (prevTime >= maxTime) {
+                    onAction();
+
+                    // 経過時間リセット
+                    return 0;
+                } else {
+                    // インクリメント
+                    return prevTime + 1;
+                }
+            });
+
+        }, 1000)
+    }
+
+    function timerReset() {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        setElapsedTime(0);
     }
 
     useEffect(() => {
@@ -61,7 +86,7 @@ export const VolumeMeter = () => {
             console.log(event.data);
             const value = Math.round(event.data * 100000) / 100;
             count++;
-            const average = Math.round((volSum + value)/count * 100) / 100
+            const average = Math.round((volSum + value) / count * 100) / 100
             setVolume(average);
         }
         micNode.connect(volumeMeterNode).connect(audioContext.destination);
@@ -94,7 +119,7 @@ export const VolumeMeter = () => {
                 inputProps={{ 'aria-label': 'controlled' }}
             />
             <p>{"平均値s:" + volume}</p>  {/* ワードカウントの表示 */}
-            <p>{"経過時間: " + elapsedTime + "/20 秒"}</p>  {/* 経過時間の表示 */}
+            <p>{"経過時間: " + elapsedTime + `/${maxTime} 秒`}</p>  {/* 経過時間の表示 */}
         </Box>
     );
 }

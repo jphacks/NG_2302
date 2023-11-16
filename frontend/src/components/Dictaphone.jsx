@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { Box, Button, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { backendUrl } from '../config/backendUrl';
 import { withAuthHeader } from '../config/Headers';
-import { useElapsedTime } from '../hooks/ElapsedTimeHook';
 
 export const Dictaphone = () => {
     const [titleName, setTitleName] = useState('');
     const [sentence, setSentence] = useState('');
     const [cookies] = useCookies(['access_token']);
-    const { runTimerAction, timerReset } = useElapsedTime(60);
     const [checked, setChecked] = useState(false);
+    //経過時間を格納するためのState
+    const intervalRef = useRef(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    let maxTime = 60;
 
     useEffect(() => {
         // 読み込まれた時点で起動する。
         onStart();
-        runTimerAction(onAction);
+        runTimerAction();
     }, []);
 
     const commands = [
@@ -55,19 +57,44 @@ export const Dictaphone = () => {
     ];
 
     const onAction = async () => {
-        try {
-            const body = {
+        const body = {
                 conversation: sentence,
             }
+        try {
             await axios.post(
                 `${backendUrl}/music/enqueue_based_on_mood`,
                 body,
                 withAuthHeader(cookies.access_token),
             )
-            console.log(sentence);
+            console.log(`sentence: ${sentence}`);
         } catch (error) {
             console.error('enqueue_based_on_mood failed:', error);
         }
+    }
+
+    function runTimerAction() {
+        if (intervalRef.current !== null) return;
+
+        intervalRef.current = setInterval(() => {
+            setElapsedTime(prevTime => {
+                if (prevTime >= maxTime) {
+                    onAction();
+
+                    // 経過時間リセット
+                    return 0;
+                } else {
+                    // インクリメント
+                    return prevTime + 1;
+                }
+            });
+
+        }, 1000)
+    }
+
+    function timerReset() {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        setElapsedTime(0);
     }
 
     const {
@@ -99,11 +126,9 @@ export const Dictaphone = () => {
         if (checked) {
             // Timerリセット
             timerReset();
-            onStop();
         } else {
             // Timer開始
-            runTimerAction(onAction);
-            onStart();
+            runTimerAction();
         }
         setChecked(!checked);
     }
@@ -121,6 +146,7 @@ export const Dictaphone = () => {
                 onChange={() => handleToggle()}
                 inputProps={{ 'aria-label': 'controlled' }}
             />
+            <p>{"経過時間: " + elapsedTime + `/${maxTime} 秒`}</p>  {/* 経過時間の表示 */}
         </Box>
     )
 }
