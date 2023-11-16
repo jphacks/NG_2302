@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './styles/App.css'; //アプリ全体に適用するスタイル
 import { Routes, Route, Outlet, useLocation } from "react-router-dom";
-import { Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
 import { Home } from "./routes/Home";
@@ -35,13 +35,9 @@ export default function App() {
     const location = useLocation();
 
     return (
-        <Container component="main" maxWidth="xs">
+        <>
             <AppBar
                 position="static"
-                elevation={0}
-                sx={{
-                    position: 'relative',
-                }}
             >
                 <Toolbar >
                     {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
@@ -62,6 +58,8 @@ export default function App() {
 
             <Box
                 sx={{
+                    mr: 4,
+                    ml: 4,
                     marginTop: 4,
                     display: 'flex',
                     flexDirection: 'column',
@@ -88,6 +86,6 @@ export default function App() {
                 </ModeContext.Provider>
             </Box>
             <Box sx={{ height: 32 }} />
-        </Container>
+        </>
     );
 };
