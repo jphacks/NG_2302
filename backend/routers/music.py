@@ -8,6 +8,7 @@ from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
+    EnqueueBasedOnMoodReturnValue,
     SearchMusicByTitleReturnValue,
     SearchMusicByArtistNameReturnValue,
     GetQueueInfoReturnValue,
@@ -24,6 +25,10 @@ class EnqueueRequest(BaseModel):
 
 class EnqueueByTrackIdRequest(BaseModel):
     track_id: str = Field(..., title="楽曲のトラックID")
+
+
+class EnqueueBasedOnMoodRequest(BaseModel):
+    conversation: str = Field(..., title="会話の内容")
 
 
 class SearchMusicByTitleRequest(BaseModel):
@@ -72,6 +77,25 @@ def enqueue_by_track_id(
         account_id=account_id
     )
     return_value = service.enqueue_by_track_id(track_id)
+
+    return return_value
+
+
+@router.post("/enqueue_based_on_mood", name="会話の雰囲気に合わせてキューに楽曲を追加", response_model=EnqueueBasedOnMoodReturnValue)
+def enqueue_based_on_mood(
+    request: EnqueueBasedOnMoodRequest,
+    db: Session = Depends(get_db),
+    account_id: int = Depends(get_account_id)
+) -> EnqueueBasedOnMoodReturnValue:
+    # リクエスト情報取得
+    conversation = request.conversation
+
+    service = MusicService(
+        db=db,
+        spotify_api_id_dao=SpotifyApiIdDao(),
+        account_id=account_id
+    )
+    return_value = service.enqueue_based_on_mood(conversation)
 
     return return_value
 
