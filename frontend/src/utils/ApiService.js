@@ -1,7 +1,9 @@
 import axios from "axios"
 import { backendUrl } from "../config/backendUrl"
 import { urlEncodedHeader, withAuthHeader } from "../config/Headers"
+import { updatedQueue } from "./Firebase"
 
+// アカウント認証
 export const postAccount = async (id, password) => {
     const body = {
         login_id: id,
@@ -26,6 +28,7 @@ export const postToken = async (username, password) => {
     return response.data;
 }
 
+// Spotify認証
 export const postRegister = async (clientId, clientSecret, token) => {
     const body = {
         spotify_client_id: clientId,
@@ -38,6 +41,7 @@ export const postRegister = async (clientId, clientSecret, token) => {
     );
 };
 
+// キュー取得
 export const getQueueInfo = async (token) => {
     const response = await axios.get(
         `${backendUrl}/music/get_queue_info`,
@@ -46,17 +50,7 @@ export const getQueueInfo = async (token) => {
     return response.data;
 };
 
-export const postEnqueue = async (title, token) => {
-    const body = {
-        music_title: title
-    }
-    await axios.post(
-        `${backendUrl}/music/enqueue`,
-        body,
-        withAuthHeader(token)
-    );
-};
-
+// 検索
 export const postSearchArtistName = async (artistName, token) => {
     const body = {
         artist_name: artistName
@@ -81,7 +75,20 @@ export const postSearchMusicTitle = async (title, token) => {
     return response.data;
 };
 
-export const postEnqueueTrackId = async (trackId, token) => {
+// キュー追加
+export const postEnqueue = async (title, token, id) => {
+    const body = {
+        music_title: title
+    }
+    await axios.post(
+        `${backendUrl}/music/enqueue`,
+        body,
+        withAuthHeader(token)
+    );
+    updatedQueue(id);
+};
+
+export const postEnqueueTrackId = async (trackId, token, id) => {
     const body = {
         track_id: trackId
     }
@@ -90,9 +97,10 @@ export const postEnqueueTrackId = async (trackId, token) => {
         body,
         withAuthHeader(token)
     );
+    updatedQueue(id);
 }
 
-export const postEnqueueBasedOnMood = async (conversation, token) => {
+export const postEnqueueBasedOnMood = async (conversation, token, id) => {
     const body = {
         conversation: conversation
     }
@@ -101,8 +109,10 @@ export const postEnqueueBasedOnMood = async (conversation, token) => {
         body,
         withAuthHeader(token)
     );
+    updatedQueue(id);
 };
 
+// 音量調整
 export const postAdjustVolume = async (volume, token) => {
     const body = {
         volume_percent: volume

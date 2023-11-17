@@ -10,7 +10,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
     const [conversation, setConversation] = useState('');
     // 静的に保存するためのuseRef
     const conversationRef = useRef('');
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'id']);
     const [checked, setChecked] = useState(false);
     //経過時間を格納するためのState
     const intervalRef = useRef(null);
@@ -33,7 +33,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
                 // queueに追加
                 console.log(value);
                 try {
-                    await postEnqueue(value, cookies.access_token);
+                    await postEnqueue(value, cookies.access_token, cookies.id);
                     setTitleName(value);
                     // 曲のリストを更新
                     const data = await getQueueInfo(cookies.access_token);
@@ -55,7 +55,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
         if (conversationRef.current === '') return;
         try {
             await postEnqueueBasedOnMood(
-                conversationRef.current, cookies.access_token);
+                conversationRef.current, cookies.access_token, cookies.id);
             setConversation(conversationRef.current);
             console.log(`conversation: ${conversationRef.current}`);
             // リセット
