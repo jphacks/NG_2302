@@ -13,6 +13,12 @@ COPY pyproject.toml* poetry.lock* ./
 
 # デプロイに必要
 COPY api api
+COPY core core
+COPY db db
+COPY routers routers
+COPY dependencies.py ./
+COPY main.py ./
+COPY migrate.py ./
 COPY entrypoint.sh ./
 
 # poetryでライブラリをインストール(pyproject.tomlが既にある場合)
