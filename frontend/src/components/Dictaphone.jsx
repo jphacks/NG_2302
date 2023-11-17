@@ -28,7 +28,8 @@ export const Dictaphone = ({ setMusicInfo }) => {
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋*',
+            command: '腹筋 ',
+            fuzzyMatchingThreshold: 0.2,
             callback: async (value) => {
                 // queueに追加
                 console.log(value);
@@ -104,7 +105,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
     function onStart() {
         SpeechRecognition.startListening({
             continuous: true,
-            language: 'ja-JP'
+            language: 'ja'
         });
     }
 
