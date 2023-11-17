@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { backendUrl } from '../config/backendUrl';
-import { urlEncodedHeader } from '../config/Headers';
 import { ModeStorage } from '../hooks/ModeHook';
+import { postToken } from '../utils/ApiService';
+import { initialAccountDocument } from '../utils/Firebase';
 
 export const SignIn = () => {
     const [message, setMessage] = useState('');
@@ -16,24 +15,21 @@ export const SignIn = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const json = {
-            username: data.get('id'),
-            password: data.get('password'),
-        };
+        const formData = new FormData(event.currentTarget);
 
         // QRコード用
-        setCookie('id', data.get('id'));
-        setCookie('password', data.get('password'));
+        setCookie('id', formData.get('id'));
+        setCookie('password', formData.get('password'));
 
         try {
-            const result = await axios.post(`${backendUrl}/auth/token`, json, urlEncodedHeader);
-            if (result != null) {
-                setCookie('access_token', result.data.access_token);
-                setCookie('refresh_token', result.data.refresh_token);
-                setMessage('Login successful!');
-                navigate('/home');
-            }
+            const data = await postToken(formData.get('id'), formData.get('password'));
+
+            await initialAccountDocument(formData.get('id'), data.access_token);
+
+            setCookie('access_token', data.access_token);
+            setCookie('refresh_token', data.refresh_token);
+            setMessage('Login successful!');
+            navigate('/home');
         } catch (error) {
             setMessage('Login failed. Please check your credentials.');
             console.error('Login failed:', error);

@@ -1,18 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { Box, Button, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
+import { postEnqueue, getQueueInfo, postEnqueueBasedOnMood } from '../utils/ApiService';
 
-export const Dictaphone = () => {
+export const Dictaphone = ({ setMusicInfo }) => {
     const [titleName, setTitleName] = useState('');
     // 画面に表示するための状態管理
-    const [sentence, setSentence] = useState('');
+    const [conversation, setConversation] = useState('');
     // 静的に保存するためのuseRef
     const conversationRef = useRef('');
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'id']);
     const [checked, setChecked] = useState(false);
     //経過時間を格納するためのState
     const intervalRef = useRef(null);
@@ -32,24 +30,15 @@ export const Dictaphone = () => {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
             command: '腹筋*',
             callback: async (value) => {
+                // queueに追加
                 console.log(value);
                 try {
-                    const body = {
-                        music_title: value
-                    }
-                    await axios.post(
-                        `${backendUrl}/music/enqueue`,
-                        body,
-                        withAuthHeader(cookies.access_token),
-                    ).then(res => {
-                        console.log(res.data);
-                        // ここ変更しなければならない
-                        window.location.reload();
-                    });
-                } catch (error) {
-                    console.error('Enqueue failed:', error);
-                }
-                setTitleName(value);
+                    await postEnqueue(value, cookies.access_token, cookies.id);
+                    setTitleName(value);
+                    // 曲のリストを更新
+                    const data = await getQueueInfo(cookies.access_token);
+                    setMusicInfo(data);
+                } catch (error) { }
             },
         },
         {
@@ -57,29 +46,26 @@ export const Dictaphone = () => {
             command: '*',
             callback: (value) => {
                 conversationRef.current += value;
-                setSentence(conversationRef.current);
+                setConversation(conversationRef.current);
             },
         }
     ];
 
     const onAction = async () => {
         if (conversationRef.current === '') return;
-        const tmp = conversationRef.current;
-        conversationRef.current = '';
-        setSentence(conversationRef.current);
-        const body = {
-            conversation: tmp,
-        }
         try {
-            await axios.post(
-                `${backendUrl}/music/enqueue_based_on_mood`,
-                body,
-                withAuthHeader(cookies.access_token),
-            );
-            console.log(`sentence: ${tmp}`);
-        } catch (error) {
-            console.error('enqueue_based_on_mood failed:', error);
-        }
+            await postEnqueueBasedOnMood(
+                conversationRef.current, cookies.access_token, cookies.id);
+            setConversation(conversationRef.current);
+            console.log(`conversation: ${conversationRef.current}`);
+            // リセット
+            conversationRef.current = '';
+            // 曲のリストを更新
+            try {
+                const data = await getQueueInfo(cookies.access_token);
+                setMusicInfo(data);
+            } catch (error) { }
+        } catch (error) { }
     }
 
     function runTimerAction() {
@@ -145,7 +131,7 @@ export const Dictaphone = () => {
     return (
         <Box width="100%">
             <p>{`特定のワードの後:${titleName}`}</p>
-            <p>{sentence}</p>
+            <p>{conversation}</p>
             <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
                 Reset
             </Button>

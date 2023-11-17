@@ -1,37 +1,24 @@
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { TextField } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
 import { convertTrackListJson } from '../utils/ConvertTrackListJson';
+import { postSearchMusicTitle } from '../utils/ApiService';
 
-export const TitleSearchTextField = ({setTrackList, label='タイトル検索', isNavigate=true}) => {
+export const TitleSearchTextField = ({ setTrackList, label = 'タイトル検索', isNavigate = true }) => {
     const navigate = useNavigate();
     const [cookies] = useCookies(['access_token']);
 
-    const searchMusicTrack = (title) => {
-        const body = {
-            music_title: title
-        }
+    const searchMusicTrack = async (title) => {
         try {
-            axios.post(
-                `${backendUrl}/music/search_music_by_title`,
-                body,
-                withAuthHeader(cookies.access_token),
-            ).then(response => {
-                const data = response.data;
-                console.log(data);
-                const trackList = convertTrackListJson(data);
-                setTrackList(trackList);
-                if (isNavigate) {
-                    navigate('/search_music');
-                }
-            });
-        } catch (e) {
-            console.log(e);
-        }
+            const data = await postSearchMusicTitle(title, cookies.access_token);
+            console.log(data);
+            const trackList = convertTrackListJson(data);
+            setTrackList(trackList);
+            if (isNavigate) {
+                navigate('/search_music');
+            }
+        } catch (error) { }
     }
 
     return (

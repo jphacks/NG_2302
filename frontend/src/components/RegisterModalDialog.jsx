@@ -1,31 +1,23 @@
 import React from 'react';
-import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { Box, Modal, TextField, Button, Typography } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
+import { postRegister } from '../utils/ApiService';
 
 export const RegisterModalDialog = ({ open, setOpen }) => {
     const [cookies] = useCookies(['access_token']);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const json = {
-            spotify_client_id: data.get('client_id'),
-            spotify_client_secret: data.get('client_secret'),
-        };
-        const headers = withAuthHeader(cookies.access_token);
+        const formData = new FormData(event.currentTarget);
         try {
-            await axios.post(`${backendUrl}/spotify/register`, json, headers)
-                .then(res => {
-                    console.log(res.data);
-                    setOpen(false);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+            await postRegister(
+                formData.get('client_id'),
+                formData.get('client_secret'),
+                cookies.access_token
+            )
+            setOpen(false);
+        } catch (error) { }
     }
 
     return (
@@ -34,7 +26,7 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
-            <Box sx={{ p: 2, position: 'absolute', width: 400, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'common.black', boxShadow: 24, }}>
+            <Box sx={{ p: 2, position: 'absolute', width: 300, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'common.black', boxShadow: 24, }}>
                 <Box component="form" onSubmit={handleSubmit} noValidate>
 
                     <Typography component="h3" variant="div">

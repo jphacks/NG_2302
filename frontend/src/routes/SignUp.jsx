@@ -1,11 +1,10 @@
-import {useState} from 'react';
-import axios from 'axios';
-import {useCookies} from 'react-cookie';
-import {Box, Typography, TextField, Button, Link} from '@mui/material';
-import {customTextField} from '../styles/CustomTextField';
-import {useNavigate} from 'react-router-dom';
-import {backendUrl} from '../config/backendUrl';
-import {urlEncodedHeader} from '../config/Headers';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
+import { customTextField } from '../styles/CustomTextField';
+import { useNavigate } from 'react-router-dom';
+import { postAccount, postToken } from '../utils/ApiService';
+import { initialAccountDocument } from '../utils/Firebase';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
@@ -14,26 +13,16 @@ export const SignUp = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const signUp = {
-            login_id: data.get('id'),
-            login_password: data.get('password'),
-        };
-        const signIn = {
-            username: data.get('id'),
-            password: data.get('password'),
-        };
+        const formData = new FormData(event.currentTarget);
+        const id = formData.get('id');
+        const password = formData.get('password');
 
         // QRコード用
-        setCookie('id', data.get('id'));
-        setCookie('password', data.get('password'));
+        setCookie('id', id);
+        setCookie('password', password);
 
         try {
-            await axios.post(`${backendUrl}/auth/account`, signUp)
-                .then(res => {
-                    console.log(res);
-                    console.log(res.data);
-                });
+            await postAccount(id, password);
             setMessage('Account created successfully!');
         } catch (error) {
             setMessage('Account creation failed. Please try again.');
@@ -41,19 +30,18 @@ export const SignUp = () => {
         }
 
         try {
-            const result = await axios.post(`${backendUrl}/auth/token`, signIn, urlEncodedHeader);
-            if (result != null) {
-                setCookie('access_token', result.data.access_token);
-                setCookie('refresh_token', result.data.refresh_token);
-                setMessage('Login successful!');
-                navigate('/home');
-            }
+            const data = await postToken(id, password);
+
+            await initialAccountDocument(id, data.access_token);
+
+            setCookie('access_token', data.access_token);
+            setCookie('refresh_token', data.refresh_token);
+            setMessage('Login successful!');
+            navigate('/home');
         } catch (error) {
             setMessage('Login failed. Please try again.');
             console.error('Login failed:', error);
         }
-
-
     };
 
     return (
@@ -61,7 +49,7 @@ export const SignUp = () => {
             <Typography component="h1" variant="h5">
                 アカウントを作成
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
                     margin="normal"
                     required
@@ -88,7 +76,7 @@ export const SignUp = () => {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{mt: 3, mb: 2}}
+                    sx={{ mt: 3, mb: 2 }}
                 >
                     サインアップ
                 </Button>

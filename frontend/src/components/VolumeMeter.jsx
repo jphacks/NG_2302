@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { useCookies } from "react-cookie";
 import { Typography, Switch, Box } from "@mui/material";
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
+import { postAdjustVolume } from "../utils/ApiService";
 
 const audioContext = new AudioContext();
 var count = 0;
@@ -19,27 +17,9 @@ export const VolumeMeter = ({multiplier=3000}) => {
     const [elapsedTime, setElapsedTime] = useState(0);
     let maxTime = 20;
 
-    /* 音量調整HTTP.POST and Timer */
-    const postAdjustVolume = async (volume) => {
-        const json = {
-            volume_percent: volume,
-        }
-        try {
-            await axios.post(
-                `${backendUrl}/music/adjust_volume`,
-                json,
-                withAuthHeader(cookies.access_token)
-            ).then(res => {
-                console.log(res.data);
-            });
-        } catch (error) {
-            console.error('Adjust volume failed:', error);
-        }
-    }
-
-    const onAction = () => {
-        //20秒経過時のロジック
-        postAdjustVolume(volSum / 200);
+    //20秒経過時のロジック
+    const onAction = async () => {
+        await postAdjustVolume(volSum / 200, cookies.access_token);
     }
 
     function runTimerAction() {

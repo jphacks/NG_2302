@@ -1,33 +1,22 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { Box, Typography, Card, CardActionArea, CardMedia, CardContent, Modal, Button } from '@mui/material';
 import { PageTitle } from '../components/PageTitle';
-import { backendUrl } from '../config/backendUrl';
-import { withAuthHeader } from '../config/Headers';
 import { TitleSearchTextField } from '../components/TitleSearchTextField';
 import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
+import { postEnqueueTrackId } from '../utils/ApiService';
 
 export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     const [open, setOpen] = useState(false);
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'id']);
     const [clickedTrack, setClickedTrack] = useState({});
 
     // trackIdで楽曲をキューに追加する
     const addQueue = async (trackId) => {
-        const json = {
-            "track_id": trackId
-        }
         try {
-            await axios.post(
-                `${backendUrl}/music/enqueue_by_track_id`,
-                json,
-                withAuthHeader(cookies.access_token),
-            );
+            await postEnqueueTrackId(trackId, cookies.access_token, cookies.id);
             setOpen(false);
-        } catch (error) {
-            console.error('Enqueue failed:', error);
-        }
+        } catch (error) { }
     }
 
     // 楽曲のカードを作成する
@@ -70,7 +59,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={{ p: 2, position: 'absolute', width: 400, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'common.black', boxShadow: 24, }}>
+                <Box sx={{ p: 2, position: 'absolute', width: 300, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'common.black', boxShadow: 24, }}>
                     <Typography component="h2" variant="div">
                         この曲を追加しますか？
                     </Typography>
@@ -105,9 +94,9 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
             {mode === 'title'
                 ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} />
                 : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} />
-            }            
+            }
 
-            <Typography variant="h6" component="div" sx={{mt: 2}} >
+            <Typography variant="h6" component="div" sx={{ mt: 2 }} >
                 検索結果
             </Typography>
 
