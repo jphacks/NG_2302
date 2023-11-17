@@ -1,19 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { doc, getDoc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { getQueueInfo } from "./ApiService";
-
-// Cloud FireStore用初期化
-const firebaseConfig = {
-    apiKey: "AIzaSyCsLRoJ6iB-gKx-_x3vCHq4kLoQigtljsU",
-    authDomain: "dj-hukkin-56d10.firebaseapp.com",
-    projectId: "dj-hukkin-56d10",
-    storageBucket: "dj-hukkin-56d10.appspot.com",
-    messagingSenderId: "544721830185",
-    appId: "1:544721830185:web:fd49eaa0cb778283cfb738",
-    measurementId: "G-0GCDV92R7S"
-}
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+import { db } from "../index.tsx";
 
 // グローバル変数
 var unsubscribe = null;

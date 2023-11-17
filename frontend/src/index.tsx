@@ -4,6 +4,21 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { CookiesProvider } from 'react-cookie';
 import App from './App';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
+// Cloud FireStore用初期化
+const firebaseConfig = {
+    apiKey: "AIzaSyCsLRoJ6iB-gKx-_x3vCHq4kLoQigtljsU",
+    authDomain: "dj-hukkin-56d10.firebaseapp.com",
+    projectId: "dj-hukkin-56d10",
+    storageBucket: "dj-hukkin-56d10.appspot.com",
+    messagingSenderId: "544721830185",
+    appId: "1:544721830185:web:fd49eaa0cb778283cfb738",
+    measurementId: "G-0GCDV92R7S"
+}
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 
 export const theme = createTheme({
     palette: {
