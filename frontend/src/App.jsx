@@ -35,7 +35,9 @@ export default function App() {
     const location = useLocation();
     const [cookies] = useCookies(['id']);
 
-    setOnSnapshot(cookies.id);
+    if (cookies.id !== undefined) {
+        setOnSnapshot(cookies.id);
+    }
 
     return (
         <>
