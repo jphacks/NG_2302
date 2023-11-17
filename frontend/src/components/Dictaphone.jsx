@@ -28,8 +28,8 @@ export const Dictaphone = ({ setMusicInfo }) => {
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋 ',
-            fuzzyMatchingThreshold: 0.2,
+            command: '腹筋*牛乳',
+            fuzzyMatchingThreshold: 0.5,
             callback: async (value) => {
                 // queueに追加
                 console.log(value);
@@ -131,7 +131,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
 
     return (
         <Box width="100%">
-            <p>{`特定のワードの後:${titleName}`}</p>
+            <p>{`特定のワードの後「${titleName}」`}</p>
             <p>{conversation}</p>
             <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
                 Reset
