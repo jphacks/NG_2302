@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from db import get_db
+from db.db import get_db
 from dependencies import get_account_id
 from core.daos.spotify import SpotifyApiIdDao
 from core.dtos.music import (

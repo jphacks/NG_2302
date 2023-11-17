@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from db import get_db
+from db.db import get_db
 from core.daos.auth import AccountDao
 from core.dtos.auth import AuthToken, CreateAccountReturnValue
 from core.services.auth import AuthService

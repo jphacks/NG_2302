@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "web"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
+sqlalchemy = "^2.0.23"
+pymysql = "^1.1.0"
+spotipy = "^2.23.0"
+speechrecognition = "^3.10.0"
+passlib = "^1.7.4"
+google-cloud-language = "^2.11.1"
+python-jose = "^3.3.0"
+bcrypt = "^4.0.1"
+python-multipart = "^0.0.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

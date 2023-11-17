@@ -12,7 +12,3 @@ def reset_database():
     Auth.metadata.create_all(bind=engine)
     Spotify.metadata.drop_all(bind=engine)
     Spotify.metadata.create_all(bind=engine)
-
-
-if __name__ == "__main__":
-    reset_database()

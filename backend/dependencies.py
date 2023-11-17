@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from db import get_db
+from db.db import get_db
 from core.dtos.auth import Account
 from core.services.auth import AuthService
 from core.daos.auth import AccountDao
