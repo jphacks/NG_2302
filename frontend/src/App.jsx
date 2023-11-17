@@ -43,7 +43,7 @@ export default function App() {
                         : <IconButton edge="start" color="common.white" href='/home' >
                             <HomeIcon />
                         </IconButton>}
-                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} className='header'>
                         DJふっきん
                     </Typography>
                     {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
@@ -65,7 +65,7 @@ export default function App() {
                 }}
             >
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
-                <img src={`${window.location.origin}/images/HukkinMilk.png`} className="App-logo" alt="logo" />
+                <img src={`${window.location.origin}/images/logo.png`} className="App-logo" alt="logo" />
 
                 { /* React Router */}
                 <Routes>

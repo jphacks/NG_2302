@@ -39,6 +39,7 @@ export const SignIn = () => {
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
+                    
                     margin="normal"
                     required
                     fullWidth
@@ -61,6 +62,7 @@ export const SignIn = () => {
                     sx={customTextField}
                 />
                 <Button
+                    className="Button_white"
                     type="submit"
                     fullWidth
                     variant="contained"

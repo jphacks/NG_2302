@@ -33,7 +33,7 @@ export const Setting = () => {
             <PageTitle title={'アカウント情報'} />
 
             <Box sx={{ mt: 1 }} >
-                <Typography component="h4">
+                <Typography component="h4" className='text'>
                     ID
                 </Typography>
                 <Typography component="h2" variant="div">
@@ -41,7 +41,7 @@ export const Setting = () => {
                 </Typography>
             </Box>
             <Box sx={{ mt: 1, mb: 3 }} >
-                <Typography component="h4">
+                <Typography component="h4" className='text'>
                     パスワード
                 </Typography>
                 <Typography component="h2" variant="div">
@@ -53,7 +53,7 @@ export const Setting = () => {
                 ? <>
                     <PageTitle title={'スポティファイ再登録'} />
                     <Button
-                        className="Button_pink dark"
+                        className="Button_white dark"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -67,7 +67,7 @@ export const Setting = () => {
 
             <PageTitle title={'ユーザーはこちら'} />
             <Button
-                className="Button_pink dark"
+                className="Button_white dark"
                 sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
             {qrCode !== '' &&
                 <Grid container justifyContent="center">

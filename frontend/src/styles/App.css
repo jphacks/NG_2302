@@ -1,10 +1,55 @@
-
 .dark{
         margin-bottom: 20px !important;
         padding: 20px !important;
         text-align: center !important;
         background: #010a01 !important;
 }
+
+.App-logo {
+    width: 50vw; /* 画面の幅の50% */.logo {
+    text-align: center;
+    width: 65%;
+    height: 250px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    user-select: none;
+}
+}
+
+
+.App-logo {
+    height: auto; /* 高さは自動調整 */
+    margin-top: -50px;
+    margin-bottom: -100px;
+}
+
+@media (min-width: 601px) {
+    .App-logo {
+        width: 30vw; /* 大きな画面では幅を小さくする */
+        margin-top: -50px;
+        margin-bottom: -150px;
+    }
+}
+
+
+.header {
+    color: #fff !important; /* 白色のテキスト */
+    text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 20px #f0f, /* ネオンの色 */
+    0 0 30px #f0f,
+    0 0 40px #f0f,
+    0 0 70px #f0f,
+    0 0 80px #f0f,
+    0 0 100px #f0f,
+    0 0 150px #f0f !important; 
+}
+
 
 .Button_pink {
     color: #fff !important;

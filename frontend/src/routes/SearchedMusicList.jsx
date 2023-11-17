@@ -70,6 +70,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         {clickedTrack.artist}
                     </Typography>
                     <Button
+                        className='Button_white'
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -79,6 +80,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         はい
                     </Button>
                     <Button
+                        className='Button_white'
                         type="submit"
                         fullWidth
                         variant="contained"
