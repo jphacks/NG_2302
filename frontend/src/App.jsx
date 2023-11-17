@@ -38,7 +38,7 @@ export default function App() {
     setOnSnapshot(cookies.id);
 
     return (
-        <Box component="main">
+        <div className="App">
             <AppBar
                 position="static"
             >
@@ -87,6 +87,6 @@ export default function App() {
                 </Routes>
             </Box>
             <Box sx={{ height: 32 }} />
-        </Box>
+        </div>
     );
 };
