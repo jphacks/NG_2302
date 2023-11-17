@@ -8,13 +8,13 @@ import { postEnqueueTrackId } from '../utils/ApiService';
 
 export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     const [open, setOpen] = useState(false);
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'id']);
     const [clickedTrack, setClickedTrack] = useState({});
 
     // trackIdで楽曲をキューに追加する
     const addQueue = async (trackId) => {
         try {
-            await postEnqueueTrackId(trackId, cookies.access_token);
+            await postEnqueueTrackId(trackId, cookies.access_token, cookies.id);
             setOpen(false);
         } catch (error) { }
     }
@@ -59,7 +59,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={{ p: 2, position: 'absolute', width: 400, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'common.black', boxShadow: 24, }}>
+                <Box sx={{ p: 2, position: 'absolute', width: 300, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'common.black', boxShadow: 24, }}>
                     <Typography component="h2" variant="div">
                         この曲を追加しますか？
                     </Typography>

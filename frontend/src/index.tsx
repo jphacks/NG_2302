@@ -40,6 +40,7 @@ declare module "@mui/material/Button" {
         tertiary: true;
     }
 }
+
 const container = document.getElementById('root');
 const root = createRoot(container as HTMLElement);
 root.render(

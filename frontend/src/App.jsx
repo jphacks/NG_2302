@@ -11,6 +11,8 @@ import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchedMusicList } from './routes/SearchedMusicList';
+import { setOnSnapshot } from './utils/Firebase';
+import { useCookies } from 'react-cookie';
 
 const Layout = () => {
     return (
@@ -31,6 +33,11 @@ const Layout = () => {
 export default function App() {
     const [trackList, setTrackList] = useState([]);
     const location = useLocation();
+    const [cookies] = useCookies(['id']);
+
+    if (cookies.id !== undefined) {
+        setOnSnapshot(cookies.id);
+    }
 
     return (
         <>

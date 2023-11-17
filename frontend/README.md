@@ -18,6 +18,8 @@ npm install react-speech-recognition
 npm install axios
 npm install react-cookie
 npm install qrcode.react
+npm install firebase
+npm install -g firebase-tools
 ```
 
 ### 開発サーバー起動

@@ -5,6 +5,7 @@ import { customTextField } from '../styles/CustomTextField';
 import { useNavigate } from 'react-router-dom';
 import { ModeStorage } from '../hooks/ModeHook';
 import { postToken } from '../utils/ApiService';
+import { initialAccountDocument } from '../utils/Firebase';
 
 export const SignIn = () => {
     const [message, setMessage] = useState('');
@@ -22,6 +23,9 @@ export const SignIn = () => {
 
         try {
             const data = await postToken(formData.get('id'), formData.get('password'));
+
+            await initialAccountDocument(formData.get('id'), data.access_token);
+
             setCookie('access_token', data.access_token);
             setCookie('refresh_token', data.refresh_token);
             setMessage('Login successful!');

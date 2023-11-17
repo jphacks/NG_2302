@@ -10,7 +10,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
     const [conversation, setConversation] = useState('');
     // 静的に保存するためのuseRef
     const conversationRef = useRef('');
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'id']);
     const [checked, setChecked] = useState(false);
     //経過時間を格納するためのState
     const intervalRef = useRef(null);
@@ -28,12 +28,13 @@ export const Dictaphone = ({ setMusicInfo }) => {
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋*',
+            command: '腹筋*牛乳',
+            fuzzyMatchingThreshold: 0.5,
             callback: async (value) => {
                 // queueに追加
                 console.log(value);
                 try {
-                    await postEnqueue(value, cookies.access_token);
+                    await postEnqueue(value, cookies.access_token, cookies.id);
                     setTitleName(value);
                     // 曲のリストを更新
                     const data = await getQueueInfo(cookies.access_token);
@@ -55,7 +56,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
         if (conversationRef.current === '') return;
         try {
             await postEnqueueBasedOnMood(
-                conversationRef.current, cookies.access_token);
+                conversationRef.current, cookies.access_token, cookies.id);
             setConversation(conversationRef.current);
             console.log(`conversation: ${conversationRef.current}`);
             // リセット
@@ -104,7 +105,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
     function onStart() {
         SpeechRecognition.startListening({
             continuous: true,
-            language: 'ja-JP'
+            language: 'ja'
         });
     }
 
@@ -130,7 +131,7 @@ export const Dictaphone = ({ setMusicInfo }) => {
 
     return (
         <Box width="100%">
-            <p>{`特定のワードの後:${titleName}`}</p>
+            <p>{`特定のワードの後「${titleName}」`}</p>
             <p>{conversation}</p>
             <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
                 Reset
