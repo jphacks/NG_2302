@@ -3,9 +3,10 @@ import { useCookies } from 'react-cookie';
 import { Box, Modal, TextField, Button, Typography } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import { postRegister } from '../utils/ApiService';
+import { registerClientAccount } from '../utils/Firebase';
 
 export const RegisterModalDialog = ({ open, setOpen }) => {
-    const [cookies] = useCookies(['access_token']);
+    const [cookies, setCookie] = useCookies(['access_token', 'client_id', 'id']);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -16,6 +17,8 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
                 formData.get('client_secret'),
                 cookies.access_token
             )
+            setCookie('client_id', formData.get('client_id'));
+            await registerClientAccount(cookies.client_id, cookies.id);
             setOpen(false);
         } catch (error) { }
     }

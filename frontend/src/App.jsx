@@ -33,10 +33,10 @@ const Layout = () => {
 export default function App() {
     const [trackList, setTrackList] = useState([]);
     const location = useLocation();
-    const [cookies] = useCookies(['id']);
+    const [cookies] = useCookies(['client_id', 'access_token']);
 
-    if (cookies.id !== undefined) {
-        setOnSnapshot(cookies.id);
+    if (cookies.client_id !== undefined) {
+        setOnSnapshot(cookies.client_id, cookies.access_token, setTrackList);
     }
 
     return (

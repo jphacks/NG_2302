@@ -80,7 +80,7 @@ export const postSearchMusicTitle = async (title, token) => {
 };
 
 // キュー追加
-export const postEnqueue = async (title, token, id) => {
+export const postEnqueue = async (title, token, client_id) => {
     const body = {
         music_title: title
     }
@@ -89,10 +89,10 @@ export const postEnqueue = async (title, token, id) => {
         body,
         withAuthHeader(token)
     );
-    updatedQueue(id);
+    await updatedQueue(client_id);
 };
 
-export const postEnqueueTrackId = async (trackId, token, id) => {
+export const postEnqueueTrackId = async (trackId, token, client_id) => {
     const body = {
         track_id: trackId
     }
@@ -101,10 +101,10 @@ export const postEnqueueTrackId = async (trackId, token, id) => {
         body,
         withAuthHeader(token)
     );
-    updatedQueue(id);
+    await updatedQueue(client_id);
 }
 
-export const postEnqueueBasedOnMood = async (conversation, token, id) => {
+export const postEnqueueBasedOnMood = async (conversation, token, client_id) => {
     const body = {
         conversation: conversation
     }
@@ -113,7 +113,7 @@ export const postEnqueueBasedOnMood = async (conversation, token, id) => {
         body,
         withAuthHeader(token)
     );
-    updatedQueue(id);
+    updatedQueue(client_id);
 };
 
 // 音量調整
