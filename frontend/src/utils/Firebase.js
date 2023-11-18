@@ -54,15 +54,15 @@ export const registerClientAccount = async (client_id, user_id) => {
 
 export const registerUserAccount = async (user_id) => {
     const querySnapshot = await getDocs(query(collection(db, "updates")));
-    querySnapshot.forEach(async (doc) => {
+    var result = 'undefined';
+    querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
         const users = doc.data().users;
         if (users !== undefined && users.includes(user_id)) {
-            return doc.id;
-        } else {
-            return null;
+            result = doc.id;
         }
     });
+    return result;
 }
 
 export const updatedQueue = async (client_id) => {
@@ -70,6 +70,7 @@ export const updatedQueue = async (client_id) => {
     const docSnap = await getDoc(docRef);
     // 更新通知で他のデバイスと同期させるために、
     // カウントをインクリメントする
+    console.log("Document data:", docSnap.data());
     await updateDoc(docRef, {
         count: docSnap.data().count + 1,
     });
@@ -84,7 +85,7 @@ export const setOnSnapshot = (client_id, accessToken, setMusicInfo) => {
         if (!isFirst && token !== '') {
             console.log("\nCurrent data: ", doc.data());
             const info = await getQueueInfo(token);
-            if (window.location.pathname === '/home')  {
+            if (window.location.pathname === '/home') {
                 setMusicInfo(info);
             }
         } else {

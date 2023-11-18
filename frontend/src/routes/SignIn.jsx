@@ -32,7 +32,7 @@ export const SignIn = () => {
             setCookie('access_token', data.access_token);
             
             const client_id = await registerUserAccount(id);
-            if (client_id !== undefined) {
+            if (client_id !== 'undefined') {
                 setCookie('client_id', client_id);
             }
 
