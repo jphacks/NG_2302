@@ -2,14 +2,14 @@
         margin-bottom: 20px !important;
         padding: 20px !important;
         text-align: center !important;
-        background: #010a01 !important;
+        background: #000000 !important;
 }
 
 .App-logo {
     width: 50vw; /* 画面の幅の50% */.logo {
     text-align: center;
     width: 65%;
-    height: 250px;
+    height: 500px;
     margin: auto;
     position: absolute;
     top: 0;
@@ -89,6 +89,27 @@
     border-radius: 2rem !important;
     color: #fff !important;
     padding: 0.4em !important;
+    box-shadow: 0 0 .2rem #fff,
+                0 0 .2rem #fff,
+                0 0 2rem #fff,
+
+                inset 0 0 1.3rem rgb(255, 255, 255) !important;
+}
+
+.form {
+    color: #fff !important;
+    text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px #ffffff,
+        0 0 82px #ffffff,
+        0 0 92px #ffffff, !important;
+
+    border: 0.2rem solid #fff !important;
+    border-radius: 0.5rem !important;
+    color: #fff !important;
+    padding: 0.15em !important;
     box-shadow: 0 0 .2rem #fff,
                 0 0 .2rem #fff,
                 0 0 2rem #fff,

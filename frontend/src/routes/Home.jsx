@@ -70,12 +70,12 @@ export const Home = ({ setTrackList }) => {
         <>
             <RegisterModalDialog open={open} setOpen={setOpen} />
 
-            <PageTitle title={'Reserve Songs'} />
+            <PageTitle title={'楽曲を追加する'} />
 
             <TitleSearchTextField setTrackList={setTrackList} />
             <ArtistSearchTextField setTrackList={setTrackList} />
 
-            <PageTitle title={'Song List'} />
+            <PageTitle title={'楽曲リスト'} />
 
             <PlayingSong
                 imgUrl={musicInfo.current_music_image_url}

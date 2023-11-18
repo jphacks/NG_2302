@@ -51,7 +51,7 @@ export const SignIn = () => {
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
-                    
+                    className='form'
                     margin="normal"
                     required
                     fullWidth
@@ -63,6 +63,7 @@ export const SignIn = () => {
                     sx={customTextField}
                 />
                 <TextField
+                    className='form'
                     margin="normal"
                     required
                     fullWidth
