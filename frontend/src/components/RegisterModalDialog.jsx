@@ -36,6 +36,7 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
                         Spotify Client ID
                     </Typography>
                     <TextField
+                        className='form'
                         id="client_id"
                         name='client_id'
                         fullWidth
@@ -46,6 +47,7 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
                         Spotify Client Secret
                     </Typography>
                     <TextField
+                        className='form'
                         id='client_secret'
                         name='client_secret'
                         fullWidth
