@@ -9,7 +9,7 @@ var volSum = 0;
 var volMax = -1;
 var volMin = -1;
 
-export const VolumeMeter = ({ multiplier = 3000 }) => {
+export const VolumeMeter = () => {
     const [inProgress, setInProgress] = useState(false);
     const [checked, setChecked] = useState(false);
     const [volume, setVolume] = useState(0);
@@ -72,7 +72,7 @@ export const VolumeMeter = ({ multiplier = 3000 }) => {
             console.log(event.data);
             // event.dataを300倍して整数表示している
             count++;
-            volSum += Math.round(event.data * multiplier * 100) / 100;
+            volSum += Math.round(event.data * 3000 * 100) / 100;
             const average = Math.round(volSum / count * 100) / 100
 
             // averageを使って正規化する

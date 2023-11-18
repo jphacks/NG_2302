@@ -11,7 +11,6 @@ import { Setting } from './routes/Setting';
 import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchedMusicList } from './routes/SearchedMusicList';
-import { Test } from './routes/Test';
 
 const Layout = () => {
     return (
@@ -80,7 +79,6 @@ export default function App() {
                         <Route path="/qrAuth" element={<QrAuth />} />
                         <Route path="/search_music" element={<SearchedMusicList trackList={trackList} setTrackList={setTrackList} mode='title' />} />
                         <Route path="/search_artist" element={<SearchedMusicList trackList={trackList} setTrackList={setTrackList} mode='artist' />} />
-                            <Route path="/test" element={<Test />} />
                     </Route>
                 </Routes>
             </Box>
