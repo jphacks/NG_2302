@@ -69,7 +69,7 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{ mt: 2, mb: 2 }}
+                    sx={{ mb: 2 }}
                     onClick={() => setOpen(false)}
                 >
                     閉じる

@@ -13,10 +13,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
 
     // trackIdで楽曲をキューに追加する
     const addQueue = async (trackId) => {
-        try {
-            await postEnqueueTrackId(trackId, cookies.access_token, cookies.client_id);
-            setOpen(false);
-        } catch (error) { }
+        await postEnqueueTrackId(trackId, cookies.access_token, cookies.client_id);
     }
 
     // 楽曲のカードを作成する
@@ -75,7 +72,10 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3 }}
-                        onClick={() => addQueue(clickedTrack.id)}
+                        onClick={() => {
+                            addQueue(clickedTrack.id);
+                            setOpen(false);
+                        }}
                     >
                         はい
                     </Button>
@@ -84,7 +84,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 1 }}
+                        sx={{ mt: 1, mb: 2 }}
                         onClick={() => setOpen(false)}
                     >
                         いいえ
