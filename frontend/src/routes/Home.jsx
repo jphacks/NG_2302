@@ -36,21 +36,24 @@ export const Home = ({ setTrackList }) => {
 
     // 初期化時に実行
     useEffect(async () => {
-        if (cookies.client_id === undefined) {
-            if (modeStorage.mode === ModeTypes.DJ) {
-                const clientId = await registerUserAccount(cookies.id);
-                if (clientId === null) {
-                    setOpen(true);
-                } else {
-                    setCookie('client_id', clientId);
-                    getMusicInfo();
+        const initLoad = async () => {
+            if (cookies.client_id === undefined) {
+                if (modeStorage.mode === ModeTypes.DJ) {
+                    const clientId = await registerUserAccount(cookies.id);
+                    if (clientId === null) {
+                        setOpen(true);
+                    } else {
+                        setCookie('client_id', clientId);
+                        getMusicInfo();
+                    }
                 }
+            } else {
+                setOpen(false);
+                setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
+                getMusicInfo();
             }
-        } else {
-            setOpen(false);
-            setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
-            getMusicInfo();
         }
+        initLoad();
 
         const timer = setInterval(() => {
             setElapsedTime(prevTime => {
