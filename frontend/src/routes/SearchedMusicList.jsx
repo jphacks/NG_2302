@@ -94,8 +94,8 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
 
             <PageTitle title={'タイトル検索'} />
             {mode === 'title'
-                ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} />
-                : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} />
+                ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} className='form' />
+                : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} className='form' />
             }
 
             <Typography variant="h6" component="div" sx={{ mt: 2 }} >

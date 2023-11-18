@@ -23,6 +23,7 @@ export const TitleSearchTextField = ({ setTrackList, label = 'タイトル検索
 
     return (
         <TextField
+            className='form'
             id='search_title'
             sx={customTextField}
             label={label}

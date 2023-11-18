@@ -24,6 +24,7 @@ export const ArtistSearchTextField = ({ setTrackList, label = 'アーティス�
 
     return (
         <TextField
+            className='form'
             id='search_artist'
             sx={customTextField}
             label={label}
