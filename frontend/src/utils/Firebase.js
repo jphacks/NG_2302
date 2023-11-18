@@ -59,10 +59,9 @@ export const registerUserAccount = async (user_id) => {
         const users = doc.data().users;
         if (users !== undefined && users.includes(user_id)) {
             return doc.id;
-        } else {
-            return null;
         }
     });
+    return 'undefined';
 }
 
 export const updatedQueue = async (client_id) => {
