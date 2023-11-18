@@ -37,11 +37,11 @@ export const Home = ({ setTrackList }) => {
     // 初期化時に実行
     useEffect(() => {
         const initLoad = async () => {
-            if (cookies.client_id === 'undefined') {
+            if (cookies.client_id === undefined) {
                 const clientId = await registerUserAccount(cookies.id);
                 console.log(clientId);
                 if (modeStorage.mode === ModeTypes.DJ) {
-                    if (clientId === null) {
+                    if (clientId === 'undefined') {
                         setOpen(true);
                     } else {
                         setCookie('client_id', clientId);
