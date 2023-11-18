@@ -14,6 +14,9 @@ export const Setting = () => {
 
     const createQrCode = () => {
         console.log('createQrCode');
+        if (cookies.id === undefined || cookies.password === undefined) {
+            return;
+        }
         const jsonData = {
             id: cookies.id,
             password: cookies.password,
@@ -22,7 +25,6 @@ export const Setting = () => {
         const jsonDataString = JSON.stringify(jsonData);
         let baseUrl = 'https://dj-hukkin.netlify.app';
 
-        console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
         setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
 
