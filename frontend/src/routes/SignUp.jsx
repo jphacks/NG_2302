@@ -17,6 +17,11 @@ export const SignUp = () => {
         const id = formData.get('id');
         const password = formData.get('password');
 
+        if (id === '' || password === '') {
+            setMessage('IDとパスワードを入力してください。');
+            return;
+        }
+
         // QRコード用
         setCookie('id', id);
         setCookie('password', password);

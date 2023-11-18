@@ -43,11 +43,12 @@ export default function App() {
         <>
             <AppBar
                 position="static"
+                color="tertiary"
             >
                 <Toolbar >
                     {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
                         ? null
-                        : <IconButton edge="start" color="common.white" href='/home' >
+                        : <IconButton edge="start" color="inherit" href='/home' >
                             <HomeIcon />
                         </IconButton>}
                     <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} className='header' textAlign={'center'}>
@@ -55,7 +56,7 @@ export default function App() {
                     </Typography>
                     {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
                         ? null
-                        : <IconButton color="common.white" href='/setting'>
+                        : <IconButton color="inherit" href='/setting'>
                             <SettingsIcon />
                         </IconButton>}
                 </Toolbar>
