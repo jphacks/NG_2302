@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { Box, Button, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
-import { postEnqueue, getQueueInfo, postEnqueueBasedOnMood } from '../utils/ApiService';
+import { postEnqueue, postEnqueueBasedOnMood } from '../utils/ApiService';
 
-export const Dictaphone = ({ setMusicInfo }) => {
+export const Dictaphone = ({ }) => {
     const [titleName, setTitleName] = useState('');
     // 画面に表示するための状態管理
     const [conversation, setConversation] = useState('');
     // 静的に保存するためのuseRef
     const conversationRef = useRef('');
-    const [cookies] = useCookies(['access_token', 'id']);
+    const [cookies] = useCookies(['access_token', 'client_id']);
     const [checked, setChecked] = useState(false);
     //経過時間を格納するためのState
     const intervalRef = useRef(null);
@@ -34,11 +34,8 @@ export const Dictaphone = ({ setMusicInfo }) => {
                 // queueに追加
                 console.log(value);
                 try {
-                    await postEnqueue(value, cookies.access_token, cookies.id);
+                    await postEnqueue(value, cookies.access_token, cookies.client_id);
                     setTitleName(value);
-                    // 曲のリストを更新
-                    const data = await getQueueInfo(cookies.access_token);
-                    setMusicInfo(data);
                 } catch (error) { }
             },
         },
@@ -56,16 +53,11 @@ export const Dictaphone = ({ setMusicInfo }) => {
         if (conversationRef.current === '') return;
         try {
             await postEnqueueBasedOnMood(
-                conversationRef.current, cookies.access_token, cookies.id);
+                conversationRef.current, cookies.access_token, cookies.client_id);
             setConversation(conversationRef.current);
             console.log(`conversation: ${conversationRef.current}`);
             // リセット
             conversationRef.current = '';
-            // 曲のリストを更新
-            try {
-                const data = await getQueueInfo(cookies.access_token);
-                setMusicInfo(data);
-            } catch (error) { }
         } catch (error) { }
     }
 
