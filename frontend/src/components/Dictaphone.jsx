@@ -20,21 +20,22 @@ export const Dictaphone = () => {
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋 * 牛乳',
+            command: '腹筋 :title (を)流して',
             fuzzyMatchingThreshold: 0.5,
-            callback: async (value) => {
+            callback: async (title) => {
                 // queueに追加
-                console.log(value);
+                console.log(title);
                 try {
-                    await postEnqueue(value, cookies.access_token, cookies.client_id);
+                    await postEnqueue(title, cookies.access_token, cookies.client_id);
                 } catch (error) { }
-                setTitleName(value);
+                setTitleName(title);
             },
         },
     ];
 
     const {
         transcript,
+        resetTranscript,
         browserSupportsSpeechRecognition,
     } = useSpeechRecognition({ commands });
 
@@ -48,7 +49,7 @@ export const Dictaphone = () => {
 
     useEffect(() => {
         if (checked) {
-            conversationRef.current += transcript;
+            conversationRef.current = transcript;
             setConversation(transcript);
         }
     }, [transcript]);
@@ -63,10 +64,11 @@ export const Dictaphone = () => {
         try {
             await postEnqueueBasedOnMood(
                 conversationRef.current, cookies.access_token, cookies.client_id);
-            setConversation(conversationRef.current);
             console.log(`conversation: ${conversationRef.current}`);
             // リセット
             conversationRef.current = '';
+            setConversation('');
+            resetTranscript();
         } catch (error) { }
     }
 
