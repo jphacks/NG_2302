@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { CookiesProvider } from 'react-cookie';
 import App from './App';
+import { AxiosClientProvider } from './components/AxiosClientProvider';
 
 export const theme = createTheme({
     palette: {
@@ -45,11 +46,13 @@ const container = document.getElementById('root');
 const root = createRoot(container as HTMLElement);
 root.render(
     <BrowserRouter>
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <CookiesProvider>
-                <App />
-            </CookiesProvider>
-        </ThemeProvider>
+        <AxiosClientProvider>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <CookiesProvider>
+                    <App />
+                </CookiesProvider>
+            </ThemeProvider>
+        </AxiosClientProvider>
     </BrowserRouter>
 )
