@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TextField } from "@mui/material";
 import { VolumeMeter } from "../components/VolumeMeter";
 import { customTextField } from "../styles/CustomTextField";
+import { Dictaphone } from "../components/Dictaphone";
 
 export const Test = () => {
     const [multiplier, setMultiplier] = useState(3000);
@@ -20,6 +21,7 @@ export const Test = () => {
                     }
                 }}
             />
+            <Dictaphone />
             <VolumeMeter multiplier={multiplier} />
         </>
     );
