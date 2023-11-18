@@ -13,13 +13,13 @@ import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 import { ModeStorage } from '../hooks/ModeHook';
 import { Button } from '@mui/material';
 import { getQueueInfo } from '../utils/ApiService';
-import { setOnSnapshot } from '../utils/Firebase';
+import { registerUserAccount, setOnSnapshot } from '../utils/Firebase';
 
 export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
     const modeStorage = new ModeStorage();
-    const [cookies] = useCookies(['access_token', 'client_id']);
+    const [cookies, setCookie] = useCookies(['access_token', 'id', 'client_id']);
     const [elapsedTime, setElapsedTime] = useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
     let duration = -1;
@@ -35,14 +35,21 @@ export const Home = ({ setTrackList }) => {
     }
 
     // 初期化時に実行
-    useEffect(() => {
+    useEffect(async () => {
         if (cookies.client_id === undefined) {
             if (modeStorage.mode === ModeTypes.DJ) {
-                setOpen(true);
+                const clientId = await registerUserAccount(cookies.id);
+                if (clientId === null) {
+                    setOpen(true);
+                } else {
+                    setCookie('client_id', clientId);
+                    getMusicInfo();
+                }
             }
         } else {
             setOpen(false);
             setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
+            getMusicInfo();
         }
 
         const timer = setInterval(() => {
