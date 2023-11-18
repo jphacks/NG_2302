@@ -46,7 +46,7 @@ export const Home = ({ setTrackList }) => {
                         setOpen(true);
                     }
                     return;
-                } 
+                }
             }
             // 過去のCookieが残っている場合の対策
             const clientId = await registerUserAccount(cookies.id);
@@ -55,13 +55,8 @@ export const Home = ({ setTrackList }) => {
                 setOpen(true);
             }
             setOpen(false);
-            try {
-                setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
-                getMusicInfo();
-            } catch (error) {
-                // この時過去に登録したcookieによってエラーをはいている
-                setCookie('client_id', undefined);
-            }
+            setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
+            getMusicInfo();
         }
         initLoad();
 

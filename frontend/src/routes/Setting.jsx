@@ -23,9 +23,11 @@ export const Setting = () => {
         }
 
         const jsonDataString = JSON.stringify(jsonData);
-        let baseUrl = 'https://dj-hukkin.netlify.app';
+        const baseUrl = 'https://dj-hukkin.netlify.app';
+        const qrUrl = baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString);
+        console.log(qrUrl);
 
-        setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
+        setQrCode(qrUrl);
     }
 
     return (
@@ -72,7 +74,7 @@ export const Setting = () => {
                 className="Button_white dark"
                 sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
             {qrCode !== '' &&
-                <Grid container justifyContent="center">
+                <Grid marginTop={4} marginBottom={4} container justifyContent="center">
                     <QRCodeCanvas
                         value={qrCode}
                         size={256}
