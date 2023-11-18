@@ -70,6 +70,7 @@ export const updatedQueue = async (client_id) => {
     const docSnap = await getDoc(docRef);
     // 更新通知で他のデバイスと同期させるために、
     // カウントをインクリメントする
+    console.log("Document data:", docSnap.data());
     await updateDoc(docRef, {
         count: docSnap.data().count + 1,
     });
