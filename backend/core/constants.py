@@ -7,7 +7,7 @@ class DBConstant:
 
 class SpotifyOAuthConstant:
     # Spotifyの認証情報
-    SPOTIPY_REDIRECT_URI = 'http://localhost:3000'
+    SPOTIPY_REDIRECT_URI = 'https://cardj-web-mgtirivoza-an.a.run.app'
 
 
 class SentimentAnalysisConstant:

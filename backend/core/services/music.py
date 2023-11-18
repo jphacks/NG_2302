@@ -96,7 +96,7 @@ class MusicService:
         self,
         music_title: str
     ) -> EnqueueReturnValue:
-        scope = ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        scope = []
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return EnqueueReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
@@ -125,7 +125,7 @@ class MusicService:
         self,
         track_id: str
     ) -> EnqueueByTrackIdReturnValue:
-        scope = ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        scope = []
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return EnqueueByTrackIdReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
@@ -152,7 +152,7 @@ class MusicService:
         magnitude = magnitude * SentimentAnalysisConstant.MAGNITUDE_COEFFICIENT
         mood = 1 + score * (1 / magnitude + 1)
 
-        scope = ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"]
+        scope = []
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return EnqueueBasedOnMoodReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
@@ -293,7 +293,7 @@ class MusicService:
         )
 
     def get_queue_info(self) -> GetQueueInfoReturnValue:
-        scope = ["user-read-playback-state", "user-read-currently-playing"]
+        scope = []
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return GetQueueInfoReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))
@@ -334,7 +334,7 @@ class MusicService:
         self,
         volume_percent: int
     ) -> AdjustVolumeReturnValue:
-        scope = ["user-read-playback-state"]
+        scope = []
         sp = self._get_spotify_instance(scope)
         if sp is None:
             return AdjustVolumeReturnValue(error_codes=(ErrorCode.SPOTIFY_NOT_REGISTERED,))

@@ -20,6 +20,8 @@ COPY dependencies.py ./
 COPY main.py ./
 COPY migrate.py ./
 COPY entrypoint.sh ./
+COPY dj-hukkin.json ./
+COPY .cache ./
 
 # poetryでライブラリをインストール(pyproject.tomlが既にある場合)
 RUN poetry config virtualenvs.in-project true
