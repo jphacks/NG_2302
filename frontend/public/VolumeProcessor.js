@@ -1,5 +1,5 @@
 /* global currentTime */
-const SMOOTHING_FACTOR = 0.9;
+const SMOOTHING_FACTOR = 0.7;
 const FRAME_PER_SECOND = 10;
 const FRAME_INTERVAL = 1 / FRAME_PER_SECOND;
 
@@ -36,7 +36,9 @@ class VolumeMeter extends AudioWorkletProcessor {
         if (currentTime - this._lastUpdate > FRAME_INTERVAL) {
             this.calculateRMS(inputChannelData);
             // 画面描画のため
-            this.port.postMessage(this._volume);
+            if (this._volume != 0) {
+                this.port.postMessage(this._volume);
+            }
             this._lastUpdate = currentTime;
         }
 

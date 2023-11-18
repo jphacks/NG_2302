@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { getQueueInfo } from "./ApiService";
-import { count } from "../routes/Home";
 
 // Cloud FireStore用初期化
 const firebaseConfig = {

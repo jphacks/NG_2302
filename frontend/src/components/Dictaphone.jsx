@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { Box, Button, Switch } from '@mui/material';
+import { Box, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { postEnqueue, postEnqueueBasedOnMood } from '../utils/ApiService';
 
@@ -17,14 +17,6 @@ export const Dictaphone = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
     let maxTime = 60;
 
-    useEffect(() => {
-        // 読み込まれた時点で起動する。
-        onStart();
-        if (checked) {
-            runTimerAction();
-        }
-    }, []);
-
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
@@ -39,15 +31,32 @@ export const Dictaphone = () => {
                 } catch (error) { }
             },
         },
-        {
-            // すべての会話をログに残し、ネガポジに使用する
-            command: '*',
-            callback: (value) => {
-                conversationRef.current += value;
-                setConversation(conversationRef.current);
-            },
-        }
     ];
+
+    const {
+        transcript,
+        browserSupportsSpeechRecognition,
+    } = useSpeechRecognition({ commands });
+
+    useEffect(() => {
+        // 読み込まれた時点で起動する。
+        onStart();
+        if (checked) {
+            runTimerAction();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (checked) {
+            conversationRef.current += transcript;
+            setConversation(transcript);
+        }
+    }, [transcript]);
+
+    // Hooksに怒られるからuseEffectのあと
+    if (!browserSupportsSpeechRecognition) {
+        return <span>ブラウザが音声認識未対応です</span>;
+    }
 
     const onAction = async () => {
         if (conversationRef.current === '') return;
@@ -86,24 +95,11 @@ export const Dictaphone = () => {
         setElapsedTime(0);
     }
 
-    const {
-        browserSupportsSpeechRecognition,
-    } = useSpeechRecognition({ commands });
-
-    if (!browserSupportsSpeechRecognition) {
-        return <span>ブラウザが音声認識未対応です</span>;
-    }
-
     function onStart() {
         SpeechRecognition.startListening({
             continuous: true,
             language: 'ja'
         });
-    }
-
-    function onRestart() {
-        onStop();
-        onStart();
     }
 
     function onStop() {
@@ -125,9 +121,6 @@ export const Dictaphone = () => {
         <Box width="100%">
             <p>{`特定のワードの後「${titleName}」`}</p>
             <p>{conversation}</p>
-            <Button variant="contained" color="tertiary" onClick={() => onRestart()}>
-                Reset
-            </Button>
             <p>ネガポジ判定機能の動作</p>
             <Switch
                 checked={checked}

@@ -6,6 +6,8 @@ import { postAdjustVolume } from "../utils/ApiService";
 const audioContext = new AudioContext();
 var count = 0;
 var volSum = 0;
+var volMax = -1;
+var volMin = -1;
 
 export const VolumeMeter = () => {
     const [inProgress, setInProgress] = useState(false);
@@ -15,11 +17,15 @@ export const VolumeMeter = () => {
     //経過時間を格納するためのState
     const intervalRef = useRef(null);
     const [elapsedTime, setElapsedTime] = useState(0);
-    let maxTime = 20;
+    let maxTime = 30;
 
     //20秒経過時のロジック
     const onAction = async () => {
-        await postAdjustVolume(volSum / 200, cookies.access_token);
+        const normalization = ((volSum / count) - volMin) / (volMax - volMin) * 100;
+        console.log('正規化' + normalization);
+        count = 0;
+        volSum = 0;
+        await postAdjustVolume(normalization, cookies.access_token);
     }
 
     function runTimerAction() {
@@ -64,9 +70,19 @@ export const VolumeMeter = () => {
         const volumeMeterNode = new AudioWorkletNode(audioContext, 'volume-meter');
         volumeMeterNode.port.onmessage = (event) => {
             console.log(event.data);
-            const value = Math.round(event.data * 100000) / 100;
+            // event.dataを300倍して整数表示している
             count++;
-            const average = Math.round((volSum + value) / count * 100) / 100
+            volSum += Math.round(event.data * 3000 * 100) / 100;
+            const average = Math.round(volSum / count * 100) / 100
+
+            // averageを使って正規化する
+            if (volMax === -1 || volMax < average) {
+                volMax = average;
+            }
+            if (volMin === -1 || volMin > average) {
+                volMin = average;
+            }
+
             setVolume(average);
         }
         micNode.connect(volumeMeterNode).connect(audioContext.destination);
