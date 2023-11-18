@@ -12,8 +12,6 @@ import { QrAuth } from './routes/QrAuth';
 import { ModeSelect } from './routes/ModeSelect';
 import { SearchedMusicList } from './routes/SearchedMusicList';
 import { Test } from './routes/Test';
-import { setOnSnapshot } from './utils/Firebase';
-import { useCookies } from 'react-cookie';
 
 const Layout = () => {
     return (
@@ -34,27 +32,25 @@ const Layout = () => {
 export default function App() {
     const [trackList, setTrackList] = useState([]);
     const location = useLocation();
-    const [cookies] = useCookies(['id']);
-
-    setOnSnapshot(cookies.id);
 
     return (
         <>
             <AppBar
                 position="static"
+                color="tertiary"
             >
                 <Toolbar >
                     {location.pathname === "/" || location.pathname === "/signIn" || location.pathname === "/signUp"
                         ? null
-                        : <IconButton edge="start" color="common.white" href='/home' >
+                        : <IconButton edge="start" color="inherit" href='/home' >
                             <HomeIcon />
                         </IconButton>}
-                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} className='header' textAlign={'center'}>
                         DJふっきん
                     </Typography>
                     {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
                         ? null
-                        : <IconButton color="common.white" href='/setting'>
+                        : <IconButton color="inherit" href='/setting'>
                             <SettingsIcon />
                         </IconButton>}
                 </Toolbar>
@@ -71,7 +67,7 @@ export default function App() {
                 }}
             >
                 { /* ふっきん牛乳のイラスト (qrAuthの時に相対パスだと表示されないので絶対パスを使用) */}
-                <img src={`${window.location.origin}/images/HukkinMilk.png`} className="App-logo" alt="logo" />
+                <img src={`${window.location.origin}/images/logo.png`} className="App-logo" alt="logo" />
 
                 { /* React Router */}
                 <Routes>

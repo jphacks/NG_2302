@@ -4,11 +4,10 @@ import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import { useNavigate } from 'react-router-dom';
 import { postAccount, postToken } from '../utils/ApiService';
-import { initialAccountDocument } from '../utils/Firebase';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'id', 'password']);
+    const [cookies, setCookie] = useCookies(['access_token', 'id', 'password']);
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -16,6 +15,11 @@ export const SignUp = () => {
         const formData = new FormData(event.currentTarget);
         const id = formData.get('id');
         const password = formData.get('password');
+
+        if (id === '' || password === '') {
+            setMessage('IDとパスワードを入力してください。');
+            return;
+        }
 
         // QRコード用
         setCookie('id', id);
@@ -32,10 +36,8 @@ export const SignUp = () => {
         try {
             const data = await postToken(id, password);
 
-            await initialAccountDocument(id, data.access_token);
-
             setCookie('access_token', data.access_token);
-            setCookie('refresh_token', data.refresh_token);
+
             setMessage('Login successful!');
             navigate('/home');
         } catch (error) {
@@ -51,6 +53,7 @@ export const SignUp = () => {
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
+                    className='form'
                     margin="normal"
                     required
                     fullWidth
@@ -62,6 +65,7 @@ export const SignUp = () => {
                     sx={customTextField}
                 />
                 <TextField
+                    className='form'
                     margin="normal"
                     required
                     fullWidth
@@ -73,6 +77,7 @@ export const SignUp = () => {
                     sx={customTextField}
                 />
                 <Button
+                    className='Button_white dark'
                     type="submit"
                     fullWidth
                     variant="contained"

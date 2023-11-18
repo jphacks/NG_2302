@@ -5,10 +5,11 @@ import { Typography } from '@mui/material';
 import { ModeStorage } from '../hooks/ModeHook';
 import { ModeTypes } from '../config/ModeTypes';
 import { postToken } from '../utils/ApiService';
+import { registerUserAccount } from '../utils/Firebase';
 
 export const QrAuth = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+    const [cookies, setCookie] = useCookies(['access_token', 'client_id']);
     const navigate = useNavigate();
     const modeStorage = new ModeStorage();
 
@@ -27,7 +28,8 @@ export const QrAuth = () => {
         try {
             const data = await postToken(jsonData.id, jsonData.password);
             setCookie('access_token', data.access_token);
-            setCookie('refresh_token', data.refresh_token);
+            const client_id = await registerUserAccount(jsonData.id);
+            setCookie('client_id', client_id);
             // QR認証の時は確定でユーザーとなる
             modeStorage.setMode(ModeTypes.USER);
             navigate('/home');

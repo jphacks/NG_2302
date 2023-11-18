@@ -13,12 +13,13 @@ import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 import { ModeStorage } from '../hooks/ModeHook';
 import { Button } from '@mui/material';
 import { getQueueInfo } from '../utils/ApiService';
+import { setOnSnapshot } from '../utils/Firebase';
 
 export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
     const modeStorage = new ModeStorage();
-    const [cookies] = useCookies(['access_token']);
+    const [cookies] = useCookies(['access_token', 'client_id']);
     const [elapsedTime, setElapsedTime] = useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
     let duration = -1;
@@ -35,10 +36,13 @@ export const Home = ({ setTrackList }) => {
 
     // 初期化時に実行
     useEffect(() => {
-        if (modeStorage.mode === ModeTypes.DJ && cookies.access_token === undefined) {
-            setOpen(true);
+        if (cookies.client_id === undefined) {
+            if (modeStorage.mode === ModeTypes.DJ) {
+                setOpen(true);
+            }
         } else {
             setOpen(false);
+            setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
         }
 
         const timer = setInterval(() => {
@@ -61,21 +65,21 @@ export const Home = ({ setTrackList }) => {
 
     // トークンが登録されたら、曲のリストを取得する
     useEffect(() => {
-        if (cookies.access_token !== undefined) {
+        if (cookies.client_id !== undefined) {
             getMusicInfo();
         }
-    }, [cookies.access_token]);
+    }, [cookies.client_id]);
 
     return (
         <>
             <RegisterModalDialog open={open} setOpen={setOpen} />
 
-            <PageTitle title={'Reserve Songs'} />
+            <PageTitle title={'楽曲を追加する'} />
 
             <TitleSearchTextField setTrackList={setTrackList} />
             <ArtistSearchTextField setTrackList={setTrackList} />
 
-            <PageTitle title={'Song List'} />
+            <PageTitle title={'楽曲リスト'} />
 
             <PlayingSong
                 imgUrl={musicInfo.current_music_image_url}
@@ -100,7 +104,7 @@ export const Home = ({ setTrackList }) => {
             {modeStorage.isDjMode()
                 ? <>
                     { /* 音声認識はバックグラウンドで動作 */}
-                    <Dictaphone setMusicInfo={setMusicInfo} />
+                    <Dictaphone />
                     { /* 音量表示これも本来バックグラウンドで動作 */}
                     <VolumeMeter />
                 </>

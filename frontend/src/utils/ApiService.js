@@ -3,14 +3,18 @@ import { backendUrl } from "../config/backendUrl"
 import { urlEncodedHeader, withAuthHeader } from "../config/Headers"
 import { updatedQueue } from "./Firebase"
 
+export const apiClient = axios.create({
+    baseURL: backendUrl,
+});
+
 // アカウント認証
 export const postAccount = async (id, password) => {
     const body = {
         login_id: id,
         login_password: password
     }
-    await axios.post(
-        `${backendUrl}/auth/account`,
+    await apiClient.post(
+        `/auth/account`,
         body
     );
 }
@@ -20,8 +24,8 @@ export const postToken = async (username, password) => {
         username: username,
         password: password
     }
-    const response = await axios.post(
-        `${backendUrl}/auth/token`,
+    const response = await apiClient.post(
+        `/auth/token`,
         body,
         urlEncodedHeader
     );
@@ -34,8 +38,8 @@ export const postRegister = async (clientId, clientSecret, token) => {
         spotify_client_id: clientId,
         spotify_client_secret: clientSecret
     }
-    await axios.post(
-        `${backendUrl}/spotify/register`,
+    await apiClient.post(
+        `/spotify/register`,
         body,
         withAuthHeader(token)
     );
@@ -43,8 +47,8 @@ export const postRegister = async (clientId, clientSecret, token) => {
 
 // キュー取得
 export const getQueueInfo = async (token) => {
-    const response = await axios.get(
-        `${backendUrl}/music/get_queue_info`,
+    const response = await apiClient.get(
+        `/music/get_queue_info`,
         withAuthHeader(token)
     );
     return response.data;
@@ -55,8 +59,8 @@ export const postSearchArtistName = async (artistName, token) => {
     const body = {
         artist_name: artistName
     }
-    const response = await axios.post(
-        `${backendUrl}/music/search_music_by_artist_name`,
+    const response = await apiClient.post(
+        `/music/search_music_by_artist_name`,
         body,
         withAuthHeader(token)
     );
@@ -67,8 +71,8 @@ export const postSearchMusicTitle = async (title, token) => {
     const body = {
         music_title: title
     }
-    const response = await axios.post(
-        `${backendUrl}/music/search_music_by_title`,
+    const response = await apiClient.post(
+        `/music/search_music_by_title`,
         body,
         withAuthHeader(token)
     );
@@ -76,40 +80,40 @@ export const postSearchMusicTitle = async (title, token) => {
 };
 
 // キュー追加
-export const postEnqueue = async (title, token, id) => {
+export const postEnqueue = async (title, token, client_id) => {
     const body = {
         music_title: title
     }
-    await axios.post(
-        `${backendUrl}/music/enqueue`,
+    await apiClient.post(
+        `/music/enqueue`,
         body,
         withAuthHeader(token)
     );
-    updatedQueue(id);
+    await updatedQueue(client_id);
 };
 
-export const postEnqueueTrackId = async (trackId, token, id) => {
+export const postEnqueueTrackId = async (trackId, token, client_id) => {
     const body = {
         track_id: trackId
     }
-    await axios.post(
-        `${backendUrl}/music/enqueue_by_track_id`,
+    await apiClient.post(
+        `/music/enqueue_by_track_id`,
         body,
         withAuthHeader(token)
     );
-    updatedQueue(id);
+    await updatedQueue(client_id);
 }
 
-export const postEnqueueBasedOnMood = async (conversation, token, id) => {
+export const postEnqueueBasedOnMood = async (conversation, token, client_id) => {
     const body = {
         conversation: conversation
     }
-    await axios.post(
-        `${backendUrl}/music/enqueue_based_on_mood`,
+    await apiClient.post(
+        `/music/enqueue_based_on_mood`,
         body,
         withAuthHeader(token)
     );
-    updatedQueue(id);
+    updatedQueue(client_id);
 };
 
 // 音量調整
@@ -117,8 +121,8 @@ export const postAdjustVolume = async (volume, token) => {
     const body = {
         volume_percent: volume
     }
-    await axios.post(
-        `${backendUrl}/music/adjust_volume`,
+    await apiClient.post(
+        `/music/adjust_volume`,
         body,
         withAuthHeader(token)
     );

@@ -5,29 +5,37 @@ import { customTextField } from '../styles/CustomTextField';
 import { useNavigate } from 'react-router-dom';
 import { ModeStorage } from '../hooks/ModeHook';
 import { postToken } from '../utils/ApiService';
-import { initialAccountDocument } from '../utils/Firebase';
+import { registerUserAccount } from '../utils/Firebase';
 
 export const SignIn = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'token_type', 'id', 'password']);
+    const [cookies, setCookie] = useCookies(['access_token', 'client_id', 'id', 'password']);
     const navigate = useNavigate();
     const modeStorage = new ModeStorage();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        const id = formData.get('id');
+        const password = formData.get('password');
 
-        // QRコード用
-        setCookie('id', formData.get('id'));
-        setCookie('password', formData.get('password'));
+        if (id === '' || password === '') {
+            setMessage('IDとパスワードを入力してください。');
+            return;
+        }
+
+        setCookie('id', id);
+        setCookie('password', password);
 
         try {
-            const data = await postToken(formData.get('id'), formData.get('password'));
-
-            await initialAccountDocument(formData.get('id'), data.access_token);
-
+            const data = await postToken(id, password);
             setCookie('access_token', data.access_token);
-            setCookie('refresh_token', data.refresh_token);
+            
+            const client_id = await registerUserAccount(id);
+            if (client_id !== undefined) {
+                setCookie('client_id', client_id);
+            }
+
             setMessage('Login successful!');
             navigate('/home');
         } catch (error) {
@@ -43,6 +51,7 @@ export const SignIn = () => {
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
+                    className='form'
                     margin="normal"
                     required
                     fullWidth
@@ -54,6 +63,7 @@ export const SignIn = () => {
                     sx={customTextField}
                 />
                 <TextField
+                    className='form'
                     margin="normal"
                     required
                     fullWidth
@@ -65,6 +75,7 @@ export const SignIn = () => {
                     sx={customTextField}
                 />
                 <Button
+                    className="Button_white dark"
                     type="submit"
                     fullWidth
                     variant="contained"

@@ -8,13 +8,13 @@ import { postEnqueueTrackId } from '../utils/ApiService';
 
 export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     const [open, setOpen] = useState(false);
-    const [cookies] = useCookies(['access_token', 'id']);
+    const [cookies] = useCookies(['access_token', 'client_id']);
     const [clickedTrack, setClickedTrack] = useState({});
 
     // trackIdで楽曲をキューに追加する
     const addQueue = async (trackId) => {
         try {
-            await postEnqueueTrackId(trackId, cookies.access_token, cookies.id);
+            await postEnqueueTrackId(trackId, cookies.access_token, cookies.client_id);
             setOpen(false);
         } catch (error) { }
     }
@@ -22,7 +22,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     // 楽曲のカードを作成する
     const trackCard = (track) => {
         return (
-            <Card sx={{ mt: 1, mb: 1, width: "80%", display: 'flex' }}>
+            <Card sx={{ mt: 1, mb: 1, width: '100%', display: 'flex' }}>
                 <CardActionArea
                     sx={{ display: 'flex' }}
                     onClick={() => {
@@ -70,6 +70,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         {clickedTrack.artist}
                     </Typography>
                     <Button
+                        className='Button_white dark'
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -79,10 +80,11 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         はい
                     </Button>
                     <Button
+                        className='Button_white dark'
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 2 }}
+                        sx={{ mt: 1 }}
                         onClick={() => setOpen(false)}
                     >
                         いいえ
@@ -92,8 +94,8 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
 
             <PageTitle title={'タイトル検索'} />
             {mode === 'title'
-                ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} />
-                : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} />
+                ? <TitleSearchTextField setTrackList={setTrackList} label='タイトル再検索' isNavigate={false} className='form' />
+                : <ArtistSearchTextField setTrackList={setTrackList} label='アーティスト再検索' isNavigate={false} className='form' />
             }
 
             <Typography variant="h6" component="div" sx={{ mt: 2 }} >

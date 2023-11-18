@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { getQueueInfo } from "./ApiService";
+import { count } from "../routes/Home";
 
 // Cloud FireStore用初期化
 const firebaseConfig = {
@@ -20,39 +21,73 @@ var unsubscribe = null;
 var isFirst = true;
 var token = '';
 
-export const initialAccountDocument = async (id, accessToken) => {
-    const docRef = doc(db, "updates", id);
+export const registerClientAccount = async (client_id, user_id) => {
+    const docRef = doc(db, "updates", client_id);
     const docSnap = await getDoc(docRef);
+    console.log("Document data:", docSnap.data());
     if (docSnap.exists()) {
-        // すでにアカウントが存在する場合
-        console.log("Document data:", docSnap.data());
+        // すでにSpotifyIDが存在する場合
+        const users = docSnap.data().users;
+        if (users === undefined) {
+            // usersが存在しない場合 -> 追加する
+            await updateDoc(docRef, {
+                count: 0,
+                users: [user_id],
+            });
+        } else if (users.includes(user_id)) {
+            // すでにUserIdが存在する場合 -> 何もしない
+            console.log("すでに登録済みです");
+        } else {
+            // まだUserIdが存在しない場合 -> 追加する
+            await updateDoc(docRef, {
+                count: 0,
+                users: [...users, user_id],
+            });
+        }
     } else {
-        // アカウントが存在しない場合 -> 追加する
+        // SpotifyIdが存在しない場合 -> 追加する
         await setDoc(docRef, {
             count: 0,
+            users: [user_id],
         });
     }
-    token = accessToken;
 }
 
-export const updatedQueue = async (id) => {
-    const docRef = doc(db, "updates", id);
+export const registerUserAccount = async (user_id) => {
+    const querySnapshot = await getDocs(query(collection(db, "updates")));
+    querySnapshot.forEach(async (doc) => {
+        console.log(doc.id, " => ", doc.data());
+        const users = doc.data().users;
+        if (users !== undefined && users.includes(user_id)) {
+            return doc.id;
+        } else {
+            return null;
+        }
+    });
+}
+
+export const updatedQueue = async (client_id) => {
+    const docRef = doc(db, "updates", client_id);
     const docSnap = await getDoc(docRef);
     // 更新通知で他のデバイスと同期させるために、
     // カウントをインクリメントする
-    await setDoc(docRef, {
+    await updateDoc(docRef, {
         count: docSnap.data().count + 1,
     });
 }
 
-export const setOnSnapshot = (id) => {
+export const setOnSnapshot = (client_id, accessToken, setMusicInfo) => {
     if (unsubscribe != null) return;
-    const docRef = doc(db, "updates", id);
-    unsubscribe = onSnapshot(docRef, (doc) => {
+    token = accessToken;
+    const docRef = doc(db, "updates", client_id);
+    unsubscribe = onSnapshot(docRef, async (doc) => {
         // 初回は実行しない
-        if (!isFirst) {
-            console.log("Current data: ", doc.data());
-            getQueueInfo(token);
+        if (!isFirst && token !== '') {
+            console.log("\nCurrent data: ", doc.data());
+            const info = await getQueueInfo(token);
+            if (window.location.pathname === '/home')  {
+                setMusicInfo(info);
+            }
         } else {
             isFirst = false;
             console.log('setOnSnapshot');

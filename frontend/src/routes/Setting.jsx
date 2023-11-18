@@ -14,6 +14,9 @@ export const Setting = () => {
 
     const createQrCode = () => {
         console.log('createQrCode');
+        if (cookies.id === undefined || cookies.password === undefined) {
+            return;
+        }
         const jsonData = {
             id: cookies.id,
             password: cookies.password,
@@ -22,7 +25,6 @@ export const Setting = () => {
         const jsonDataString = JSON.stringify(jsonData);
         let baseUrl = 'https://dj-hukkin.netlify.app';
 
-        console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
         setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
 
@@ -32,16 +34,16 @@ export const Setting = () => {
 
             <PageTitle title={'アカウント情報'} />
 
-            <Box sx={{ mt: 1 }} >
-                <Typography component="h4">
-                    ID
+            <Box sx={{ mt: 1 }} textAlign={'center'} >
+                <Typography component="h4" className='text'>
+                    ユーザーID
                 </Typography>
                 <Typography component="h2" variant="div">
                     {cookies.id}
                 </Typography>
             </Box>
-            <Box sx={{ mt: 1, mb: 3 }} >
-                <Typography component="h4">
+            <Box sx={{ mt: 1, mb: 3}} textAlign={'center'} >
+                <Typography component="h4" className='text'>
                     パスワード
                 </Typography>
                 <Typography component="h2" variant="div">
@@ -53,7 +55,7 @@ export const Setting = () => {
                 ? <>
                     <PageTitle title={'スポティファイ再登録'} />
                     <Button
-                        className="Button_pink dark"
+                        className="Button_white dark"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -67,7 +69,7 @@ export const Setting = () => {
 
             <PageTitle title={'ユーザーはこちら'} />
             <Button
-                className="Button_pink dark"
+                className="Button_white dark"
                 sx={{ mt: 2, mb: 2 }} onClick={createQrCode}>QRコード生成</Button>
             {qrCode !== '' &&
                 <Grid container justifyContent="center">

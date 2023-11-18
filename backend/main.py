@@ -11,7 +11,7 @@ from routers import (
 # FastAPIの用意
 app = FastAPI()
 
-origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+origins = ["http://localhost:3000", "http://127.0.0.1:3000", "https://dj-hukkin.netlify.app/"]
 
 app.add_middleware(
     CORSMiddleware,
