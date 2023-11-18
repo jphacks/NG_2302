@@ -35,7 +35,7 @@ export const Home = ({ setTrackList }) => {
     }
 
     // 初期化時に実行
-    useEffect(async () => {
+    useEffect(() => {
         const initLoad = async () => {
             if (cookies.client_id === undefined) {
                 if (modeStorage.mode === ModeTypes.DJ) {
