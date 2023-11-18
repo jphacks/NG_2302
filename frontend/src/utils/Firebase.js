@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { getQueueInfo } from "./ApiService";
+import { count } from "../routes/Home";
 
 // Cloud FireStore用初期化
 const firebaseConfig = {
@@ -75,7 +76,7 @@ export const updatedQueue = async (client_id) => {
     });
 }
 
-export const setOnSnapshot = (client_id, accessToken, setTrackList) => {
+export const setOnSnapshot = (client_id, accessToken, setMusicInfo) => {
     if (unsubscribe != null) return;
     token = accessToken;
     const docRef = doc(db, "updates", client_id);
@@ -83,8 +84,10 @@ export const setOnSnapshot = (client_id, accessToken, setTrackList) => {
         // 初回は実行しない
         if (!isFirst && token !== '') {
             console.log("\nCurrent data: ", doc.data());
-            const trackList = await getQueueInfo(token);
-            setTrackList(trackList);
+            const info = await getQueueInfo(token);
+            if (window.location.pathname === '/home')  {
+                setMusicInfo(info);
+            }
         } else {
             isFirst = false;
             console.log('setOnSnapshot');

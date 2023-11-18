@@ -4,7 +4,7 @@ import { Box, Button, Switch } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { postEnqueue, postEnqueueBasedOnMood } from '../utils/ApiService';
 
-export const Dictaphone = ({ }) => {
+export const Dictaphone = () => {
     const [titleName, setTitleName] = useState('');
     // 画面に表示するための状態管理
     const [conversation, setConversation] = useState('');

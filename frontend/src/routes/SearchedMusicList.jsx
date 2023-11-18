@@ -22,7 +22,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     // 楽曲のカードを作成する
     const trackCard = (track) => {
         return (
-            <Card sx={{ mt: 1, mb: 1, width: "80%", display: 'flex' }}>
+            <Card sx={{ mt: 1, mb: 1, width: '100%', display: 'flex' }}>
                 <CardActionArea
                     sx={{ display: 'flex' }}
                     onClick={() => {
@@ -84,7 +84,7 @@ export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 2 }}
+                        sx={{ mt: 1 }}
                         onClick={() => setOpen(false)}
                     >
                         いいえ

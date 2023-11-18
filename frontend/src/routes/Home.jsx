@@ -13,6 +13,7 @@ import { ArtistSearchTextField } from '../components/ArtistSearchTextField';
 import { ModeStorage } from '../hooks/ModeHook';
 import { Button } from '@mui/material';
 import { getQueueInfo } from '../utils/ApiService';
+import { setOnSnapshot } from '../utils/Firebase';
 
 export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
@@ -35,10 +36,13 @@ export const Home = ({ setTrackList }) => {
 
     // 初期化時に実行
     useEffect(() => {
-        if (modeStorage.mode === ModeTypes.DJ && cookies.client_id === undefined) {
-            setOpen(true);
+        if (cookies.client_id === undefined) {
+            if (modeStorage.mode === ModeTypes.DJ) {
+                setOpen(true);
+            }
         } else {
             setOpen(false);
+            setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
         }
 
         const timer = setInterval(() => {

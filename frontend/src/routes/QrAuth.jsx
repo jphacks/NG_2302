@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { json, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { ModeStorage } from '../hooks/ModeHook';
 import { ModeTypes } from '../config/ModeTypes';
