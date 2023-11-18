@@ -50,7 +50,7 @@ export default function App() {
                         : <IconButton edge="start" color="common.white" href='/home' >
                             <HomeIcon />
                         </IconButton>}
-                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} className='header'>
+                    <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} className='header' textAlign={'center'}>
                         DJふっきん
                     </Typography>
                     {location.pathname === "/" || location.pathname === "/setting" || location.pathname === "/signIn" || location.pathname === "/signUp"
