@@ -1,11 +1,7 @@
 # DJふっきん
-
-![IMAGE ALT TEXT HERE](DJ-hukkin.png)
-
-
 https://github.com/jphacks/NG_2302/assets/116733827/8e04c933-11a0-4d54-acdc-ae823ce59703
 
-
+![IMAGE ALT TEXT HERE](DJ-hukkin.png)
 
 
 ## 製品概要
