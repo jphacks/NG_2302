@@ -4,11 +4,10 @@ import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { customTextField } from '../styles/CustomTextField';
 import { useNavigate } from 'react-router-dom';
 import { postAccount, postToken } from '../utils/ApiService';
-import { initialAccountDocument } from '../utils/Firebase';
 
 export const SignUp = () => {
     const [message, setMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'id', 'password']);
+    const [cookies, setCookie] = useCookies(['access_token', 'id', 'password']);
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -37,10 +36,8 @@ export const SignUp = () => {
         try {
             const data = await postToken(id, password);
 
-            await initialAccountDocument(id, data.access_token);
-
             setCookie('access_token', data.access_token);
-            setCookie('refresh_token', data.refresh_token);
+
             setMessage('Login successful!');
             navigate('/home');
         } catch (error) {

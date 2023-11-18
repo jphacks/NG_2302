@@ -44,7 +44,9 @@ export const AxiosClientProvider = ({ children }) => {
         );
 
         return () => {
-            apiClient.interceptors.response.eject();
+            try {
+                apiClient.interceptors.response.eject();
+            } catch (error) { }
         }
     }, []);
 

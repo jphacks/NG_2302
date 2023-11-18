@@ -8,13 +8,13 @@ import { postEnqueueTrackId } from '../utils/ApiService';
 
 export const SearchedMusicList = ({ trackList, setTrackList, mode }) => {
     const [open, setOpen] = useState(false);
-    const [cookies] = useCookies(['access_token', 'id']);
+    const [cookies] = useCookies(['access_token', 'client_id']);
     const [clickedTrack, setClickedTrack] = useState({});
 
     // trackIdで楽曲をキューに追加する
     const addQueue = async (trackId) => {
         try {
-            await postEnqueueTrackId(trackId, cookies.access_token, cookies.id);
+            await postEnqueueTrackId(trackId, cookies.access_token, cookies.client_id);
             setOpen(false);
         } catch (error) { }
     }
