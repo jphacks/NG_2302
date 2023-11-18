@@ -19,8 +19,8 @@ export const RegisterModalDialog = ({ open, setOpen }) => {
             )
             setCookie('client_id', formData.get('client_id'));
             await registerClientAccount(cookies.client_id, cookies.id);
-            setOpen(false);
         } catch (error) { }
+        setOpen(false);
     }
 
     return (

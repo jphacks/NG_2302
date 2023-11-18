@@ -54,14 +54,15 @@ export const registerClientAccount = async (client_id, user_id) => {
 
 export const registerUserAccount = async (user_id) => {
     const querySnapshot = await getDocs(query(collection(db, "updates")));
-    querySnapshot.forEach(async (doc) => {
+    var result = 'undefined';
+    querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
         const users = doc.data().users;
         if (users !== undefined && users.includes(user_id)) {
-            return doc.id;
+            result = doc.id;
         }
     });
-    return 'undefined';
+    return result;
 }
 
 export const updatedQueue = async (client_id) => {
@@ -84,7 +85,7 @@ export const setOnSnapshot = (client_id, accessToken, setMusicInfo) => {
         if (!isFirst && token !== '') {
             console.log("\nCurrent data: ", doc.data());
             const info = await getQueueInfo(token);
-            if (window.location.pathname === '/home')  {
+            if (window.location.pathname === '/home') {
                 setMusicInfo(info);
             }
         } else {

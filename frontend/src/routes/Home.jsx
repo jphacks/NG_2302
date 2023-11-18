@@ -19,7 +19,7 @@ export const Home = ({ setTrackList }) => {
     const [open, setOpen] = useState(false);
     const [musicInfo, setMusicInfo] = useState({});
     const modeStorage = new ModeStorage();
-    const [cookies, setCookie] = useCookies(['access_token', 'id', 'client_id']);
+    const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'id', 'client_id']);
     const [elapsedTime, setElapsedTime] = useState(0); //経過時間を格納するためのState
     const updateTime = 3; // updateTimeを変更することで、Timerの更新頻度を変更できる
     let duration = -1;
@@ -39,19 +39,28 @@ export const Home = ({ setTrackList }) => {
         const initLoad = async () => {
             if (cookies.client_id === undefined) {
                 const clientId = await registerUserAccount(cookies.id);
-                console.log(clientId);
-                if (modeStorage.mode === ModeTypes.DJ) {
-                    if (clientId === 'undefined') {
+                if (clientId !== 'undefined') {
+                    setCookie('client_id', clientId);
+                } else {
+                    if (modeStorage.mode === ModeTypes.DJ) {
                         setOpen(true);
-                    } else {
-                        setCookie('client_id', clientId);
-                        getMusicInfo();
                     }
-                }
-            } else {
-                setOpen(false);
+                    return;
+                } 
+            }
+            // 過去のCookieが残っている場合の対策
+            const clientId = await registerUserAccount(cookies.id);
+            if (clientId === 'undefined') {
+                removeCookie('client_id');
+                setOpen(true);
+            }
+            setOpen(false);
+            try {
                 setOnSnapshot(cookies.client_id, cookies.access_token, setMusicInfo);
                 getMusicInfo();
+            } catch (error) {
+                // この時過去に登録したcookieによってエラーをはいている
+                setCookie('client_id', undefined);
             }
         }
         initLoad();

@@ -20,15 +20,15 @@ export const Dictaphone = () => {
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋*牛乳',
+            command: '腹筋 * 牛乳',
             fuzzyMatchingThreshold: 0.5,
             callback: async (value) => {
                 // queueに追加
                 console.log(value);
                 try {
                     await postEnqueue(value, cookies.access_token, cookies.client_id);
-                    setTitleName(value);
                 } catch (error) { }
+                setTitleName(value);
             },
         },
     ];
