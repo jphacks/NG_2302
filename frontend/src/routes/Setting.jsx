@@ -14,6 +14,9 @@ export const Setting = () => {
 
     const createQrCode = () => {
         console.log('createQrCode');
+        if (cookies.id === undefined || cookies.password === undefined) {
+            return;
+        }
         const jsonData = {
             id: cookies.id,
             password: cookies.password,
@@ -22,7 +25,6 @@ export const Setting = () => {
         const jsonDataString = JSON.stringify(jsonData);
         let baseUrl = 'https://dj-hukkin.netlify.app';
 
-        console.log(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
         setQrCode(baseUrl + '/qrAuth/?data=' + encodeURIComponent(jsonDataString));
     }
 
@@ -32,15 +34,15 @@ export const Setting = () => {
 
             <PageTitle title={'アカウント情報'} />
 
-            <Box sx={{ mt: 1 }} >
+            <Box sx={{ mt: 1 }} textAlign={'center'} >
                 <Typography component="h4" className='text'>
-                    ID
+                    ユーザーID
                 </Typography>
                 <Typography component="h2" variant="div">
                     {cookies.id}
                 </Typography>
             </Box>
-            <Box sx={{ mt: 1, mb: 3 }} >
+            <Box sx={{ mt: 1, mb: 3}} textAlign={'center'} >
                 <Typography component="h4" className='text'>
                     パスワード
                 </Typography>
