@@ -19,7 +19,7 @@ export const ModeSelect = () => {
                 モードを選択してください
             </Typography>
             <Button
-                className='Button_white'
+                className='Button_white dark'
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -29,7 +29,7 @@ export const ModeSelect = () => {
                 DJモード
             </Button>
             <Button
-                className='Button_white'
+                className='Button_white dark'
                 type="submit"
                 fullWidth
                 variant="contained"
