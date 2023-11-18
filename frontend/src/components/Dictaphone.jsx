@@ -20,7 +20,7 @@ export const Dictaphone = () => {
     const commands = [
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋 :title (を)流して',
+            command: '腹筋 :title 流して',
             fuzzyMatchingThreshold: 0.5,
             callback: async (title) => {
                 // queueに追加
