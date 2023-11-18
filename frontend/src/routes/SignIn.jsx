@@ -66,7 +66,7 @@ export const SignIn = () => {
                     sx={customTextField}
                 />
                 <Button
-                    className="Button_white"
+                    className="Button_white dark"
                     type="submit"
                     fullWidth
                     variant="contained"
