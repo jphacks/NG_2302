@@ -17,9 +17,10 @@ export const Dictaphone = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
     let maxTime = 60;
 
+    // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
     const commands = [
         {
-            // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
+            // iPhone以外では動作する
             command: '腹筋 :title 流して',
             fuzzyMatchingThreshold: 0.5,
             callback: async (title) => {
@@ -32,7 +33,7 @@ export const Dictaphone = () => {
             },
         },
         {
-            // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
+            // iPhone用
             command: '腹筋 * 流して',
             fuzzyMatchingThreshold: 0.5,
             callback: async (value) => {
@@ -134,7 +135,7 @@ export const Dictaphone = () => {
 
     return (
         <Box width="100%">
-            <p>{`音声入力のタイトル「${titleName}」`}</p>
+            <p>{`DJが受け取った入力「${titleName}」`}</p>
             <p>{conversation}</p>
             <p>ネガポジ判定機能の動作</p>
             <Switch
