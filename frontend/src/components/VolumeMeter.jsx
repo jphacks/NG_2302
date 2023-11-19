@@ -25,7 +25,7 @@ export const VolumeMeter = () => {
         console.log('正規化' + normalization);
         count = 0;
         volSum = 0;
-        await postAdjustVolume(normalization, cookies.access_token);
+        await postAdjustVolume(Math.round(normalization), cookies.access_token);
     }
 
     function runTimerAction() {
