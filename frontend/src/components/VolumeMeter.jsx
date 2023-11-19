@@ -25,7 +25,7 @@ export const VolumeMeter = () => {
         console.log('正規化' + normalization);
         count = 0;
         volSum = 0;
-        await postAdjustVolume(normalization, cookies.access_token);
+        await postAdjustVolume(Math.round(normalization), cookies.access_token);
     }
 
     function runTimerAction() {
@@ -43,7 +43,6 @@ export const VolumeMeter = () => {
                     return prevTime + 1;
                 }
             });
-
         }, 1000)
     }
 
@@ -55,7 +54,7 @@ export const VolumeMeter = () => {
 
     useEffect(() => {
         if (checked) {
-            runTimerAction(onAction);
+            runTimerAction();
         }
     }, []);
 
@@ -96,7 +95,7 @@ export const VolumeMeter = () => {
             audioContext.suspend();
         } else {
             // Timer開始
-            runTimerAction(onAction);
+            runTimerAction();
             // ボリュームメーター開始
             onStart();
             audioContext.resume();
