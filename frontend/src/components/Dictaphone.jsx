@@ -134,7 +134,7 @@ export const Dictaphone = () => {
 
     return (
         <Box width="100%">
-            <p>{`特定のワードの後「${titleName}」`}</p>
+            <p>{`音声入力のタイトル「${titleName}」`}</p>
             <p>{conversation}</p>
             <p>ネガポジ判定機能の動作</p>
             <Switch
