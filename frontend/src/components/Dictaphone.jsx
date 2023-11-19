@@ -33,15 +33,15 @@ export const Dictaphone = () => {
         },
         {
             // 特定のワードの後に起動して、valueでそのあとのワードを回収できる
-            command: '腹筋:title流して',
+            command: '腹筋 * 流して',
             fuzzyMatchingThreshold: 0.5,
-            callback: async (title) => {
+            callback: async (value) => {
                 // queueに追加
-                console.log(title);
+                console.log(value);
                 try {
-                    await postEnqueue(title, cookies.access_token, cookies.client_id);
+                    await postEnqueue(value, cookies.access_token, cookies.client_id);
                 } catch (error) { }
-                setTitleName(title);
+                setTitleName(value);
             },
         },
     ];
