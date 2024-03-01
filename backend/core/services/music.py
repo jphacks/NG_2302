@@ -13,6 +13,7 @@ from core.constants import (
 )
 from core.functions.sentiment_analysis import SentimentAnalysis
 from core.daos.spotify import SpotifyApiIdDao
+from core.daos.conversation import ConversationDao
 from core.dtos.music import (
     EnqueueReturnValue,
     EnqueueByTrackIdReturnValue,
@@ -28,6 +29,7 @@ from core.dtos.music import (
 class MusicService:
     db: Session
     spotify_api_id_dao: SpotifyApiIdDao
+    conversation_dao: ConversationDao
     account_id: int
 
     def _get_spotify_instance(self, scope: List[str]) -> spotipy.Spotify | None:
@@ -144,6 +146,12 @@ class MusicService:
         self,
         conversation: str
     ) -> EnqueueBasedOnMoodReturnValue:
+        self.conversation_dao.create_conversation_record(
+            db=self.db,
+            account_id=self.account_id,
+            conversation_text=conversation
+        )
+
         sentiment_analysis = SentimentAnalysis(
             credentials_path=SentimentAnalysisConstant.CREDENTIALS_PATH
         )
